@@ -1,4 +1,3 @@
-
 export interface CountryData {
   id: string;
   name: string;
@@ -41,3 +40,5 @@ export interface MetricOption {
   description: string;
   formatter: (value: number | null) => string;
 }
+
+export type CountryCode = 'FR' | 'RU' | 'CA' | 'CN' | 'DE';

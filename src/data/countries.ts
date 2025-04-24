@@ -2,7 +2,7 @@ import { CountryData, MetricOption, MetricType } from './types';
 
 export const countryData: CountryData[] = [
   {
-    id: 'cn',
+    id: 'CN',
     name: 'China',
     region: 'Asia',
     area: 9706961,
@@ -27,282 +27,7 @@ export const countryData: CountryData[] = [
     }
   },
   {
-    id: 'mx',
-    name: 'Mexico',
-    region: 'North America',
-    area: 1964375,
-    gdp: {
-      actual2023: 1602,
-      estimate2024: 1714,
-    },
-    usTradeBalance: -152041,
-    shareOfUsImports: 13.6,
-    shareOfUsExports: 15.8,
-    reciprocalTariff: 0,
-    tariffsToUS: 0.1,
-    impactedSectors: ['Automotive', 'Agricultural Products', 'Electronics'],
-    keyInsights: [
-      'Key USMCA trade partner',
-      'Growing manufacturing base',
-      'Strategic nearshoring location'
-    ],
-    nationalReaction: {
-      retaliatory: [],
-      domesticSupport: ['Manufacturing investment', 'Export diversification programs']
-    }
-  },
-  {
-    id: 'ca',
-    name: 'Canada',
-    region: 'North America',
-    area: 9984670,
-    gdp: {
-      actual2023: 2107,
-      estimate2024: 2221,
-    },
-    usTradeBalance: -60801,
-    shareOfUsImports: 11.8,
-    shareOfUsExports: 16.9,
-    reciprocalTariff: 0,
-    tariffsToUS: 0.2,
-    impactedSectors: ['Energy', 'Automotive', 'Timber'],
-    keyInsights: [
-      'Largest bilateral trading relationship',
-      'Integrated supply chains',
-      'Strong energy partnership'
-    ],
-    nationalReaction: {
-      retaliatory: [],
-      domesticSupport: ['Trade diversification strategy']
-    }
-  },
-  {
-    id: 'jp',
-    name: 'Japan',
-    region: 'Asia',
-    area: 377975,
-    gdp: {
-      actual2023: 4194,
-      estimate2024: 4407,
-    },
-    usTradeBalance: -65216,
-    shareOfUsImports: 4.8,
-    shareOfUsExports: 4.5,
-    reciprocalTariff: 0,
-    tariffsToUS: 1.2,
-    impactedSectors: ['Automotive', 'Electronics', 'Machinery'],
-    keyInsights: [
-      'High-tech manufacturing partner',
-      'Significant mutual investment',
-      'Strategic military ally'
-    ],
-    nationalReaction: {
-      retaliatory: [],
-      domesticSupport: ['Investment in domestic production']
-    }
-  },
-  {
-    id: 'de',
-    name: 'Germany',
-    region: 'Europe',
-    area: 357588,
-    gdp: {
-      actual2023: 4456,
-      estimate2024: 4512,
-    },
-    usTradeBalance: -72516,
-    shareOfUsImports: 4.6,
-    shareOfUsExports: 3.5,
-    reciprocalTariff: 0,
-    tariffsToUS: 0.9,
-    impactedSectors: ['Automotive', 'Industrial Equipment', 'Pharmaceuticals'],
-    keyInsights: [
-      'Largest EU trading partner',
-      'Advanced manufacturing relationship',
-      'Mutual high-tech investment'
-    ],
-    nationalReaction: {
-      retaliatory: ['EU coordinated response'],
-      domesticSupport: ['Industrial strategy 2030']
-    }
-  },
-  {
-    id: 'vn',
-    name: 'Vietnam',
-    region: 'Asia',
-    area: 331212,
-    gdp: {
-      actual2023: 429,
-      estimate2024: 469,
-    },
-    usTradeBalance: -107077,
-    shareOfUsImports: 4.1,
-    shareOfUsExports: 1.2,
-    reciprocalTariff: 0,
-    tariffsToUS: 7.2,
-    impactedSectors: ['Textiles', 'Electronics', 'Furniture'],
-    keyInsights: [
-      'Rapidly growing trade relationship',
-      'Emerging manufacturing hub',
-      'Alternative to Chinese manufacturing'
-    ],
-    nationalReaction: {
-      retaliatory: [],
-      domesticSupport: ['Export promotion incentives']
-    }
-  },
-  {
-    id: 'kr',
-    name: 'South Korea',
-    region: 'Asia',
-    area: 100339,
-    gdp: {
-      actual2023: 1709,
-      estimate2024: 1806,
-    },
-    usTradeBalance: -33700,
-    shareOfUsImports: 3.4,
-    shareOfUsExports: 3.3,
-    reciprocalTariff: 0,
-    tariffsToUS: 3.7,
-    impactedSectors: ['Electronics', 'Automotive', 'Telecommunications'],
-    keyInsights: [
-      'Advanced semiconductor trade',
-      'Strong technology partnership',
-      'Strategic defense ally'
-    ],
-    nationalReaction: {
-      retaliatory: [],
-      domesticSupport: ['Targeted sector investments']
-    }
-  },
-  {
-    id: 'in',
-    name: 'India',
-    region: 'Asia',
-    area: 3287263,
-    gdp: {
-      actual2023: 3534,
-      estimate2024: 3954,
-    },
-    usTradeBalance: -34156,
-    shareOfUsImports: 2.9,
-    shareOfUsExports: 2.4,
-    reciprocalTariff: 12.0,
-    tariffsToUS: 14.3,
-    impactedSectors: ['Pharmaceuticals', 'IT Services', 'Textiles'],
-    keyInsights: [
-      'Growing strategic partnership',
-      'Strong services trade relationship',
-      'Potential alternative to Chinese manufacturing'
-    ],
-    nationalReaction: {
-      retaliatory: ['Targeted tariffs on US goods'],
-      domesticSupport: ['Make in India initiatives']
-    }
-  },
-  {
-    id: 'tw',
-    name: 'Taiwan',
-    region: 'Asia',
-    area: 36197,
-    gdp: {
-      actual2023: 751,
-      estimate2024: 785,
-    },
-    usTradeBalance: -24020,
-    shareOfUsImports: 2.7,
-    shareOfUsExports: 2.2,
-    reciprocalTariff: 0,
-    tariffsToUS: 1.8,
-    impactedSectors: ['Semiconductors', 'Electronics', 'Machinery'],
-    keyInsights: [
-      'Critical semiconductor supplier',
-      'High-tech manufacturing partnership',
-      'Strategic Indo-Pacific ally'
-    ],
-    nationalReaction: {
-      retaliatory: [],
-      domesticSupport: ['Semiconductor investment initiatives']
-    }
-  },
-  {
-    id: 'ie',
-    name: 'Ireland',
-    region: 'Europe',
-    area: 70273,
-    gdp: {
-      actual2023: 592,
-      estimate2024: 615,
-    },
-    usTradeBalance: -62831,
-    shareOfUsImports: 2.6,
-    shareOfUsExports: 1.1,
-    reciprocalTariff: 0,
-    tariffsToUS: 0.9,
-    impactedSectors: ['Pharmaceuticals', 'Medical Devices', 'Software'],
-    keyInsights: [
-      'Major pharmaceutical exporter to US',
-      'Tax strategy attracting US multinationals',
-      'Gateway to European market'
-    ],
-    nationalReaction: {
-      retaliatory: ['EU coordinated response'],
-      domesticSupport: ['Digital and medical tech investments']
-    }
-  },
-  {
-    id: 'it',
-    name: 'Italy',
-    region: 'Europe',
-    area: 301336,
-    gdp: {
-      actual2023: 2169,
-      estimate2024: 2197,
-    },
-    usTradeBalance: -43204,
-    shareOfUsImports: 2.5,
-    shareOfUsExports: 1.8,
-    reciprocalTariff: 0,
-    tariffsToUS: 0.9,
-    impactedSectors: ['Luxury Goods', 'Machinery', 'Food Products'],
-    keyInsights: [
-      'High-value manufacturing trade',
-      'Luxury goods market',
-      'Manufacturing technology partnership'
-    ],
-    nationalReaction: {
-      retaliatory: ['EU coordinated response'],
-      domesticSupport: ['Made in Italy promotion']
-    }
-  },
-  {
-    id: 'gb',
-    name: 'United Kingdom',
-    region: 'Europe',
-    area: 242495,
-    gdp: {
-      actual2023: 3068,
-      estimate2024: 3193,
-    },
-    usTradeBalance: -5351,
-    shareOfUsImports: 2.4,
-    shareOfUsExports: 4.0,
-    reciprocalTariff: 0,
-    tariffsToUS: 0.8,
-    impactedSectors: ['Financial Services', 'Pharmaceuticals', 'Aerospace'],
-    keyInsights: [
-      'Strong financial services relationship',
-      'Significant mutual investment',
-      'Post-Brexit trade deal potential'
-    ],
-    nationalReaction: {
-      retaliatory: [],
-      domesticSupport: ['Global Britain export strategy']
-    }
-  },
-  {
-    id: 'fr',
+    id: 'FR',
     name: 'France',
     region: 'Europe',
     area: 551695,
@@ -327,55 +52,80 @@ export const countryData: CountryData[] = [
     }
   },
   {
-    id: 'my',
-    name: 'Malaysia',
-    region: 'Asia',
-    area: 330803,
+    id: 'RU',
+    name: 'Russia',
+    region: 'Eurasia',
+    area: 17098246,
     gdp: {
-      actual2023: 417,
-      estimate2024: 450,
+      actual2023: 1862,
+      estimate2024: 1915,
     },
-    usTradeBalance: -31716,
-    shareOfUsImports: 2.0,
-    shareOfUsExports: 1.0,
-    reciprocalTariff: 0,
-    tariffsToUS: 5.8,
-    impactedSectors: ['Electronics', 'Palm Oil', 'Rubber Products'],
+    usTradeBalance: -12450,
+    shareOfUsImports: 0.4,
+    shareOfUsExports: 0.3,
+    reciprocalTariff: 20.0,
+    tariffsToUS: 15.0,
+    impactedSectors: ['Energy', 'Metals', 'Defense'],
     keyInsights: [
-      'Electronics manufacturing hub',
-      'Semiconductor supply chain',
-      'Growing technological partnership'
+      'Limited trade due to sanctions',
+      'Energy market impacts',
+      'Geopolitical tensions'
     ],
     nationalReaction: {
-      retaliatory: [],
-      domesticSupport: ['Industry 4.0 investment programs']
+      retaliatory: ['Import substitution', 'Trade restrictions'],
+      domesticSupport: ['State industry support']
     }
   },
   {
-    id: 'th',
-    name: 'Thailand',
-    region: 'Asia',
-    area: 513120,
+    id: 'CA',
+    name: 'Canada',
+    region: 'North America',
+    area: 9984670,
     gdp: {
-      actual2023: 512,
-      estimate2024: 538,
+      actual2023: 2107,
+      estimate2024: 2221,
     },
-    usTradeBalance: -26786,
-    shareOfUsImports: 1.8,
-    shareOfUsExports: 1.0,
+    usTradeBalance: -60801,
+    shareOfUsImports: 11.8,
+    shareOfUsExports: 16.9,
     reciprocalTariff: 0,
-    tariffsToUS: 7.1,
-    impactedSectors: ['Automotive Parts', 'Electronics', 'Food Products'],
+    tariffsToUS: 0.2,
+    impactedSectors: ['Energy', 'Automotive', 'Timber'],
     keyInsights: [
-      'Regional manufacturing hub',
-      'Strong agricultural exports',
-      'Growing tech manufacturing'
+      'Largest bilateral trading relationship',
+      'Integrated supply chains',
+      'Strong energy partnership'
     ],
     nationalReaction: {
       retaliatory: [],
-      domesticSupport: ['Thailand 4.0 initiatives']
+      domesticSupport: ['Trade diversification strategy']
     }
   },
+  {
+    id: 'DE',
+    name: 'Germany',
+    region: 'Europe',
+    area: 357588,
+    gdp: {
+      actual2023: 4456,
+      estimate2024: 4512,
+    },
+    usTradeBalance: -72516,
+    shareOfUsImports: 4.6,
+    shareOfUsExports: 3.5,
+    reciprocalTariff: 0,
+    tariffsToUS: 0.9,
+    impactedSectors: ['Automotive', 'Industrial Equipment', 'Pharmaceuticals'],
+    keyInsights: [
+      'Largest EU trading partner',
+      'Advanced manufacturing relationship',
+      'Mutual high-tech investment'
+    ],
+    nationalReaction: {
+      retaliatory: ['EU coordinated response'],
+      domesticSupport: ['Industrial strategy 2030']
+    }
+  }
 ];
 
 export const metricOptions: MetricOption[] = [
@@ -454,13 +204,8 @@ export const getCountryColor = (country: CountryData, metricId: MetricType): str
   if (metricId === 'usTradeBalance') {
     // Red for negative trade balance, blue for positive
     return value < 0 
-      ? `rgba(239, 68, 68, ${Math.min(0.2 + Math.abs(value) / 300000, 0.9)})`
-      : `rgba(59, 130, 246, ${Math.min(0.2 + Math.abs(value) / 300000, 0.9)})`;
-  }
-  
-  if (metricId === 'reciprocalTariff' || metricId === 'tariffsToUS') {
-    // More intense red for higher tariffs
-    return `rgba(239, 68, 68, ${Math.min(0.1 + value / 25, 0.9)})`;
+      ? `rgba(239, 68, 68, ${Math.min(0.2 + Math.abs(value) / 300000, 0.8)})`
+      : `rgba(59, 130, 246, ${Math.min(0.2 + Math.abs(value) / 300000, 0.8)})`;
   }
   
   // Default intensity scale for other metrics
@@ -474,6 +219,6 @@ export const getCountryColor = (country: CountryData, metricId: MetricType): str
     tariffsToUS: 20
   };
   
-  const intensity = Math.min(0.1 + value / maxValues[metricId], 0.9);
+  const intensity = Math.min(0.2 + value / maxValues[metricId], 0.8);
   return `rgba(14, 116, 144, ${intensity})`; // Teal color
 };
