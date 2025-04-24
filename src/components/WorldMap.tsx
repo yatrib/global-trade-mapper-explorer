@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -6,9 +5,7 @@ import { CountryData, MetricType } from '../data/types';
 import { countryData, getCountryColor, metricOptions } from '../data/countries';
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-
-// Temporary public token for demo purposes
-mapboxgl.accessToken = 'pk.eyJ1IjoibG92YWJsZSIsImEiOiJjbHQ3ZnYyY2wwMXlqMmlxczdpcGlvZ2d4In0.a-KHB3kiE4h8nKi9boVEVw';
+import { useMapboxToken } from '@/hooks/useMapboxToken';
 
 interface WorldMapProps {
   selectedCountry: CountryData | null;
@@ -22,9 +19,13 @@ const WorldMap: React.FC<WorldMapProps> = ({ selectedCountry, selectedMetric, on
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredCountries, setFilteredCountries] = useState<CountryData[]>([]);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const { data: mapboxToken, isLoading } = useMapboxToken();
 
   useEffect(() => {
-    if (!mapContainer.current) return;
+    if (!mapContainer.current || !mapboxToken || isLoading) return;
+
+    // Set the token from Supabase
+    mapboxgl.accessToken = mapboxToken;
 
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
@@ -114,9 +115,8 @@ const WorldMap: React.FC<WorldMapProps> = ({ selectedCountry, selectedMetric, on
         map.current.remove();
       }
     };
-  }, []);
+  }, [mapboxToken, isLoading]);
 
-  // Update colors when metric changes
   useEffect(() => {
     if (!map.current || !map.current.isStyleLoaded()) return;
 
@@ -131,7 +131,6 @@ const WorldMap: React.FC<WorldMapProps> = ({ selectedCountry, selectedMetric, on
     ]);
   }, [selectedMetric]);
 
-  // Handle search functionality
   useEffect(() => {
     if (searchTerm) {
       const filtered = countryData.filter(country => 
@@ -142,6 +141,10 @@ const WorldMap: React.FC<WorldMapProps> = ({ selectedCountry, selectedMetric, on
       setFilteredCountries([]);
     }
   }, [searchTerm]);
+
+  if (isLoading) {
+    return <div className="w-full h-[400px] flex items-center justify-center">Loading map...</div>;
+  }
 
   return (
     <div className="w-full h-full bg-white rounded-lg overflow-hidden shadow-sm border">
