@@ -1,5 +1,4 @@
-
-import { CountryData, MetricOption } from './types';
+import { CountryData, MetricOption, MetricType } from './types';
 
 export const countryData: CountryData[] = [
   {

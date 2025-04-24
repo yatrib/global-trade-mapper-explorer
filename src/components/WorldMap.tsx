@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { CountryData, MetricType } from '../data/types';
-import { countryData, getCountryColor } from '../data/countries';
+import { countryData, getCountryColor, metricOptions } from '../data/countries';
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
