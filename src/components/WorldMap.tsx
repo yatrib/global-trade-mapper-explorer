@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -33,6 +34,7 @@ const WorldMap: React.FC<WorldMapProps> = ({ selectedCountry, selectedMetric, on
       projection: 'mercator',
       zoom: 1.5,
       center: [0, 20],
+      renderWorldCopies: false // Prevent map from showing multiple copies of the world
     });
 
     map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
