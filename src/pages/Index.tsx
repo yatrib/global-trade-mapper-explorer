@@ -1,16 +1,34 @@
 
 import React, { useState } from 'react';
-import { countryData, metricOptions, getMetricValue, metricOptions as availableMetrics } from '@/data/countries';
 import { CountryData, MetricType } from '@/data/types';
 import WorldMap from '@/components/WorldMap';
 import CountryDetail from '@/components/CountryDetail';
 import MetricSelector from '@/components/MetricSelector';
 import { Badge } from '@/components/ui/badge';
 import { Globe, Info } from 'lucide-react';
+import { useCountryData } from '@/hooks/useCountryData';
+import { metricOptions } from '@/data/countries';
 
 const Index: React.FC = () => {
   const [selectedCountry, setSelectedCountry] = useState<CountryData | null>(null);
   const [selectedMetric, setSelectedMetric] = useState<MetricType>('gdp2023');
+  const { data: countryData, isLoading, error } = useCountryData();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <p className="text-lg text-muted-foreground">Loading data...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <p className="text-lg text-red-500">Error loading data: {error.message}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -44,7 +62,7 @@ const Index: React.FC = () => {
       <div className="container mx-auto px-4 py-6">
         <div className="grid grid-cols-1 gap-6">
           <MetricSelector
-            metrics={availableMetrics}
+            metrics={metricOptions}
             selectedMetric={selectedMetric}
             onSelectMetric={setSelectedMetric}
           />
@@ -55,6 +73,7 @@ const Index: React.FC = () => {
                 selectedCountry={selectedCountry}
                 selectedMetric={selectedMetric}
                 onSelectCountry={setSelectedCountry}
+                countryData={countryData || []}
               />
             </div>
             

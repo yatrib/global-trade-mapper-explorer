@@ -1,9 +1,8 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { CountryData, MetricType } from '../data/types';
-import { countryData, getCountryColor, metricOptions } from '../data/countries';
+import { getCountryColor, metricOptions } from '../data/countries';
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useMapboxToken } from '@/hooks/useMapboxToken';
@@ -12,9 +11,15 @@ interface WorldMapProps {
   selectedCountry: CountryData | null;
   selectedMetric: MetricType;
   onSelectCountry: (country: CountryData) => void;
+  countryData: CountryData[];
 }
 
-const WorldMap: React.FC<WorldMapProps> = ({ selectedCountry, selectedMetric, onSelectCountry }) => {
+const WorldMap: React.FC<WorldMapProps> = ({ 
+  selectedCountry, 
+  selectedMetric, 
+  onSelectCountry,
+  countryData 
+}) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -60,7 +65,7 @@ const WorldMap: React.FC<WorldMapProps> = ({ selectedCountry, selectedMetric, on
         },
       });
 
-      // Add highlighted countries layer
+      // Update highlighted countries layer with dynamic data
       map.current.addLayer({
         id: 'highlighted-countries',
         type: 'fill',
@@ -117,7 +122,7 @@ const WorldMap: React.FC<WorldMapProps> = ({ selectedCountry, selectedMetric, on
         map.current.remove();
       }
     };
-  }, [mapboxToken, isLoading]);
+  }, [mapboxToken, isLoading, countryData]);
 
   useEffect(() => {
     if (!map.current || !map.current.isStyleLoaded()) return;
@@ -131,7 +136,7 @@ const WorldMap: React.FC<WorldMapProps> = ({ selectedCountry, selectedMetric, on
       ]),
       'transparent'
     ]);
-  }, [selectedMetric]);
+  }, [selectedMetric, countryData]);
 
   useEffect(() => {
     if (searchTerm) {
@@ -142,7 +147,7 @@ const WorldMap: React.FC<WorldMapProps> = ({ selectedCountry, selectedMetric, on
     } else {
       setFilteredCountries([]);
     }
-  }, [searchTerm]);
+  }, [searchTerm, countryData]);
 
   if (isLoading) {
     return <div className="w-full h-[400px] flex items-center justify-center">Loading map...</div>;

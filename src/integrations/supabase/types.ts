@@ -30,6 +30,202 @@ export type Database = {
         }
         Relationships: []
       }
+      countries: {
+        Row: {
+          area: number
+          created_at: string | null
+          id: string
+          name: string
+          region: Database["public"]["Enums"]["region_type"]
+          updated_at: string | null
+        }
+        Insert: {
+          area: number
+          created_at?: string | null
+          id: string
+          name: string
+          region: Database["public"]["Enums"]["region_type"]
+          updated_at?: string | null
+        }
+        Update: {
+          area?: number
+          created_at?: string | null
+          id?: string
+          name?: string
+          region?: Database["public"]["Enums"]["region_type"]
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      country_gdp: {
+        Row: {
+          actual_2023: number
+          country_id: string | null
+          created_at: string | null
+          estimate_2024: number
+          id: string
+          updated_at: string | null
+        }
+        Insert: {
+          actual_2023: number
+          country_id?: string | null
+          created_at?: string | null
+          estimate_2024: number
+          id?: string
+          updated_at?: string | null
+        }
+        Update: {
+          actual_2023?: number
+          country_id?: string | null
+          created_at?: string | null
+          estimate_2024?: number
+          id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "country_gdp_country_id_fkey"
+            columns: ["country_id"]
+            isOneToOne: true
+            referencedRelation: "countries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      country_insights: {
+        Row: {
+          country_id: string | null
+          created_at: string | null
+          id: string
+          insight_text: string
+        }
+        Insert: {
+          country_id?: string | null
+          created_at?: string | null
+          id?: string
+          insight_text: string
+        }
+        Update: {
+          country_id?: string | null
+          created_at?: string | null
+          id?: string
+          insight_text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "country_insights_country_id_fkey"
+            columns: ["country_id"]
+            isOneToOne: false
+            referencedRelation: "countries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      country_sectors: {
+        Row: {
+          country_id: string | null
+          created_at: string | null
+          id: string
+          sector_name: string
+        }
+        Insert: {
+          country_id?: string | null
+          created_at?: string | null
+          id?: string
+          sector_name: string
+        }
+        Update: {
+          country_id?: string | null
+          created_at?: string | null
+          id?: string
+          sector_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "country_sectors_country_id_fkey"
+            columns: ["country_id"]
+            isOneToOne: false
+            referencedRelation: "countries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      national_reactions: {
+        Row: {
+          country_id: string | null
+          created_at: string | null
+          description: string
+          id: string
+          reaction_type: string
+        }
+        Insert: {
+          country_id?: string | null
+          created_at?: string | null
+          description: string
+          id?: string
+          reaction_type: string
+        }
+        Update: {
+          country_id?: string | null
+          created_at?: string | null
+          description?: string
+          id?: string
+          reaction_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "national_reactions_country_id_fkey"
+            columns: ["country_id"]
+            isOneToOne: false
+            referencedRelation: "countries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      us_trade_data: {
+        Row: {
+          country_id: string | null
+          created_at: string | null
+          id: string
+          reciprocal_tariff: number | null
+          share_of_exports: number | null
+          share_of_imports: number | null
+          tariffs_to_us: number | null
+          trade_balance: number
+          updated_at: string | null
+        }
+        Insert: {
+          country_id?: string | null
+          created_at?: string | null
+          id?: string
+          reciprocal_tariff?: number | null
+          share_of_exports?: number | null
+          share_of_imports?: number | null
+          tariffs_to_us?: number | null
+          trade_balance: number
+          updated_at?: string | null
+        }
+        Update: {
+          country_id?: string | null
+          created_at?: string | null
+          id?: string
+          reciprocal_tariff?: number | null
+          share_of_exports?: number | null
+          share_of_imports?: number | null
+          tariffs_to_us?: number | null
+          trade_balance?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "us_trade_data_country_id_fkey"
+            columns: ["country_id"]
+            isOneToOne: true
+            referencedRelation: "countries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -38,7 +234,15 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      region_type:
+        | "Asia"
+        | "Europe"
+        | "Eurasia"
+        | "North America"
+        | "South America"
+        | "Africa"
+        | "Oceania"
+        | "Middle East"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -153,6 +357,17 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      region_type: [
+        "Asia",
+        "Europe",
+        "Eurasia",
+        "North America",
+        "South America",
+        "Africa",
+        "Oceania",
+        "Middle East",
+      ],
+    },
   },
 } as const
