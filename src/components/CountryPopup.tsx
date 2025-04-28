@@ -51,11 +51,11 @@ const CountryPopup: React.FC<CountryPopupProps> = ({ country, onShowAllData, isR
           <div className="grid grid-cols-2 gap-2">
             <div>
               <div className="text-sm text-muted-foreground">Share of Imports</div>
-              <div className="font-medium">{country.shareOfUsImports.toFixed(1)}%</div>
+              <div className="font-medium">{country.shareOfUsImports?.toFixed(1) || 'N/A'}%</div>
             </div>
             <div>
               <div className="text-sm text-muted-foreground">Share of Exports</div>
-              <div className="font-medium">{country.shareOfUsExports.toFixed(1)}%</div>
+              <div className="font-medium">{country.shareOfUsExports?.toFixed(1) || 'N/A'}%</div>
             </div>
           </div>
         </div>

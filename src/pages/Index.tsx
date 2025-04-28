@@ -9,6 +9,8 @@ import { Sheet, SheetContent } from '@/components/ui/sheet';
 import CountryDetail from '@/components/CountryDetail';
 import { DownloadReportForm } from '@/components/DownloadReportForm';
 import { Card, CardContent } from '@/components/ui/card';
+import MetricSelector from '@/components/MetricSelector';
+import { metricOptions } from '@/data/countries';
 
 const FREE_COUNTRY_LIMIT = 5;
 
@@ -67,6 +69,17 @@ const Index: React.FC = () => {
       </header>
 
       <main>
+        {/* Metric selector section */}
+        <section className="py-4 bg-white border-b">
+          <div className="container mx-auto px-4">
+            <MetricSelector 
+              metrics={metricOptions}
+              selectedMetric={selectedMetric}
+              onSelectMetric={setSelectedMetric}
+            />
+          </div>
+        </section>
+
         {/* Full-width map section */}
         <section className="relative w-full">
           <div className="h-[70vh] w-full">
