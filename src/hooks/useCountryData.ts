@@ -43,20 +43,22 @@ export function useCountryData() {
         name: country.name,
         region: country.region,
         area: country.area,
-        gdp2023: country.country_gdp?.[0]?.actual_2023 || 0,
-        gdp2024: country.country_gdp?.[0]?.estimate_2024 || 0,
-        tradeBalance: country.us_trade_data?.[0]?.trade_balance || 0,
-        shareOfImports: country.us_trade_data?.[0]?.share_of_imports || 0,
-        shareOfExports: country.us_trade_data?.[0]?.share_of_exports || 0,
-        reciprocalTariff: country.us_trade_data?.[0]?.reciprocal_tariff || 0,
-        tariffsToUS: country.us_trade_data?.[0]?.tariffs_to_us || 0,
-        sectors: country.country_sectors?.map(s => s.sector_name) || [],
-        insights: country.country_insights?.map(i => i.insight_text) || [],
-        reactions: country.national_reactions?.map(r => ({
-          type: 'general',
-          description: r.description
-        })) || []
-      })) satisfies CountryData[];
+        gdp: {
+          actual2023: country.country_gdp?.[0]?.actual_2023 || 0,
+          estimate2024: country.country_gdp?.[0]?.estimate_2024 || 0,
+        },
+        usTradeBalance: country.us_trade_data?.[0]?.trade_balance || 0,
+        shareOfUsImports: country.us_trade_data?.[0]?.share_of_imports || null,
+        shareOfUsExports: country.us_trade_data?.[0]?.share_of_exports || null,
+        reciprocalTariff: country.us_trade_data?.[0]?.reciprocal_tariff || null,
+        tariffsToUS: country.us_trade_data?.[0]?.tariffs_to_us || null,
+        impactedSectors: country.country_sectors?.map(s => s.sector_name) || [],
+        keyInsights: country.country_insights?.map(i => i.insight_text) || [],
+        nationalReaction: {
+          retaliatory: country.national_reactions?.filter((_, index) => index % 2 === 0).map(r => r.description) || [],
+          domesticSupport: country.national_reactions?.filter((_, index) => index % 2 === 1).map(r => r.description) || [],
+        }
+      })) as CountryData[];
     }
   });
 }
