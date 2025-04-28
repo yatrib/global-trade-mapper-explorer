@@ -3,15 +3,21 @@ import React, { useState } from 'react';
 import { CountryData, MetricType } from '@/data/types';
 import WorldMap from '@/components/WorldMap';
 import { Badge } from '@/components/ui/badge';
-import { Globe, Info, BarChart2, LineChart, Lock } from 'lucide-react';
+import { Globe, Info, BarChart2, LineChart } from 'lucide-react';
 import { useCountryData } from '@/hooks/useCountryData';
 import { metricOptions } from '@/data/countries';
 import { DownloadReportForm } from '@/components/DownloadReportForm';
 import { Card, CardContent } from '@/components/ui/card';
 
+const FREE_COUNTRY_LIMIT = 5;
+
 const Index: React.FC = () => {
   const [selectedMetric, setSelectedMetric] = useState<MetricType>('gdp2023');
   const { data: countryData, isLoading, error } = useCountryData();
+
+  // Limit countries shown to first 5 for free users
+  const visibleCountries = countryData?.slice(0, FREE_COUNTRY_LIMIT) || [];
+  const hiddenCountries = countryData?.slice(FREE_COUNTRY_LIMIT) || [];
 
   if (isLoading) {
     return (
@@ -46,80 +52,70 @@ const Index: React.FC = () => {
       </header>
 
       <main>
-        <section className="py-16 md:py-24">
-          <div className="container mx-auto px-4">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div>
-                <h2 className="text-4xl font-bold mb-6">
-                  Understand Global Trade Dynamics
-                </h2>
-                <p className="text-lg text-muted-foreground mb-8">
-                  Access comprehensive analysis of international trade relationships, 
-                  economic indicators, and policy impacts across major economies.
-                </p>
-                <div className="flex gap-4 mb-8">
-                  <div className="flex items-center gap-2">
-                    <BarChart2 className="h-5 w-5 text-cyan-700" />
-                    <span>200+ Economic Indicators</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <LineChart className="h-5 w-5 text-cyan-700" />
-                    <span>Real-time Updates</span>
-                  </div>
-                </div>
-                <Card className="bg-white/50 backdrop-blur-sm">
-                  <CardContent className="p-6">
-                    <h3 className="text-lg font-semibold mb-4">Get the Full Report</h3>
-                    <DownloadReportForm />
-                  </CardContent>
-                </Card>
-              </div>
-
-              <div className="relative">
-                <div className="aspect-[4/3] rounded-lg overflow-hidden border shadow-lg">
-                  <WorldMap
-                    selectedCountry={null}
-                    selectedMetric={selectedMetric}
-                    onSelectCountry={() => {}}
-                    countryData={countryData || []}
-                  />
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent flex items-end justify-center pb-8">
-                  <div className="text-center">
-                    <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-                      <Lock className="h-4 w-4" />
-                      <span>Full access with report download</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+        {/* Full-width map section */}
+        <section className="relative w-full">
+          <div className="h-[70vh] w-full">
+            <WorldMap
+              selectedCountry={null}
+              selectedMetric={selectedMetric}
+              onSelectCountry={() => {}}
+              countryData={visibleCountries}
+            />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent flex items-end justify-center pb-8">
+            <div className="text-center max-w-md mx-auto p-4 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg">
+              <p className="text-sm font-medium text-muted-foreground mb-2">
+                {FREE_COUNTRY_LIMIT} countries available in free version. Unlock {hiddenCountries.length} more countries with full access.
+              </p>
             </div>
           </div>
         </section>
 
+        {/* CTA Section below map */}
         <section className="py-16 bg-white border-t">
           <div className="container mx-auto px-4">
-            <h2 className="text-2xl font-bold text-center mb-12">What's Included in the Report</h2>
-            <div className="grid md:grid-cols-3 gap-8">
-              {[
-                {
-                  title: "Trade Analysis",
-                  description: "Comprehensive analysis of bilateral trade relationships and trends"
-                },
-                {
-                  title: "Economic Indicators",
-                  description: "Key metrics including GDP, trade balance, and sector performance"
-                },
-                {
-                  title: "Policy Insights",
-                  description: "Expert analysis of trade policies and their economic impact"
-                }
-              ].map((feature, index) => (
-                <Card key={index} className="text-center p-6">
-                  <h3 className="font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-sm text-muted-foreground">{feature.description}</p>
+            <div className="max-w-4xl mx-auto">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold mb-4">
+                  Get Full Access to Global Trade Data
+                </h2>
+                <p className="text-lg text-muted-foreground mb-8">
+                  Download our comprehensive report to access detailed trade analysis for all countries, 
+                  including economic indicators and policy insights.
+                </p>
+              </div>
+              
+              <div className="grid md:grid-cols-2 gap-8 items-start">
+                <div className="space-y-6">
+                  <div className="flex items-start gap-3">
+                    <BarChart2 className="h-6 w-6 text-cyan-700 mt-1" />
+                    <div>
+                      <h3 className="font-semibold">Complete Dataset</h3>
+                      <p className="text-muted-foreground">Access data for all {countryData?.length} countries</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <LineChart className="h-6 w-6 text-cyan-700 mt-1" />
+                    <div>
+                      <h3 className="font-semibold">Detailed Analytics</h3>
+                      <p className="text-muted-foreground">In-depth trade balance and sector analysis</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <Info className="h-6 w-6 text-cyan-700 mt-1" />
+                    <div>
+                      <h3 className="font-semibold">Expert Insights</h3>
+                      <p className="text-muted-foreground">Policy implications and future predictions</p>
+                    </div>
+                  </div>
+                </div>
+
+                <Card>
+                  <CardContent className="p-6">
+                    <DownloadReportForm />
+                  </CardContent>
                 </Card>
-              ))}
+              </div>
             </div>
           </div>
         </section>
