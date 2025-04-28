@@ -1,19 +1,20 @@
-
 import React, { useState } from 'react';
 import { CountryData, MetricType } from '@/data/types';
 import WorldMap from '@/components/WorldMap';
 import { Badge } from '@/components/ui/badge';
-import { Globe, Info, BarChart2, LineChart } from 'lucide-react';
+import { Globe } from 'lucide-react';
 import { useCountryData } from '@/hooks/useCountryData';
-import { metricOptions } from '@/data/countries';
+import { Sheet, SheetContent } from '@/components/ui/sheet';
+import CountryDetail from '@/components/CountryDetail';
 import { DownloadReportForm } from '@/components/DownloadReportForm';
-import { Card, CardContent } from '@/components/ui/card';
 
 const FREE_COUNTRY_LIMIT = 5;
 
 const Index: React.FC = () => {
   const [selectedMetric, setSelectedMetric] = useState<MetricType>('gdp2023');
   const { data: countryData, isLoading, error } = useCountryData();
+  const [selectedCountry, setSelectedCountry] = useState<CountryData | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Limit countries shown to first 5 for free users
   const visibleCountries = countryData?.slice(0, FREE_COUNTRY_LIMIT) || [];
@@ -34,6 +35,18 @@ const Index: React.FC = () => {
       </div>
     );
   }
+
+  const handleCountrySelect = (country: CountryData) => {
+    setSelectedCountry(country);
+    setIsSidebarOpen(true);
+  };
+
+  const scrollToDownload = () => {
+    const element = document.getElementById('download-section');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
@@ -56,23 +69,18 @@ const Index: React.FC = () => {
         <section className="relative w-full">
           <div className="h-[70vh] w-full">
             <WorldMap
-              selectedCountry={null}
+              selectedCountry={selectedCountry}
               selectedMetric={selectedMetric}
-              onSelectCountry={() => {}}
-              countryData={visibleCountries}
+              onSelectCountry={handleCountrySelect}
+              countryData={countryData || []}
+              onShowFullAccess={scrollToDownload}
             />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent flex items-end justify-center pb-8">
-            <div className="text-center max-w-md mx-auto p-4 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg">
-              <p className="text-sm font-medium text-muted-foreground mb-2">
-                {FREE_COUNTRY_LIMIT} countries available in free version. Unlock {hiddenCountries.length} more countries with full access.
-              </p>
-            </div>
-          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent pointer-events-none" />
         </section>
 
-        {/* CTA Section below map */}
-        <section className="py-16 bg-white border-t">
+        {/* CTA Section */}
+        <section id="download-section" className="py-16 bg-white border-t">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-8">
@@ -120,6 +128,12 @@ const Index: React.FC = () => {
           </div>
         </section>
       </main>
+
+      <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
+        <SheetContent side="right" className="w-full sm:w-[540px] p-0">
+          <CountryDetail country={selectedCountry} />
+        </SheetContent>
+      </Sheet>
     </div>
   );
 };

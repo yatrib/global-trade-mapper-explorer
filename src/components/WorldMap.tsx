@@ -6,19 +6,23 @@ import { getCountryColor, metricOptions } from '../data/countries';
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useMapboxToken } from '@/hooks/useMapboxToken';
+import CountryPopup from './CountryPopup';
+import ReactDOM from 'react-dom';
 
 interface WorldMapProps {
   selectedCountry: CountryData | null;
   selectedMetric: MetricType;
   onSelectCountry: (country: CountryData) => void;
   countryData: CountryData[];
+  onShowFullAccess: () => void;
 }
 
 const WorldMap: React.FC<WorldMapProps> = ({ 
   selectedCountry, 
   selectedMetric, 
   onSelectCountry,
-  countryData 
+  countryData,
+  onShowFullAccess
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
@@ -26,6 +30,8 @@ const WorldMap: React.FC<WorldMapProps> = ({
   const [filteredCountries, setFilteredCountries] = useState<CountryData[]>([]);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const { data: mapboxToken, isLoading } = useMapboxToken();
+
+  const [popup, setPopup] = useState<mapboxgl.Popup | null>(null);
 
   useEffect(() => {
     if (!mapContainer.current || !mapboxToken || isLoading) return;
@@ -48,11 +54,13 @@ const WorldMap: React.FC<WorldMapProps> = ({
     map.current.on('load', () => {
       if (!map.current) return;
 
+      // Add source
       map.current.addSource('countries', {
         type: 'vector',
         url: 'mapbox://mapbox.country-boundaries-v1',
       });
 
+      // Base layer for all countries (gray)
       map.current.addLayer({
         id: 'country-fills',
         type: 'fill',
@@ -64,8 +72,22 @@ const WorldMap: React.FC<WorldMapProps> = ({
         },
       });
 
+      // Layer for restricted countries (darker gray)
       map.current.addLayer({
-        id: 'highlighted-countries',
+        id: 'restricted-countries',
+        type: 'fill',
+        source: 'countries',
+        'source-layer': 'country_boundaries',
+        paint: {
+          'fill-color': '#9CA3AF',
+          'fill-opacity': 0.7,
+        },
+        filter: ['in', 'iso_3166_1'].concat(countryData.slice(5).map(c => c.id)),
+      });
+
+      // Layer for visible countries (colored)
+      map.current.addLayer({
+        id: 'visible-countries',
         type: 'fill',
         source: 'countries',
         'source-layer': 'country_boundaries',
@@ -73,15 +95,16 @@ const WorldMap: React.FC<WorldMapProps> = ({
           'fill-color': [
             'match',
             ['get', 'iso_3166_1'],
-            countryData.map(c => c.id),
+            countryData.slice(0, 5).map(c => c.id),
             getCountryColor(countryData[0], selectedMetric),
             'transparent'
           ],
           'fill-opacity': 0.8,
         },
-        filter: ['in', 'iso_3166_1'].concat(countryData.map(c => c.id)),
+        filter: ['in', 'iso_3166_1'].concat(countryData.slice(0, 5).map(c => c.id)),
       });
 
+      // Borders layer
       map.current.addLayer({
         id: 'country-borders',
         type: 'line',
@@ -93,39 +116,76 @@ const WorldMap: React.FC<WorldMapProps> = ({
         },
       });
 
-      map.current.on('click', 'highlighted-countries', (e) => {
+      // Click handlers
+      map.current.on('click', ['visible-countries', 'restricted-countries'], (e) => {
         if (e.features && e.features[0].properties) {
           const countryCode = e.features[0].properties.iso_3166_1;
           const country = countryData.find(c => c.id === countryCode);
-          if (country) {
+          
+          if (!country) return;
+          
+          const isRestricted = countryData.indexOf(country) >= 5;
+          
+          if (popup) {
+            popup.remove();
+          }
+
+          // Create popup container
+          const popupContent = document.createElement('div');
+          
+          // Render CountryPopup component into the container
+          ReactDOM.render(
+            <CountryPopup 
+              country={country} 
+              onShowAllData={() => {
+                if (popup) popup.remove();
+                onShowFullAccess();
+              }}
+              isRestricted={isRestricted}
+            />,
+            popupContent
+          );
+
+          // Create and set new popup
+          const newPopup = new mapboxgl.Popup()
+            .setLngLat(e.lngLat)
+            .setDOMContent(popupContent)
+            .addTo(map.current!);
+
+          setPopup(newPopup);
+
+          if (!isRestricted) {
             onSelectCountry(country);
           }
         }
       });
 
-      map.current.on('mouseenter', 'highlighted-countries', () => {
+      map.current.on('mouseenter', ['visible-countries', 'restricted-countries'], () => {
         if (map.current) map.current.getCanvas().style.cursor = 'pointer';
       });
 
-      map.current.on('mouseleave', 'highlighted-countries', () => {
+      map.current.on('mouseleave', ['visible-countries', 'restricted-countries'], () => {
         if (map.current) map.current.getCanvas().style.cursor = '';
       });
     });
 
     return () => {
+      if (popup) {
+        popup.remove();
+      }
       if (map.current) {
         map.current.remove();
       }
     };
-  }, [mapboxToken, isLoading, countryData]);
+  }, [mapboxToken, isLoading, countryData, selectedMetric, onSelectCountry, onShowFullAccess]);
 
   useEffect(() => {
     if (!map.current || !map.current.isStyleLoaded()) return;
 
-    map.current.setPaintProperty('highlighted-countries', 'fill-color', [
+    map.current.setPaintProperty('visible-countries', 'fill-color', [
       'match',
       ['get', 'iso_3166_1'],
-      ...countryData.flatMap(country => [
+      ...countryData.slice(0, 5).flatMap(country => [
         country.id,
         getCountryColor(country, selectedMetric)
       ]),
