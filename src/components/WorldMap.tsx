@@ -30,16 +30,17 @@ const WorldMap: React.FC<WorldMapProps> = ({
   useEffect(() => {
     if (!mapContainer.current || !mapboxToken || isLoading) return;
 
-    // Set the token from Supabase
     mapboxgl.accessToken = mapboxToken;
 
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/light-v11',
-      projection: 'mercator',
-      zoom: 1.5,
-      center: [0, 20],
-      renderWorldCopies: false // Prevent map from showing multiple copies of the world
+      projection: 'equalEarth',
+      zoom: 1,
+      center: [0, 0],
+      minZoom: 1,
+      maxZoom: 8,
+      renderWorldCopies: false
     });
 
     map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
@@ -47,13 +48,11 @@ const WorldMap: React.FC<WorldMapProps> = ({
     map.current.on('load', () => {
       if (!map.current) return;
 
-      // Add source for country boundaries
       map.current.addSource('countries', {
         type: 'vector',
         url: 'mapbox://mapbox.country-boundaries-v1',
       });
 
-      // Add fill layer for all countries (gray background)
       map.current.addLayer({
         id: 'country-fills',
         type: 'fill',
@@ -65,7 +64,6 @@ const WorldMap: React.FC<WorldMapProps> = ({
         },
       });
 
-      // Update highlighted countries layer with dynamic data
       map.current.addLayer({
         id: 'highlighted-countries',
         type: 'fill',
@@ -84,7 +82,6 @@ const WorldMap: React.FC<WorldMapProps> = ({
         filter: ['in', 'iso_3166_1'].concat(countryData.map(c => c.id)),
       });
 
-      // Add borders
       map.current.addLayer({
         id: 'country-borders',
         type: 'line',
@@ -96,7 +93,6 @@ const WorldMap: React.FC<WorldMapProps> = ({
         },
       });
 
-      // Add click handler
       map.current.on('click', 'highlighted-countries', (e) => {
         if (e.features && e.features[0].properties) {
           const countryCode = e.features[0].properties.iso_3166_1;
@@ -107,7 +103,6 @@ const WorldMap: React.FC<WorldMapProps> = ({
         }
       });
 
-      // Change cursor on hover
       map.current.on('mouseenter', 'highlighted-countries', () => {
         if (map.current) map.current.getCanvas().style.cursor = 'pointer';
       });

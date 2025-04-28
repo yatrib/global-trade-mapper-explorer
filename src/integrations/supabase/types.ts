@@ -156,21 +156,18 @@ export type Database = {
           created_at: string | null
           description: string
           id: string
-          reaction_type: string
         }
         Insert: {
           country_id?: string | null
           created_at?: string | null
           description: string
           id?: string
-          reaction_type: string
         }
         Update: {
           country_id?: string | null
           created_at?: string | null
           description?: string
           id?: string
-          reaction_type?: string
         }
         Relationships: [
           {
@@ -191,7 +188,7 @@ export type Database = {
           share_of_exports: number | null
           share_of_imports: number | null
           tariffs_to_us: number | null
-          trade_balance: number
+          trade_balance: number | null
           updated_at: string | null
         }
         Insert: {
@@ -202,7 +199,7 @@ export type Database = {
           share_of_exports?: number | null
           share_of_imports?: number | null
           tariffs_to_us?: number | null
-          trade_balance: number
+          trade_balance?: number | null
           updated_at?: string | null
         }
         Update: {
@@ -213,7 +210,7 @@ export type Database = {
           share_of_exports?: number | null
           share_of_imports?: number | null
           tariffs_to_us?: number | null
-          trade_balance?: number
+          trade_balance?: number | null
           updated_at?: string | null
         }
         Relationships: [
