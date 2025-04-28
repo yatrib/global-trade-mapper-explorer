@@ -1,12 +1,14 @@
+
 import React, { useState } from 'react';
 import { CountryData, MetricType } from '@/data/types';
 import WorldMap from '@/components/WorldMap';
 import { Badge } from '@/components/ui/badge';
-import { Globe } from 'lucide-react';
+import { Globe, BarChart2, LineChart, Info } from 'lucide-react';
 import { useCountryData } from '@/hooks/useCountryData';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 import CountryDetail from '@/components/CountryDetail';
 import { DownloadReportForm } from '@/components/DownloadReportForm';
+import { Card, CardContent } from '@/components/ui/card';
 
 const FREE_COUNTRY_LIMIT = 5;
 

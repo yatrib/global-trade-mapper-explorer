@@ -1,6 +1,20 @@
+
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
+}
+
+/**
+ * Formats large numbers with B for billions and M for millions
+ */
+export function formatValue(value: number | null | undefined): string {
+  if (value === null || value === undefined) return 'N/A';
+  
+  if (value >= 1000) {
+    return (value / 1000).toFixed(1);
+  }
+  
+  return value.toFixed(1);
 }
