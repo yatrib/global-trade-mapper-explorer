@@ -44,6 +44,26 @@ const WorldMap: React.FC<WorldMapProps> = ({
 
   const [popup, setPopup] = useState<mapboxgl.Popup | null>(null);
 
+  // Clean up function to properly unmount React components
+  const cleanupPopup = () => {
+    if (popup) {
+      // Try to find the popup content element and unmount React from it
+      const popupElement = popup.getElement();
+      if (popupElement) {
+        const popupContent = popupElement.querySelector('.mapboxgl-popup-content');
+        if (popupContent && popupContent.firstChild) {
+          ReactDOM.unmountComponentAtNode(popupContent.firstChild as HTMLElement);
+        }
+      }
+      popup.remove();
+      setPopup(null);
+    }
+  };
+
+  const closePopup = () => {
+    cleanupPopup();
+  };
+
   useEffect(() => {
     if (!mapContainer.current || !mapboxToken || isLoading) return;
 
@@ -137,42 +157,38 @@ const WorldMap: React.FC<WorldMapProps> = ({
           
           const isRestricted = countryData.indexOf(country) >= 5;
           
-          if (popup) {
-            popup.remove();
-          }
+          // Clean up existing popup if there is one
+          cleanupPopup();
 
           // Create popup container
-          const popupContent = document.createElement('div');
+          const popupContainer = document.createElement('div');
           
-          // Render CountryPopup component into the container
-          ReactDOM.render(
-            <CountryPopup 
-              country={country} 
-              onShowAllData={() => {
-                if (popup) popup.remove();
-                if (isRestricted) {
-                  onShowFullAccess();
-                } else {
-                  onSelectCountry(country);
-                }
-              }}
-              onClose={() => {
-                if (popup) popup.remove();
-              }}
-              isRestricted={isRestricted}
-            />,
-            popupContent
-          );
-
-          // Create and set new popup
           const newPopup = new mapboxgl.Popup({
             closeButton: false,
             closeOnClick: false,
             maxWidth: '300px'
           })
             .setLngLat(e.lngLat)
-            .setDOMContent(popupContent)
+            .setDOMContent(popupContainer)
             .addTo(map.current!);
+
+          // Render CountryPopup component into the container
+          ReactDOM.render(
+            <CountryPopup 
+              country={country} 
+              onShowAllData={() => {
+                cleanupPopup();
+                if (isRestricted) {
+                  onShowFullAccess();
+                } else {
+                  onSelectCountry(country);
+                }
+              }}
+              onClose={closePopup}
+              isRestricted={isRestricted}
+            />,
+            popupContainer
+          );
 
           setPopup(newPopup);
         }
@@ -188,9 +204,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
     });
 
     return () => {
-      if (popup) {
-        popup.remove();
-      }
+      cleanupPopup();
       if (map.current) {
         map.current.remove();
       }

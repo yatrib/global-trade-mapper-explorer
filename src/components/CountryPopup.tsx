@@ -24,8 +24,9 @@ const CountryPopup: React.FC<CountryPopupProps> = ({
       <Card className="w-64 relative">
         <button 
           onClick={onClose} 
-          className="absolute right-2 top-2 p-1 rounded-full hover:bg-muted"
+          className="absolute right-2 top-2 p-1 rounded-full hover:bg-muted z-10"
           aria-label="Close popup"
+          type="button"
         >
           <X className="h-4 w-4 text-muted-foreground" />
         </button>
@@ -49,8 +50,9 @@ const CountryPopup: React.FC<CountryPopupProps> = ({
     <Card className="w-64 relative">
       <button 
         onClick={onClose} 
-        className="absolute right-2 top-2 p-1 rounded-full hover:bg-muted"
+        className="absolute right-2 top-2 p-1 rounded-full hover:bg-muted z-10"
         aria-label="Close popup"
+        type="button"
       >
         <X className="h-4 w-4 text-muted-foreground" />
       </button>
