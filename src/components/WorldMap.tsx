@@ -42,24 +42,29 @@ const WorldMap: React.FC<WorldMapProps> = ({
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const { data: mapboxToken, isLoading } = useMapboxToken();
 
-  const [popup, setPopup] = useState<mapboxgl.Popup | null>(null);
+  const popupRef = useRef<mapboxgl.Popup | null>(null);
+  const popupContainerRef = useRef<HTMLDivElement | null>(null);
 
-  // Clean up function to properly unmount React components
+  // Improved cleanup function to properly unmount React components
   const cleanupPopup = () => {
-    if (popup) {
-      // Try to find the popup content element and unmount React from it
-      const popupElement = popup.getElement();
-      if (popupElement) {
-        const popupContent = popupElement.querySelector('.mapboxgl-popup-content');
-        if (popupContent && popupContent.firstChild) {
-          ReactDOM.unmountComponentAtNode(popupContent.firstChild as HTMLElement);
-        }
+    try {
+      // First unmount any React component
+      if (popupContainerRef.current) {
+        ReactDOM.unmountComponentAtNode(popupContainerRef.current);
+        popupContainerRef.current = null;
       }
-      popup.remove();
-      setPopup(null);
+
+      // Then remove the mapbox popup
+      if (popupRef.current) {
+        popupRef.current.remove();
+        popupRef.current = null;
+      }
+    } catch (error) {
+      console.error("Error cleaning up popup:", error);
     }
   };
 
+  // Create a clear function that we'll expose to the CountryPopup component
   const closePopup = () => {
     cleanupPopup();
   };
@@ -157,20 +162,25 @@ const WorldMap: React.FC<WorldMapProps> = ({
           
           const isRestricted = countryData.indexOf(country) >= 5;
           
-          // Clean up existing popup if there is one
+          // Clean up existing popup first
           cleanupPopup();
 
-          // Create popup container
-          const popupContainer = document.createElement('div');
+          // Create new container for this popup
+          const container = document.createElement('div');
+          popupContainerRef.current = container;
           
+          // Create and set new popup
           const newPopup = new mapboxgl.Popup({
             closeButton: false,
             closeOnClick: false,
             maxWidth: '300px'
           })
             .setLngLat(e.lngLat)
-            .setDOMContent(popupContainer)
+            .setDOMContent(container)
             .addTo(map.current!);
+            
+          // Store reference to popup
+          popupRef.current = newPopup;
 
           // Render CountryPopup component into the container
           ReactDOM.render(
@@ -187,10 +197,8 @@ const WorldMap: React.FC<WorldMapProps> = ({
               onClose={closePopup}
               isRestricted={isRestricted}
             />,
-            popupContainer
+            container
           );
-
-          setPopup(newPopup);
         }
       });
 
@@ -292,7 +300,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
         </div>
       </div>
       
-      <div className="relative h-[600px] w-full overflow-hidden"> {/* Increased height from 400px to 600px */}
+      <div className="relative h-[600px] w-full overflow-hidden">
         <div ref={mapContainer} className="absolute inset-0" />
         
         <div className="absolute bottom-4 right-4 bg-white/80 backdrop-blur-sm p-2 rounded-md border shadow-sm">
