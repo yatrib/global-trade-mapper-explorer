@@ -7,7 +7,7 @@ const ExpertiseSection: React.FC = () => {
   return (
     <section className="py-20 px-4 bg-white">
       <div className="container mx-auto">
-        <div className="text-center mb-12 animate-on-scroll opacity-0">
+        <div className="text-center mb-12 animate-on-scroll">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Why Trust Infomineo?</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Our expertise combines deep market knowledge with innovative data solutions
@@ -50,7 +50,7 @@ interface ExpertiseCardProps {
 
 const ExpertiseCard: React.FC<ExpertiseCardProps> = ({ icon, title, description, delay }) => {
   return (
-    <div className="animate-on-scroll opacity-0" style={{ animationDelay: `${delay}s` }}>
+    <div className="animate-on-scroll" style={{ animationDelay: `${delay}s` }}>
       <Card className="h-full border shadow-md hover:shadow-xl transition-all duration-300 group">
         <CardContent className="p-6">
           <div className="mb-4 flex justify-center">

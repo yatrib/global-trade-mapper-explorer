@@ -24,13 +24,14 @@ const Index: React.FC = () => {
   const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
   const downloadSectionRef = useRef<HTMLDivElement>(null);
 
-  // Scroll handler for animations
+  // Fixed scroll handler for animations - ensures elements become visible
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('animate-fade-in');
+            // Remove the opacity-0 class instead of just adding animate-fade-in
             entry.target.classList.remove('opacity-0');
           }
         });
@@ -38,7 +39,9 @@ const Index: React.FC = () => {
       { threshold: 0.1 }
     );
 
+    // Initialize elements with visible state by default
     document.querySelectorAll('.animate-on-scroll').forEach((item) => {
+      // Don't add opacity-0 initially
       observer.observe(item);
     });
 
@@ -99,7 +102,7 @@ const Index: React.FC = () => {
         </header>
 
         <div className="container mx-auto px-4 py-16">
-          <div className="max-w-3xl mx-auto text-center animate-on-scroll opacity-0">
+          <div className="max-w-3xl mx-auto text-center animate-on-scroll">
             <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">Decoding the U.S.-China Trade War: Global Tariffs Explained</h1>
             <p className="text-xl md:text-2xl opacity-90 mb-10 max-w-2xl mx-auto">Explore the ripple effects of tariffs across G20 nations and beyond.</p>
           </div>
@@ -132,7 +135,7 @@ const Index: React.FC = () => {
       <section ref={downloadSectionRef} className="py-20 bg-infomineo-gradient text-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12 animate-on-scroll opacity-0">
+            <div className="text-center mb-12 animate-on-scroll">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
                 Stay Informed on Global Trade Dynamics
               </h2>
@@ -141,7 +144,7 @@ const Index: React.FC = () => {
               </p>
             </div>
             
-            <div className="max-w-md mx-auto animate-on-scroll opacity-0" style={{ animationDelay: "0.2s" }}>
+            <div className="max-w-md mx-auto animate-on-scroll" style={{ animationDelay: "0.2s" }}>
               <Card className="backdrop-blur-md bg-white/10 border-white/20 shadow-xl">
                 <CardContent className="p-6 md:p-8">
                   <DownloadReportForm />
