@@ -1,39 +1,35 @@
 
 import React from 'react';
 import { BarChart3, Globe, Handshake } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
 
 const ExpertiseSection: React.FC = () => {
   return (
-    <section className="py-20 px-4 bg-white">
+    <section className="py-24 px-4 bg-gradient-to-b from-white to-gray-50">
       <div className="container mx-auto">
-        <div className="text-center mb-12 animate-on-scroll">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Why Trust Infomineo?</h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">Why Trust Infomineo?</h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Our expertise combines deep market knowledge with innovative data solutions
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-5xl mx-auto">
           <ExpertiseCard 
-            icon={<BarChart3 className="h-10 w-10 text-infomineo-blue" />}
+            icon={<BarChart3 className="h-8 w-8" strokeWidth={1.5} />}
             title="Data-Driven Insights"
             description="We transform complex market data into clear, actionable insights for your business strategy."
-            delay={0}
           />
           
           <ExpertiseCard 
-            icon={<Globe className="h-10 w-10 text-infomineo-blue" />}
+            icon={<Globe className="h-8 w-8" strokeWidth={1.5} />}
             title="Global Reach"
             description="Our presence across continents ensures comprehensive coverage of emerging markets and trends."
-            delay={0.2}
           />
           
           <ExpertiseCard 
-            icon={<Handshake className="h-10 w-10 text-infomineo-blue" />}
+            icon={<Handshake className="h-8 w-8" strokeWidth={1.5} />}
             title="Tailored Solutions"
             description="We develop customized research solutions that align perfectly with your business objectives."
-            delay={0.4}
           />
         </div>
       </div>
@@ -45,23 +41,18 @@ interface ExpertiseCardProps {
   icon: React.ReactNode;
   title: string;
   description: string;
-  delay: number;
 }
 
-const ExpertiseCard: React.FC<ExpertiseCardProps> = ({ icon, title, description, delay }) => {
+const ExpertiseCard: React.FC<ExpertiseCardProps> = ({ icon, title, description }) => {
   return (
-    <div className="animate-on-scroll" style={{ animationDelay: `${delay}s` }}>
-      <Card className="h-full border shadow-md hover:shadow-xl transition-all duration-300 group">
-        <CardContent className="p-6">
-          <div className="mb-4 flex justify-center">
-            <div className="p-3 bg-infomineo-grey-100 rounded-full group-hover:bg-infomineo-light/10 transition-colors duration-300">
-              {icon}
-            </div>
-          </div>
-          <h3 className="text-xl font-bold text-center mb-3">{title}</h3>
-          <p className="text-muted-foreground text-center">{description}</p>
-        </CardContent>
-      </Card>
+    <div className="group">
+      <div className="p-8 bg-white rounded-xl transition-all duration-300 hover:bg-gray-50 hover:translate-y-[-4px]">
+        <div className="mb-6 inline-flex items-center justify-center p-3 bg-infomineo-blue/5 rounded-full text-infomineo-blue group-hover:bg-infomineo-blue group-hover:text-white transition-all duration-300">
+          {icon}
+        </div>
+        <h3 className="text-xl font-semibold mb-3">{title}</h3>
+        <p className="text-gray-600 leading-relaxed">{description}</p>
+      </div>
     </div>
   );
 };
