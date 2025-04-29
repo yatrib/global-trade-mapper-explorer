@@ -14,6 +14,7 @@ import ExpertiseSection from '@/components/ExpertiseSection';
 import { metricOptions } from '@/data/countries';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import infomineoLogo from '@/assets/infomineo-logo.png';
+import Footer from '@/components/Footer';
 
 const FREE_COUNTRY_LIMIT = 5;
 
@@ -137,14 +138,14 @@ const Index: React.FC = () => {
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
                 Stay Informed on Global Trade Dynamics
               </h2>
-              <p className="text-xl md:text-2xl opacity-90 mb-8">
+              <p className="text-xl opacity-90 mb-8">
                 Get expert updates and reports directly to your inbox.
               </p>
             </div>
             
             <div className="max-w-md mx-auto animate-on-scroll opacity-0" style={{ animationDelay: "0.2s" }}>
               <Card className="backdrop-blur-md bg-white/10 border-white/20 shadow-xl">
-                <CardContent className="p-8">
+                <CardContent className="p-6 md:p-8">
                   <DownloadReportForm />
                 </CardContent>
               </Card>
@@ -156,6 +157,9 @@ const Index: React.FC = () => {
       {/* Expertise Section */}
       <ExpertiseSection />
 
+      {/* Footer */}
+      <Footer />
+
       <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
         <SheetContent side="right" className="w-full sm:w-[540px] p-0">
           <CountryDetail country={selectedCountry} />
@@ -164,10 +168,10 @@ const Index: React.FC = () => {
 
       {/* Lead Form Dialog */}
       <Dialog open={isLeadFormOpen} onOpenChange={setIsLeadFormOpen}>
-        <DialogContent className="sm:max-w-md">
-          <div className="py-4">
-            <h2 className="text-2xl font-bold mb-4 text-center">Get Exclusive Access</h2>
-            <p className="text-muted-foreground mb-6 text-center">
+        <DialogContent className="sm:max-w-md bg-infomineo-gradient p-0 border-none">
+          <div className="py-8 px-6">
+            <h2 className="text-2xl font-bold mb-4 text-center text-white">Get Exclusive Access</h2>
+            <p className="text-white/80 mb-6 text-center">
               Complete the form below to unlock detailed insights for all countries
             </p>
             <DownloadReportForm />

@@ -30,16 +30,16 @@ export function DownloadReportForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-full">
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-white/90">Full Name</FormLabel>
+              <FormLabel className="text-white/90 font-medium">Full Name</FormLabel>
               <FormControl>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/60" />
                   <Input placeholder="Your name" {...field} className="pl-10 bg-white/10 border-white/20 text-white" required />
                 </div>
               </FormControl>
@@ -51,10 +51,10 @@ export function DownloadReportForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-white/90">Business Email</FormLabel>
+              <FormLabel className="text-white/90 font-medium">Business Email</FormLabel>
               <FormControl>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/60" />
                   <Input placeholder="you@company.com" {...field} type="email" className="pl-10 bg-white/10 border-white/20 text-white" required />
                 </div>
               </FormControl>
@@ -66,10 +66,10 @@ export function DownloadReportForm() {
           name="company"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-white/90">Company Name</FormLabel>
+              <FormLabel className="text-white/90 font-medium">Company Name</FormLabel>
               <FormControl>
                 <div className="relative">
-                  <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/60" />
                   <Input placeholder="Your company" {...field} className="pl-10 bg-white/10 border-white/20 text-white" required />
                 </div>
               </FormControl>
@@ -78,11 +78,11 @@ export function DownloadReportForm() {
         />
         <Button 
           type="submit" 
-          className="w-full bg-infomineo-light hover:bg-white hover:text-infomineo-blue text-white font-medium py-3 mt-2 animate-pulse-soft shadow-lg"
+          className="w-full bg-infomineo-light hover:bg-white hover:text-infomineo-blue text-white font-medium py-3 mt-4 animate-pulse-soft shadow-lg"
         >
           Subscribe for Exclusive Insights
         </Button>
-        <p className="text-xs text-center text-white/80">
+        <p className="text-xs text-center text-white/80 mt-2">
           Get expert updates and reports directly to your inbox.
         </p>
       </form>
