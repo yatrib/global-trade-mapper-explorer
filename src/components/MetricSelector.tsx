@@ -34,8 +34,8 @@ const MetricSelector: React.FC<MetricSelectorProps> = ({
               value={metric.id}
               className={`px-3 py-1.5 text-xs md:text-sm whitespace-normal text-center h-auto transition-colors ${
                 selectedMetric === metric.id 
-                ? "bg-infomineo-blue text-white shadow-sm" 
-                : "bg-white hover:bg-gray-50"
+                ? "bg-infomineo-blue text-white font-medium shadow-md" 
+                : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
             >
               {metric.label}

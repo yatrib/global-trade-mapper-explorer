@@ -71,19 +71,19 @@ const Timeline: React.FC = () => {
                 {/* Timeline node */}
                 <div className="absolute left-1/2 transform -translate-x-1/2 z-10">
                   <div className={cn(
-                    "w-10 h-10 rounded-full flex items-center justify-center shadow-sm transition-all duration-300",
+                    "w-10 h-10 rounded-full flex items-center justify-center shadow-sm",
                     event.isHighlighted ? "bg-infomineo-gradient" : "bg-infomineo-blue"
                   )}>
                     {event.icon}
                   </div>
                 </div>
                 
-                {/* Content box */}
+                {/* Content box - removed hover animations */}
                 <div className={cn(
-                  "w-[calc(50%-2rem)] transition-all duration-300 hover:translate-y-[-2px]",
+                  "w-[calc(50%-2rem)]",
                   isEven ? "pr-8" : "pl-8"
                 )}>
-                  <div className="bg-white p-6 rounded-xl hover:bg-gray-50">
+                  <div className="bg-white p-6 rounded-xl">
                     <span className="text-sm font-semibold text-infomineo-light inline-block mb-2">{event.date}</span>
                     <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
                     <p className="text-gray-600">{event.description}</p>

@@ -45,9 +45,9 @@ interface ExpertiseCardProps {
 
 const ExpertiseCard: React.FC<ExpertiseCardProps> = ({ icon, title, description }) => {
   return (
-    <div className="group">
-      <div className="p-8 bg-white rounded-xl transition-all duration-300 hover:bg-gray-50 hover:translate-y-[-4px]">
-        <div className="mb-6 inline-flex items-center justify-center p-3 bg-infomineo-blue/5 rounded-full text-infomineo-blue group-hover:bg-infomineo-blue group-hover:text-white transition-all duration-300">
+    <div>
+      <div className="p-8 bg-white rounded-xl">
+        <div className="mb-6 inline-flex items-center justify-center p-3 bg-infomineo-blue/5 rounded-full text-infomineo-blue">
           {icon}
         </div>
         <h3 className="text-xl font-semibold mb-3">{title}</h3>

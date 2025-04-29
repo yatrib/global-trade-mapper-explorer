@@ -4,7 +4,6 @@ import { CountryData, MetricType } from '@/data/types';
 import WorldMap from '@/components/WorldMap';
 import { Badge } from '@/components/ui/badge';
 import { useCountryData } from '@/hooks/useCountryData';
-import { Sheet, SheetContent } from '@/components/ui/sheet';
 import CountryDetail from '@/components/CountryDetail';
 import { Card, CardContent } from '@/components/ui/card';
 import { DownloadReportForm } from '@/components/DownloadReportForm';
@@ -19,7 +18,7 @@ const Index: React.FC = () => {
   const [selectedMetric, setSelectedMetric] = useState<MetricType>('gdp2023');
   const { data: countryData, isLoading, error } = useCountryData();
   const [selectedCountry, setSelectedCountry] = useState<CountryData | null>(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
   const downloadSectionRef = useRef<HTMLDivElement>(null);
 
@@ -77,7 +76,7 @@ const Index: React.FC = () => {
 
   const handleCountrySelect = (country: CountryData) => {
     setSelectedCountry(country);
-    setIsSidebarOpen(true);
+    setIsDetailOpen(true);
   };
 
   const scrollToDownload = () => {
@@ -165,11 +164,12 @@ const Index: React.FC = () => {
       {/* Footer */}
       <Footer />
 
-      <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
-        <SheetContent side="right" className="w-full sm:w-[540px] p-0 border-none">
+      {/* Change sidebar to a centered dialog */}
+      <Dialog open={isDetailOpen} onOpenChange={setIsDetailOpen}>
+        <DialogContent className="sm:max-w-[700px] max-h-[85vh] overflow-y-auto">
           <CountryDetail country={selectedCountry} />
-        </SheetContent>
-      </Sheet>
+        </DialogContent>
+      </Dialog>
 
       {/* Lead Form Dialog */}
       <Dialog open={isLeadFormOpen} onOpenChange={setIsLeadFormOpen}>
