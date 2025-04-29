@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { CountryData } from '@/data/types';
 import { Card, CardContent } from '@/components/ui/card';
@@ -8,7 +7,7 @@ import { formatValue } from '@/lib/utils';
 
 interface CountryPopupProps {
   country: CountryData;
-  onShowAllData: () => void;
+  onShowAllData: () => void; // This is correctly typed to not require parameters
   onClose: () => void;
   isRestricted?: boolean;
 }

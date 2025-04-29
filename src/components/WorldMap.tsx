@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -24,7 +23,7 @@ interface WorldMapProps {
   onSelectMetric: (metric: MetricType) => void;
   onSelectCountry: (country: CountryData) => void;
   countryData: CountryData[];
-  onShowFullAccess: () => void;
+  onShowFullAccess: () => void; // Updated to not require a CountryData parameter
   removeRestrictions?: boolean;
 }
 
@@ -47,7 +46,6 @@ const WorldMap: React.FC<WorldMapProps> = ({
   const popupRef = useRef<mapboxgl.Popup | null>(null);
   const popupContainerRef = useRef<HTMLDivElement | null>(null);
 
-  // Improved cleanup function to properly unmount React components
   const cleanupPopup = () => {
     try {
       // First unmount any React component
