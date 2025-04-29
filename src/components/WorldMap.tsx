@@ -4,13 +4,19 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { CountryData, MetricType } from '../data/types';
 import { getCountryColor, metricOptions } from '../data/countries';
-import { Search } from "lucide-react";
+import { Search, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useMapboxToken } from '@/hooks/useMapboxToken';
 import CountryPopup from './CountryPopup';
 import ReactDOM from 'react-dom';
 import { Button } from '@/components/ui/button';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
 
 interface WorldMapProps {
   selectedCountry: CountryData | null;
@@ -46,9 +52,9 @@ const WorldMap: React.FC<WorldMapProps> = ({
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/light-v11',
-      projection: 'equalEarth',
-      zoom: 1,
-      center: [0, 0],
+      projection: 'mercator', // Changed from equalEarth to mercator for flat display
+      zoom: 1.5,
+      center: [0, 20],
       minZoom: 1,
       maxZoom: 8,
       renderWorldCopies: false
@@ -150,13 +156,20 @@ const WorldMap: React.FC<WorldMapProps> = ({
                   onSelectCountry(country);
                 }
               }}
+              onClose={() => {
+                if (popup) popup.remove();
+              }}
               isRestricted={isRestricted}
             />,
             popupContent
           );
 
           // Create and set new popup
-          const newPopup = new mapboxgl.Popup()
+          const newPopup = new mapboxgl.Popup({
+            closeButton: false,
+            closeOnClick: false,
+            maxWidth: '300px'
+          })
             .setLngLat(e.lngLat)
             .setDOMContent(popupContent)
             .addTo(map.current!);
@@ -247,30 +260,25 @@ const WorldMap: React.FC<WorldMapProps> = ({
             )}
           </div>
           
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="text-xs text-muted-foreground min-w-fit">Selected metric:</span>
-            <span className="text-xs font-medium text-foreground mr-2">
-              {selectedMetric ? metricOptions.find(m => m.id === selectedMetric)?.label : 'None'}
-            </span>
-            
-            <ToggleGroup type="single" value={selectedMetric} onValueChange={(value) => value && onSelectMetric(value as MetricType)} className="flex flex-wrap gap-1">
-              {metricOptions.slice(0, 4).map((metric) => (
-                <ToggleGroupItem 
-                  key={metric.id} 
-                  value={metric.id} 
-                  size="sm"
-                  className="text-xs px-2 py-1 h-auto"
-                  aria-label={metric.label}
-                >
-                  {metric.label.split(' ')[0]}
-                </ToggleGroupItem>
-              ))}
-            </ToggleGroup>
+            <Select value={selectedMetric} onValueChange={(value) => onSelectMetric(value as MetricType)}>
+              <SelectTrigger className="h-8 text-xs w-[160px]">
+                <SelectValue placeholder="Select data metric" />
+              </SelectTrigger>
+              <SelectContent className="z-50">
+                {metricOptions.map(metric => (
+                  <SelectItem key={metric.id} value={metric.id} className="text-xs">
+                    {metric.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </div>
       
-      <div className="relative h-[400px] w-full overflow-hidden">
+      <div className="relative h-[600px] w-full overflow-hidden"> {/* Increased height from 400px to 600px */}
         <div ref={mapContainer} className="absolute inset-0" />
         
         <div className="absolute bottom-4 right-4 bg-white/80 backdrop-blur-sm p-2 rounded-md border shadow-sm">

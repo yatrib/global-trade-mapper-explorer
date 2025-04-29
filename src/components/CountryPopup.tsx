@@ -3,20 +3,33 @@ import React from 'react';
 import { CountryData } from '@/data/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Lock } from 'lucide-react';
+import { ArrowRight, Lock, X } from 'lucide-react';
 import { formatValue } from '@/lib/utils';
 
 interface CountryPopupProps {
   country: CountryData;
   onShowAllData: () => void;
+  onClose: () => void;
   isRestricted?: boolean;
 }
 
-const CountryPopup: React.FC<CountryPopupProps> = ({ country, onShowAllData, isRestricted }) => {
+const CountryPopup: React.FC<CountryPopupProps> = ({ 
+  country, 
+  onShowAllData, 
+  onClose, 
+  isRestricted 
+}) => {
   if (isRestricted) {
     return (
-      <Card className="w-64">
-        <CardContent className="p-4">
+      <Card className="w-64 relative">
+        <button 
+          onClick={onClose} 
+          className="absolute right-2 top-2 p-1 rounded-full hover:bg-muted"
+          aria-label="Close popup"
+        >
+          <X className="h-4 w-4 text-muted-foreground" />
+        </button>
+        <CardContent className="p-4 pt-6">
           <div className="text-center space-y-3">
             <Lock className="h-8 w-8 mx-auto text-muted-foreground" />
             <h3 className="font-semibold">{country.name}</h3>
@@ -33,8 +46,15 @@ const CountryPopup: React.FC<CountryPopupProps> = ({ country, onShowAllData, isR
   }
 
   return (
-    <Card className="w-64">
-      <CardContent className="p-4 space-y-3">
+    <Card className="w-64 relative">
+      <button 
+        onClick={onClose} 
+        className="absolute right-2 top-2 p-1 rounded-full hover:bg-muted"
+        aria-label="Close popup"
+      >
+        <X className="h-4 w-4 text-muted-foreground" />
+      </button>
+      <CardContent className="p-4 pt-6 space-y-3">
         <h3 className="font-semibold text-lg">{country.name}</h3>
         
         <div className="space-y-2">
@@ -44,15 +64,18 @@ const CountryPopup: React.FC<CountryPopupProps> = ({ country, onShowAllData, isR
           </div>
           
           <div>
+            <div className="text-sm text-muted-foreground">GDP Growth</div>
+            <div className="font-medium">{country.gdp.growth2023}%</div>
+          </div>
+          
+          <div>
             <div className="text-sm text-muted-foreground">US Trade Balance</div>
             <div className="font-medium">${(country.usTradeBalance / 1000).toFixed(1)}B</div>
           </div>
           
           <div>
-            <div className="text-sm text-muted-foreground">
-              {country.usTradeBalance >= 0 ? 'Trade Surplus' : 'Trade Deficit'}
-            </div>
-            <div className="font-medium">{Math.abs(country.usTradeBalance / 1000).toFixed(1)}B USD</div>
+            <div className="text-sm text-muted-foreground">Main Export</div>
+            <div className="font-medium">{country.mainExport || 'N/A'}</div>
           </div>
         </div>
 
