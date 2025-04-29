@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -8,10 +9,13 @@ import { Input } from "@/components/ui/input";
 import { useMapboxToken } from '@/hooks/useMapboxToken';
 import CountryPopup from './CountryPopup';
 import ReactDOM from 'react-dom';
+import { Button } from '@/components/ui/button';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 interface WorldMapProps {
   selectedCountry: CountryData | null;
   selectedMetric: MetricType;
+  onSelectMetric: (metric: MetricType) => void;
   onSelectCountry: (country: CountryData) => void;
   countryData: CountryData[];
   onShowFullAccess: () => void;
@@ -19,7 +23,8 @@ interface WorldMapProps {
 
 const WorldMap: React.FC<WorldMapProps> = ({ 
   selectedCountry, 
-  selectedMetric, 
+  selectedMetric,
+  onSelectMetric,
   onSelectCountry,
   countryData,
   onShowFullAccess
@@ -139,7 +144,11 @@ const WorldMap: React.FC<WorldMapProps> = ({
               country={country} 
               onShowAllData={() => {
                 if (popup) popup.remove();
-                onShowFullAccess();
+                if (isRestricted) {
+                  onShowFullAccess();
+                } else {
+                  onSelectCountry(country);
+                }
               }}
               isRestricted={isRestricted}
             />,
@@ -153,10 +162,6 @@ const WorldMap: React.FC<WorldMapProps> = ({
             .addTo(map.current!);
 
           setPopup(newPopup);
-
-          if (!isRestricted) {
-            onSelectCountry(country);
-          }
         }
       });
 
@@ -211,41 +216,57 @@ const WorldMap: React.FC<WorldMapProps> = ({
   return (
     <div className="w-full h-full bg-white rounded-lg overflow-hidden shadow-sm border">
       <div className="p-3 border-b">
-        <div className="relative mb-2">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="text"
-            placeholder="Search countries..."
-            className="pl-9 h-9"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onFocus={() => setIsSearchFocused(true)}
-            onBlur={() => setTimeout(() => setIsSearchFocused(false), 100)}
-          />
+        <div className="flex flex-col gap-2">
+          <div className="relative">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Search countries..."
+              className="pl-9 h-9"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onFocus={() => setIsSearchFocused(true)}
+              onBlur={() => setTimeout(() => setIsSearchFocused(false), 100)}
+            />
+            
+            {isSearchFocused && filteredCountries.length > 0 && (
+              <div className="absolute z-10 w-full bg-white border rounded-md shadow-md mt-1 max-h-60 overflow-y-auto">
+                {filteredCountries.map((country) => (
+                  <div
+                    key={country.id}
+                    className="p-2 hover:bg-muted cursor-pointer"
+                    onClick={() => {
+                      onSelectCountry(country);
+                      setSearchTerm('');
+                    }}
+                  >
+                    {country.name}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
           
-          {isSearchFocused && filteredCountries.length > 0 && (
-            <div className="absolute z-10 w-full bg-white border rounded-md shadow-md mt-1 max-h-60 overflow-y-auto">
-              {filteredCountries.map((country) => (
-                <div
-                  key={country.id}
-                  className="p-2 hover:bg-muted cursor-pointer"
-                  onClick={() => {
-                    onSelectCountry(country);
-                    setSearchTerm('');
-                  }}
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground min-w-fit">Selected metric:</span>
+            <span className="text-xs font-medium text-foreground mr-2">
+              {selectedMetric ? metricOptions.find(m => m.id === selectedMetric)?.label : 'None'}
+            </span>
+            
+            <ToggleGroup type="single" value={selectedMetric} onValueChange={(value) => value && onSelectMetric(value as MetricType)} className="flex flex-wrap gap-1">
+              {metricOptions.slice(0, 4).map((metric) => (
+                <ToggleGroupItem 
+                  key={metric.id} 
+                  value={metric.id} 
+                  size="sm"
+                  className="text-xs px-2 py-1 h-auto"
+                  aria-label={metric.label}
                 >
-                  {country.name}
-                </div>
+                  {metric.label.split(' ')[0]}
+                </ToggleGroupItem>
               ))}
-            </div>
-          )}
-        </div>
-        
-        <div className="flex flex-wrap gap-1 items-center text-xs text-muted-foreground">
-          <span>Selected metric:</span>
-          <span className="font-medium text-foreground">
-            {selectedMetric ? metricOptions.find(m => m.id === selectedMetric)?.label : 'None'}
-          </span>
+            </ToggleGroup>
+          </div>
         </div>
       </div>
       

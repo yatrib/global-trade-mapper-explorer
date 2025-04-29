@@ -33,8 +33,8 @@ const CountryPopup: React.FC<CountryPopupProps> = ({ country, onShowAllData, isR
   }
 
   return (
-    <Card className="w-72">
-      <CardContent className="p-4 space-y-4">
+    <Card className="w-64">
+      <CardContent className="p-4 space-y-3">
         <h3 className="font-semibold text-lg">{country.name}</h3>
         
         <div className="space-y-2">
@@ -48,20 +48,16 @@ const CountryPopup: React.FC<CountryPopupProps> = ({ country, onShowAllData, isR
             <div className="font-medium">${(country.usTradeBalance / 1000).toFixed(1)}B</div>
           </div>
           
-          <div className="grid grid-cols-2 gap-2">
-            <div>
-              <div className="text-sm text-muted-foreground">Share of Imports</div>
-              <div className="font-medium">{country.shareOfUsImports?.toFixed(1) || 'N/A'}%</div>
+          <div>
+            <div className="text-sm text-muted-foreground">
+              {country.usTradeBalance >= 0 ? 'Trade Surplus' : 'Trade Deficit'}
             </div>
-            <div>
-              <div className="text-sm text-muted-foreground">Share of Exports</div>
-              <div className="font-medium">{country.shareOfUsExports?.toFixed(1) || 'N/A'}%</div>
-            </div>
+            <div className="font-medium">{Math.abs(country.usTradeBalance / 1000).toFixed(1)}B USD</div>
           </div>
         </div>
 
-        <Button onClick={onShowAllData} variant="outline" className="w-full">
-          Show All Data <ArrowRight className="ml-2 h-4 w-4" />
+        <Button onClick={onShowAllData} variant="outline" className="w-full mt-2">
+          Show All Data <ArrowRight className="ml-1 h-3 w-3" />
         </Button>
       </CardContent>
     </Card>
