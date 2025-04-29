@@ -249,7 +249,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
   }
 
   return (
-    <div className="w-full h-full bg-white rounded-lg overflow-hidden shadow-sm border">
+    <div className="w-full h-full bg-white rounded-lg overflow-hidden shadow-lg border">
       <div className="p-3 border-b">
         <div className="flex flex-col gap-2">
           <div className="relative">

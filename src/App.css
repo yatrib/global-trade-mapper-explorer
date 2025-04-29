@@ -1,2 +1,20 @@
 
-/* This file is kept empty as styles are managed via Tailwind CSS classes */
+/* This file contains minimal styles as most styling is done via Tailwind CSS */
+
+/* Custom animations */
+@keyframes floating {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: floating 3s ease-in-out infinite;
+}
+
+/* Custom font rendering */
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

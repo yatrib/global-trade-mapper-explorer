@@ -66,43 +66,30 @@ const Timeline: React.FC = () => {
         Key Moments in the U.S.-China Trade War
       </h2>
 
-      {/* Desktop timeline (horizontal) */}
-      <div className="hidden md:flex overflow-x-auto pb-8 relative">
-        <div className="flex space-x-8 min-w-max px-4">
-          {timelineEvents.map((event, index) => (
-            <div 
-              key={index} 
-              className="timeline-item opacity-0 flex flex-col items-center w-80"
-              style={{ animationDelay: `${index * 0.2}s` }}
-            >
-              <div className="rounded-full bg-infomineo-gradient p-3 mb-4 hover:animate-glow transition-all">
-                <Flag className="h-6 w-6 text-white" />
-              </div>
-              <div className="text-lg font-bold text-infomineo-blue">{event.date}</div>
-              <h3 className="text-xl font-bold mt-2">{event.title}</h3>
-              <p className="text-muted-foreground mt-2 text-center">{event.description}</p>
-            </div>
-          ))}
-        </div>
-        <div className="absolute h-0.5 bg-gradient-to-r from-infomineo-blue via-infomineo-light to-infomineo-red top-7 left-0 right-0 z-0 mx-16"></div>
-      </div>
-
-      {/* Mobile timeline (vertical) */}
-      <div className="md:hidden relative">
-        <div className="absolute w-0.5 bg-infomineo-gradient left-8 top-0 bottom-0 z-0"></div>
+      {/* Vertical timeline (for all devices) */}
+      <div className="relative max-w-3xl mx-auto">
+        <div className="absolute w-0.5 bg-gradient-to-b from-infomineo-blue via-infomineo-light to-infomineo-red left-0 md:left-1/2 top-0 bottom-0 z-0 transform md:-translate-x-1/2"></div>
+        
         {timelineEvents.map((event, index) => (
           <div 
             key={index} 
-            className="timeline-item opacity-0 flex mb-10 relative"
+            className="timeline-item opacity-0 mb-16 relative"
             style={{ animationDelay: `${index * 0.2}s` }}
           >
-            <div className="absolute left-8 transform -translate-x-1/2 rounded-full bg-infomineo-gradient p-2 z-10 hover:animate-glow transition-all">
-              <Flag className="h-4 w-4 text-white" />
-            </div>
-            <div className="ml-16">
-              <div className="text-sm font-bold text-infomineo-blue">{event.date}</div>
-              <h3 className="text-lg font-bold mt-1">{event.title}</h3>
-              <p className="text-muted-foreground mt-1">{event.description}</p>
+            <div className={`flex ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center`}>
+              {/* Timeline point */}
+              <div className="absolute left-0 md:left-1/2 transform -translate-x-1/2 rounded-full bg-infomineo-gradient p-3 shadow-lg hover:scale-110 transition-all duration-300 z-10">
+                <Flag className="h-5 w-5 text-white" />
+              </div>
+              
+              {/* Content */}
+              <div className={`w-full md:w-[calc(50%-2rem)] ${index % 2 === 0 ? 'md:pr-12 ml-10 md:ml-0' : 'md:pl-12 ml-10 md:ml-0'}`}>
+                <div className="bg-white rounded-lg p-6 shadow-lg hover:shadow-xl transition-all border border-gray-100">
+                  <div className="text-sm font-bold text-infomineo-blue">{event.date}</div>
+                  <h3 className="text-xl font-bold mt-1">{event.title}</h3>
+                  <p className="text-muted-foreground mt-2">{event.description}</p>
+                </div>
+              </div>
             </div>
           </div>
         ))}

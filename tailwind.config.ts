@@ -96,15 +96,36 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'pulse-soft': {
+					'0%, 100%': { transform: 'scale(1)' },
+					'50%': { transform: 'scale(1.03)' }
+				},
+				'slide-up': {
+					'0%': { transform: 'translateY(20px)', opacity: '0' },
+					'100%': { transform: 'translateY(0)', opacity: '1' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'pulse-soft': 'pulse-soft 2s infinite',
+				'slide-up': 'slide-up 0.5s ease-out'
 			},
 			backgroundImage: {
 				'infomineo-gradient': 'linear-gradient(to bottom, #4B3D8F, #4369B2)',
-			}
+				'card-gradient': 'linear-gradient(to bottom right, #ffffff, #f5f5f5)',
+			},
+			boxShadow: {
+				'glow': '0 0 15px rgba(65, 179, 230, 0.5)',
+			},
+			typography: {
+				DEFAULT: {
+					css: {
+						maxWidth: '65ch',
+					},
+				},
+			},
 		}
 	},
 	plugins: [require("tailwindcss-animate")],

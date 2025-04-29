@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import { Mail, User, Building } from 'lucide-react';
 
 interface DownloadFormData {
   name: string;
@@ -13,7 +14,13 @@ interface DownloadFormData {
 }
 
 export function DownloadReportForm() {
-  const form = useForm<DownloadFormData>();
+  const form = useForm<DownloadFormData>({
+    defaultValues: {
+      name: '',
+      email: '',
+      company: ''
+    }
+  });
 
   const onSubmit = (data: DownloadFormData) => {
     toast.success("Thank you! We'll send the insights to your email shortly.");
@@ -29,9 +36,12 @@ export function DownloadReportForm() {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Full Name</FormLabel>
+              <FormLabel className="text-white/90">Full Name</FormLabel>
               <FormControl>
-                <Input placeholder="Your name" {...field} required />
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input placeholder="Your name" {...field} className="pl-10 bg-white/10 border-white/20 text-white" required />
+                </div>
               </FormControl>
             </FormItem>
           )}
@@ -41,9 +51,12 @@ export function DownloadReportForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Business Email</FormLabel>
+              <FormLabel className="text-white/90">Business Email</FormLabel>
               <FormControl>
-                <Input placeholder="you@company.com" {...field} type="email" required />
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input placeholder="you@company.com" {...field} type="email" className="pl-10 bg-white/10 border-white/20 text-white" required />
+                </div>
               </FormControl>
             </FormItem>
           )}
@@ -53,20 +66,23 @@ export function DownloadReportForm() {
           name="company"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Company Name</FormLabel>
+              <FormLabel className="text-white/90">Company Name</FormLabel>
               <FormControl>
-                <Input placeholder="Your company" {...field} required />
+                <div className="relative">
+                  <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input placeholder="Your company" {...field} className="pl-10 bg-white/10 border-white/20 text-white" required />
+                </div>
               </FormControl>
             </FormItem>
           )}
         />
         <Button 
           type="submit" 
-          className="w-full bg-infomineo-blue hover:bg-infomineo-light text-white font-medium py-2 animate-pulse-soft"
+          className="w-full bg-infomineo-light hover:bg-white hover:text-infomineo-blue text-white font-medium py-3 mt-2 animate-pulse-soft shadow-lg"
         >
           Subscribe for Exclusive Insights
         </Button>
-        <p className="text-xs text-center text-muted-foreground">
+        <p className="text-xs text-center text-white/80">
           Get expert updates and reports directly to your inbox.
         </p>
       </form>
