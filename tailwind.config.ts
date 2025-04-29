@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,17 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Infomineo colors
+				infomineo: {
+					DEFAULT: '#2C469D',
+					blue: '#2C469D',
+					light: '#41B3E6',
+					red: '#C83830',
+					grey: {
+						100: '#F2F2F2',
+						200: '#E0E0E0'
+					}
 				}
 			},
 			borderRadius: {
@@ -89,6 +101,9 @@ export default {
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out'
+			},
+			backgroundImage: {
+				'infomineo-gradient': 'linear-gradient(to bottom, #4B3D8F, #4369B2)',
 			}
 		}
 	},
