@@ -1,12 +1,14 @@
 
 import React from 'react';
 import { Flag, AlertTriangle } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface TimelineEvent {
   date: string;
   title: string;
   description: string;
   icon: React.ReactNode;
+  isHighlighted?: boolean;
 }
 
 const timelineEvents: TimelineEvent[] = [
@@ -14,7 +16,8 @@ const timelineEvents: TimelineEvent[] = [
     date: 'July 6, 2018',
     title: 'U.S. Imposes Tariffs',
     description: 'U.S. imposes tariffs on $34B of Chinese goods.',
-    icon: <Flag className="h-6 w-6 text-white" />
+    icon: <Flag className="h-6 w-6 text-white" />,
+    isHighlighted: true
   },
   {
     date: 'August 23, 2018',
@@ -26,7 +29,8 @@ const timelineEvents: TimelineEvent[] = [
     date: 'May 10, 2019',
     title: 'Tariff Increase',
     description: 'U.S. raises tariffs to 25% on $200B.',
-    icon: <AlertTriangle className="h-6 w-6 text-white" />
+    icon: <AlertTriangle className="h-6 w-6 text-white" />,
+    isHighlighted: true
   },
   {
     date: 'January 15, 2020',
@@ -38,14 +42,15 @@ const timelineEvents: TimelineEvent[] = [
     date: 'Dec 2023 - Feb 2025',
     title: 'Tariffs Reinstated',
     description: 'Trump reimposes tariffs to 54%.',
-    icon: <AlertTriangle className="h-6 w-6 text-white" />
+    icon: <AlertTriangle className="h-6 w-6 text-white" />,
+    isHighlighted: true
   }
 ];
 
 const Timeline: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="text-center mb-12 animate-on-scroll opacity-0">
+      <div className="text-center mb-16 animate-on-scroll opacity-0">
         <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Key Moments in the U.S.-China Trade War</h2>
         <p className="text-lg text-muted-foreground">Track the evolution of trade policies and their global impact</p>
       </div>
@@ -61,7 +66,10 @@ const Timeline: React.FC = () => {
               className={`relative flex animate-on-scroll opacity-0`} 
               style={{ animationDelay: `${index * 0.2}s` }}
             >
-              <div className="flex-shrink-0 w-8 md:w-12 h-8 md:h-12 rounded-full bg-infomineo-gradient flex items-center justify-center z-10 shadow-glow">
+              <div className={cn(
+                "flex-shrink-0 w-8 md:w-12 h-8 md:h-12 rounded-full flex items-center justify-center z-10 timeline-node",
+                event.isHighlighted ? "bg-infomineo-gradient" : "bg-infomineo-blue"
+              )}>
                 {event.icon}
               </div>
               <div className="ml-6 md:ml-8 pb-2">

@@ -28,8 +28,21 @@ body {
 /* Timeline glow effect */
 .timeline-node {
   box-shadow: 0 0 15px rgba(65, 179, 230, 0.5);
+  transition: box-shadow 0.3s ease-in-out;
 }
 
 .timeline-node:hover {
   box-shadow: 0 0 20px rgba(65, 179, 230, 0.8);
 }
+
+/* Enhanced timeline line */
+.timeline-line {
+  position: absolute;
+  left: 6px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, rgba(65, 179, 230, 0.3), rgba(44, 70, 157, 0.8));
+  z-index: 0;
+}
+

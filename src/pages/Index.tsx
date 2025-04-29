@@ -123,8 +123,8 @@ const Index: React.FC = () => {
         </div>
       </section>
 
-      {/* Timeline Section */}
-      <section className="bg-white py-16">
+      {/* Timeline Section - Now properly styled and visible */}
+      <section className="bg-white py-20">
         <div className="container mx-auto px-4">
           <Timeline />
         </div>
