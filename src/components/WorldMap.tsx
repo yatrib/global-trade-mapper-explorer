@@ -25,6 +25,7 @@ interface WorldMapProps {
   onSelectCountry: (country: CountryData) => void;
   countryData: CountryData[];
   onShowFullAccess: () => void;
+  removeRestrictions?: boolean;
 }
 
 const WorldMap: React.FC<WorldMapProps> = ({ 
@@ -33,7 +34,8 @@ const WorldMap: React.FC<WorldMapProps> = ({
   onSelectMetric,
   onSelectCountry,
   countryData,
-  onShowFullAccess
+  onShowFullAccess,
+  removeRestrictions = false
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
@@ -108,37 +110,60 @@ const WorldMap: React.FC<WorldMapProps> = ({
         },
       });
 
-      // Layer for restricted countries (darker gray)
-      map.current.addLayer({
-        id: 'restricted-countries',
-        type: 'fill',
-        source: 'countries',
-        'source-layer': 'country_boundaries',
-        paint: {
-          'fill-color': '#9CA3AF',
-          'fill-opacity': 0.7,
-        },
-        filter: ['in', 'iso_3166_1'].concat(countryData.slice(5).map(c => c.id)),
-      });
+      // Show all countries if restrictions removed
+      if (!removeRestrictions) {
+        // Layer for restricted countries (darker gray)
+        map.current.addLayer({
+          id: 'restricted-countries',
+          type: 'fill',
+          source: 'countries',
+          'source-layer': 'country_boundaries',
+          paint: {
+            'fill-color': '#9CA3AF',
+            'fill-opacity': 0.7,
+          },
+          filter: ['in', 'iso_3166_1'].concat(countryData.slice(5).map(c => c.id)),
+        });
 
-      // Layer for visible countries (colored)
-      map.current.addLayer({
-        id: 'visible-countries',
-        type: 'fill',
-        source: 'countries',
-        'source-layer': 'country_boundaries',
-        paint: {
-          'fill-color': [
-            'match',
-            ['get', 'iso_3166_1'],
-            countryData.slice(0, 5).map(c => c.id),
-            getCountryColor(countryData[0], selectedMetric),
-            'transparent'
-          ],
-          'fill-opacity': 0.8,
-        },
-        filter: ['in', 'iso_3166_1'].concat(countryData.slice(0, 5).map(c => c.id)),
-      });
+        // Layer for visible countries (colored)
+        map.current.addLayer({
+          id: 'visible-countries',
+          type: 'fill',
+          source: 'countries',
+          'source-layer': 'country_boundaries',
+          paint: {
+            'fill-color': [
+              'match',
+              ['get', 'iso_3166_1'],
+              countryData.slice(0, 5).map(c => c.id),
+              getCountryColor(countryData[0], selectedMetric),
+              'transparent'
+            ],
+            'fill-opacity': 0.8,
+          },
+          filter: ['in', 'iso_3166_1'].concat(countryData.slice(0, 5).map(c => c.id)),
+        });
+      } else {
+        // When restrictions removed, all countries are colored
+        map.current.addLayer({
+          id: 'all-countries',
+          type: 'fill',
+          source: 'countries',
+          'source-layer': 'country_boundaries',
+          paint: {
+            'fill-color': [
+              'match',
+              ['get', 'iso_3166_1'],
+              ...countryData.flatMap(country => [
+                country.id,
+                getCountryColor(country, selectedMetric)
+              ]),
+              '#e0e0e0' // Default color for countries not in our data
+            ],
+            'fill-opacity': 0.8,
+          },
+        });
+      }
 
       // Borders layer
       map.current.addLayer({
@@ -153,14 +178,16 @@ const WorldMap: React.FC<WorldMapProps> = ({
       });
 
       // Click handlers
-      map.current.on('click', ['visible-countries', 'restricted-countries'], (e) => {
+      const layerIds = removeRestrictions ? ['all-countries'] : ['visible-countries', 'restricted-countries'];
+      
+      map.current.on('click', layerIds, (e) => {
         if (e.features && e.features[0].properties) {
           const countryCode = e.features[0].properties.iso_3166_1;
           const country = countryData.find(c => c.id === countryCode);
           
           if (!country) return;
           
-          const isRestricted = countryData.indexOf(country) >= 5;
+          const isRestricted = !removeRestrictions && countryData.indexOf(country) >= 5;
           
           // Clean up existing popup first
           cleanupPopup();
@@ -188,11 +215,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
               country={country} 
               onShowAllData={() => {
                 cleanupPopup();
-                if (isRestricted) {
-                  onShowFullAccess();
-                } else {
-                  onSelectCountry(country);
-                }
+                onSelectCountry(country);
               }}
               onClose={closePopup}
               isRestricted={isRestricted}
@@ -202,11 +225,11 @@ const WorldMap: React.FC<WorldMapProps> = ({
         }
       });
 
-      map.current.on('mouseenter', ['visible-countries', 'restricted-countries'], () => {
+      map.current.on('mouseenter', layerIds, () => {
         if (map.current) map.current.getCanvas().style.cursor = 'pointer';
       });
 
-      map.current.on('mouseleave', ['visible-countries', 'restricted-countries'], () => {
+      map.current.on('mouseleave', layerIds, () => {
         if (map.current) map.current.getCanvas().style.cursor = '';
       });
     });
@@ -217,21 +240,37 @@ const WorldMap: React.FC<WorldMapProps> = ({
         map.current.remove();
       }
     };
-  }, [mapboxToken, isLoading, countryData, selectedMetric, onSelectCountry, onShowFullAccess]);
+  }, [mapboxToken, isLoading, countryData, selectedMetric, onSelectCountry, onShowFullAccess, removeRestrictions]);
 
   useEffect(() => {
     if (!map.current || !map.current.isStyleLoaded()) return;
 
-    map.current.setPaintProperty('visible-countries', 'fill-color', [
-      'match',
-      ['get', 'iso_3166_1'],
-      ...countryData.slice(0, 5).flatMap(country => [
-        country.id,
-        getCountryColor(country, selectedMetric)
-      ]),
-      'transparent'
-    ]);
-  }, [selectedMetric, countryData]);
+    if (removeRestrictions) {
+      if (map.current.getLayer('all-countries')) {
+        map.current.setPaintProperty('all-countries', 'fill-color', [
+          'match',
+          ['get', 'iso_3166_1'],
+          ...countryData.flatMap(country => [
+            country.id,
+            getCountryColor(country, selectedMetric)
+          ]),
+          '#e0e0e0' // Default color for countries not in our data
+        ]);
+      }
+    } else {
+      if (map.current.getLayer('visible-countries')) {
+        map.current.setPaintProperty('visible-countries', 'fill-color', [
+          'match',
+          ['get', 'iso_3166_1'],
+          ...countryData.slice(0, 5).flatMap(country => [
+            country.id,
+            getCountryColor(country, selectedMetric)
+          ]),
+          'transparent'
+        ]);
+      }
+    }
+  }, [selectedMetric, countryData, removeRestrictions]);
 
   useEffect(() => {
     if (searchTerm) {

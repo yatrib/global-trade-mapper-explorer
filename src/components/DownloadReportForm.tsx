@@ -78,7 +78,7 @@ export function DownloadReportForm() {
         />
         <Button 
           type="submit" 
-          className="w-full bg-infomineo-light hover:bg-white hover:text-infomineo-blue text-white font-medium py-3 mt-4 animate-pulse-soft shadow-lg"
+          className="w-full bg-infomineo-light hover:bg-white hover:text-infomineo-blue text-white font-medium py-3 mt-4 shadow-lg"
         >
           Subscribe for Exclusive Insights
         </Button>

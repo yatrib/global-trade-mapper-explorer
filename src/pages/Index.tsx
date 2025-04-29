@@ -16,8 +16,6 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import infomineoLogo from '@/assets/infomineo-logo.png';
 import Footer from '@/components/Footer';
 
-const FREE_COUNTRY_LIMIT = 5;
-
 const Index: React.FC = () => {
   const [selectedMetric, setSelectedMetric] = useState<MetricType>('gdp2023');
   const { data: countryData, isLoading, error } = useCountryData();
@@ -51,9 +49,8 @@ const Index: React.FC = () => {
     };
   }, []);
 
-  // Limit countries shown to first 5 for free users
-  const visibleCountries = countryData?.slice(0, FREE_COUNTRY_LIMIT) || [];
-  const hiddenCountries = countryData?.slice(FREE_COUNTRY_LIMIT) || [];
+  // Remove the restriction on countries - all countries are now visible
+  const visibleCountries = countryData || [];
 
   if (isLoading) {
     return (
@@ -88,23 +85,23 @@ const Index: React.FC = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
+      {/* Hero Section - Improved header visibility */}
       <section className="bg-infomineo-gradient text-white">
-        <header className="container mx-auto px-4 py-4">
+        <header className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <img src={infomineoLogo} alt="Infomineo Logo" className="h-8 w-auto" />
+              <img src={infomineoLogo} alt="Infomineo Logo" className="h-10 w-auto" />
             </div>
-            <Badge variant="outline" className="text-xs px-2 py-0.5 bg-white/10 backdrop-blur text-white border-white/20">
+            <Badge variant="outline" className="text-sm px-3 py-1 bg-white/20 backdrop-blur text-white border-white/20 font-medium">
               Latest Data: Feb 2025
             </Badge>
           </div>
         </header>
 
-        <div className="container mx-auto px-4 pt-12 pb-10">
+        <div className="container mx-auto px-4 py-16">
           <div className="max-w-3xl mx-auto text-center animate-on-scroll opacity-0">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">Decoding the U.S.-China Trade War: Global Tariffs Explained</h1>
-            <p className="text-xl md:text-2xl opacity-90 mb-10">Explore the ripple effects of tariffs across G20 nations and beyond.</p>
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">Decoding the U.S.-China Trade War: Global Tariffs Explained</h1>
+            <p className="text-xl md:text-2xl opacity-90 mb-10 max-w-2xl mx-auto">Explore the ripple effects of tariffs across G20 nations and beyond.</p>
           </div>
         </div>
 
@@ -117,20 +114,21 @@ const Index: React.FC = () => {
               onSelectMetric={setSelectedMetric}
               onSelectCountry={handleCountrySelect}
               countryData={countryData || []}
-              onShowFullAccess={handleGetFullAccess}
+              onShowFullAccess={handleCountrySelect}
+              removeRestrictions={true}
             />
           </div>
         </div>
       </section>
 
-      {/* Timeline Section - Now properly styled and visible */}
+      {/* Timeline Section */}
       <section className="bg-white py-20">
         <div className="container mx-auto px-4">
           <Timeline />
         </div>
       </section>
 
-      {/* Lead Capture Section */}
+      {/* Lead Capture Section - Fixed with proper content */}
       <section ref={downloadSectionRef} className="py-20 bg-infomineo-gradient text-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
@@ -157,7 +155,7 @@ const Index: React.FC = () => {
       {/* Expertise Section */}
       <ExpertiseSection />
 
-      {/* Footer */}
+      {/* Footer - Ensured visibility */}
       <Footer />
 
       <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
