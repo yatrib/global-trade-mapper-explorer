@@ -64,8 +64,8 @@ const CountryPopup: React.FC<CountryPopupProps> = ({
           </div>
           
           <div>
-            <div className="text-sm text-muted-foreground">GDP Growth</div>
-            <div className="font-medium">{country.gdp.growth2023}%</div>
+            <div className="text-sm text-muted-foreground">GDP 2024 (Est.)</div>
+            <div className="font-medium">${formatValue(country.gdp.estimate2024)}B</div>
           </div>
           
           <div>
@@ -74,8 +74,8 @@ const CountryPopup: React.FC<CountryPopupProps> = ({
           </div>
           
           <div>
-            <div className="text-sm text-muted-foreground">Main Export</div>
-            <div className="font-medium">{country.mainExport || 'N/A'}</div>
+            <div className="text-sm text-muted-foreground">Region</div>
+            <div className="font-medium">{country.region || 'N/A'}</div>
           </div>
         </div>
 
