@@ -114,7 +114,7 @@ const Index: React.FC = () => {
               onSelectMetric={setSelectedMetric}
               onSelectCountry={handleCountrySelect}
               countryData={countryData || []}
-              onShowFullAccess={handleGetFullAccess} {/* Fixed: Changed from handleCountrySelect to handleGetFullAccess */}
+              onShowFullAccess={handleGetFullAccess} 
               removeRestrictions={true}
             />
           </div>
