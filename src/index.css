@@ -1,7 +1,9 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
 @import url('https://fonts.cdnfonts.com/css/franklin-gothic-demi');
 @import url('https://fonts.cdnfonts.com/css/amboy-black');
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -103,11 +105,11 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Manrope', 'Open Sans', sans-serif;
+    font-family: 'Inter', 'Manrope', sans-serif;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Franklin Gothic Demi', sans-serif;
+    font-family: 'Inter', 'Franklin Gothic Demi', sans-serif;
     letter-spacing: -0.02em;
   }
   
@@ -118,20 +120,11 @@
 
 @layer utilities {
   .gradient-bg {
-    background: linear-gradient(to bottom, #4B3D8F, #4369B2);
+    background: linear-gradient(135deg, #4B3D8F, #4369B2);
   }
   
-  .timeline-connector {
-    @apply h-full w-0.5 bg-infomineo-light;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: -1;
-  }
-  
-  /* Fix: Make elements visible by default and apply animation */
+  /* Fixed animations */
   .animate-on-scroll {
-    opacity: 1;
     transition: opacity 0.8s ease-out, transform 0.8s ease-out;
   }
   
@@ -181,15 +174,15 @@
     transform: scale(1);
   }
   50% {
-    transform: scale(1.05);
+    transform: scale(1.03);
   }
 }
 
 @keyframes glow {
   from {
-    box-shadow: 0 0 5px rgba(65, 179, 230, 0.5);
+    box-shadow: 0 0 5px rgba(65, 179, 230, 0.3);
   }
   to {
-    box-shadow: 0 0 15px rgba(65, 179, 230, 0.8);
+    box-shadow: 0 0 12px rgba(65, 179, 230, 0.5);
   }
 }

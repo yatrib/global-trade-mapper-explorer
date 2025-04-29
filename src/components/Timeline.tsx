@@ -50,32 +50,31 @@ const timelineEvents: TimelineEvent[] = [
 const Timeline: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="text-center mb-16 animate-on-scroll opacity-0">
+      <div className="text-center mb-16">
         <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Key Moments in the U.S.-China Trade War</h2>
-        <p className="text-lg text-muted-foreground">Track the evolution of trade policies and their global impact</p>
+        <p className="text-lg text-gray-600">Track the evolution of trade policies and their global impact</p>
       </div>
 
       <div className="relative">
         {/* Timeline connector line */}
-        <div className="absolute left-4 md:left-6 top-0 bottom-0 w-0.5 bg-infomineo-blue/30" style={{ zIndex: 0 }}></div>
+        <div className="absolute left-4 md:left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-infomineo-blue/30 to-infomineo-light/40" style={{ zIndex: 0 }}></div>
 
-        <div className="space-y-12">
+        <div className="space-y-10">
           {timelineEvents.map((event, index) => (
             <div 
               key={index} 
-              className={`relative flex animate-on-scroll opacity-0`} 
-              style={{ animationDelay: `${index * 0.2}s` }}
+              className="relative flex group"
             >
               <div className={cn(
-                "flex-shrink-0 w-8 md:w-12 h-8 md:h-12 rounded-full flex items-center justify-center z-10 timeline-node",
+                "flex-shrink-0 w-8 md:w-12 h-8 md:h-12 rounded-full flex items-center justify-center z-10 shadow-sm transition-all duration-500 group-hover:shadow-md",
                 event.isHighlighted ? "bg-infomineo-gradient" : "bg-infomineo-blue"
               )}>
                 {event.icon}
               </div>
-              <div className="ml-6 md:ml-8 pb-2">
-                <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-100">
-                  <span className="text-sm font-bold text-infomineo-light inline-block mb-2">{event.date}</span>
-                  <h3 className="text-xl font-bold mb-2">{event.title}</h3>
+              <div className="ml-6 md:ml-8">
+                <div className="bg-white p-6 rounded-xl transition-all duration-300 hover:bg-gray-50 hover:translate-y-[-2px]">
+                  <span className="text-sm font-semibold text-infomineo-light inline-block mb-2">{event.date}</span>
+                  <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
                   <p className="text-gray-600">{event.description}</p>
                 </div>
               </div>

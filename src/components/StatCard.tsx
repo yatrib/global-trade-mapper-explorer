@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface StatCardProps {
   title: string;
@@ -21,31 +20,27 @@ const StatCard: React.FC<StatCardProps> = ({
 }) => {
   const formattedValue = value !== null ? formatter(value) : 'N/A';
   
-  let trendColor = 'text-gray-400';
+  let trendColor = 'text-gray-500';
   let trendIcon = '→';
   
   if (trend === 'up') {
-    trendColor = 'text-green-500';
+    trendColor = 'text-emerald-500';
     trendIcon = '↑';
   } else if (trend === 'down') {
-    trendColor = 'text-red-500';
+    trendColor = 'text-rose-500';
     trendIcon = '↓';
   }
 
   return (
-    <Card className={`${className} overflow-hidden`}>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold">{formattedValue}</div>
-        {helpText && (
-          <p className={`text-xs ${trendColor} flex items-center gap-1 mt-1`}>
-            <span>{trendIcon}</span> {helpText}
-          </p>
-        )}
-      </CardContent>
-    </Card>
+    <div className={`${className} bg-gray-50 p-4 rounded-xl transition-all duration-300 hover:bg-white`}>
+      <div className="text-sm font-medium text-gray-500 mb-1">{title}</div>
+      <div className="text-2xl font-semibold text-gray-900">{formattedValue}</div>
+      {helpText && (
+        <p className={`text-xs ${trendColor} flex items-center gap-1 mt-1 font-medium`}>
+          <span>{trendIcon}</span> {helpText}
+        </p>
+      )}
+    </div>
   );
 };
 
