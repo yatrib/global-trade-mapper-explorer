@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { CountryData, MetricType } from '@/data/types';
 import WorldMap from '@/components/WorldMap';
 import { Badge } from '@/components/ui/badge';
@@ -23,13 +23,22 @@ const Index: React.FC = () => {
   const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
   const downloadSectionRef = useRef<HTMLDivElement>(null);
 
-  // Fixed animation handler - no opacity-0 class
-  useEffect(() => {
+  // Simplified animation with no opacity-0 class
+  const fadeInElements = () => {
+    document.querySelectorAll('.animate-on-scroll').forEach((item) => {
+      item.classList.add('animate-subtle-fade');
+    });
+  };
+
+  React.useEffect(() => {
+    fadeInElements();
+    
+    // Use a simple intersection observer for subtle fade-in
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add('animate-fade-in');
+            entry.target.classList.add('animate-subtle-fade');
           }
         });
       },
@@ -97,7 +106,7 @@ const Index: React.FC = () => {
         </header>
 
         <div className="container mx-auto px-4 py-16">
-          <div className="max-w-3xl mx-auto text-center animate-on-scroll">
+          <div className="max-w-3xl mx-auto text-center animate-subtle-fade">
             <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">Decoding the U.S.-China Trade War: Global Tariffs Explained</h1>
             <p className="text-xl md:text-2xl opacity-90 mb-10 max-w-2xl mx-auto">Explore the ripple effects of tariffs across G20 nations and beyond.</p>
           </div>

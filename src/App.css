@@ -1,15 +1,14 @@
 
 /* This file contains minimal styles as most styling is done via Tailwind CSS */
 
-/* Custom animations */
-@keyframes floating {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-8px); }
-  100% { transform: translateY(0px); }
+/* Subtle fade animation */
+@keyframes subtle-fade {
+  0% { opacity: 0; transform: translateY(5px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
-.animate-float {
-  animation: floating 3s ease-in-out infinite;
+.animate-subtle-fade {
+  animation: subtle-fade 0.4s ease-out forwards;
 }
 
 /* Custom font rendering */
@@ -19,29 +18,33 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Modern card hover transitions */
+/* Minimal hover transitions */
+.expertise-card {
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+
 .expertise-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
 }
 
 /* Subtle timeline effects */
 .timeline-node {
-  box-shadow: 0 0 15px rgba(65, 179, 230, 0.2);
-  transition: box-shadow 0.3s ease-in-out;
+  transition: box-shadow 0.2s ease-out;
 }
 
 .timeline-node:hover {
-  box-shadow: 0 0 20px rgba(65, 179, 230, 0.4);
+  box-shadow: 0 0 10px rgba(65, 179, 230, 0.2);
 }
 
 /* Enhanced timeline line */
 .timeline-line {
   position: absolute;
-  left: 6px;
+  left: 50%;
   top: 0;
   bottom: 0;
-  width: 2px;
+  width: 1px;
   background: linear-gradient(to bottom, rgba(65, 179, 230, 0.3), rgba(44, 70, 157, 0.5));
   z-index: 0;
+  transform: translateX(-50%);
 }

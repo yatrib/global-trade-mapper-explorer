@@ -55,31 +55,43 @@ const Timeline: React.FC = () => {
         <p className="text-lg text-gray-600">Track the evolution of trade policies and their global impact</p>
       </div>
 
-      <div className="relative">
+      <div className="relative flex flex-col items-center">
         {/* Timeline connector line */}
-        <div className="absolute left-4 md:left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-infomineo-blue/30 to-infomineo-light/40" style={{ zIndex: 0 }}></div>
+        <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-infomineo-blue/30 to-infomineo-light/40" style={{ zIndex: 0 }}></div>
 
-        <div className="space-y-10">
-          {timelineEvents.map((event, index) => (
-            <div 
-              key={index} 
-              className="relative flex group"
-            >
-              <div className={cn(
-                "flex-shrink-0 w-8 md:w-12 h-8 md:h-12 rounded-full flex items-center justify-center z-10 shadow-sm transition-all duration-500 group-hover:shadow-md",
-                event.isHighlighted ? "bg-infomineo-gradient" : "bg-infomineo-blue"
-              )}>
-                {event.icon}
-              </div>
-              <div className="ml-6 md:ml-8">
-                <div className="bg-white p-6 rounded-xl transition-all duration-300 hover:bg-gray-50 hover:translate-y-[-2px]">
-                  <span className="text-sm font-semibold text-infomineo-light inline-block mb-2">{event.date}</span>
-                  <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
-                  <p className="text-gray-600">{event.description}</p>
+        <div className="w-full">
+          {timelineEvents.map((event, index) => {
+            const isEven = index % 2 === 0;
+            
+            return (
+              <div 
+                key={index} 
+                className={`relative flex mb-12 ${isEven ? 'justify-start' : 'justify-end'} w-full`}
+              >
+                {/* Timeline node */}
+                <div className="absolute left-1/2 transform -translate-x-1/2 z-10">
+                  <div className={cn(
+                    "w-10 h-10 rounded-full flex items-center justify-center shadow-sm transition-all duration-300",
+                    event.isHighlighted ? "bg-infomineo-gradient" : "bg-infomineo-blue"
+                  )}>
+                    {event.icon}
+                  </div>
+                </div>
+                
+                {/* Content box */}
+                <div className={cn(
+                  "w-[calc(50%-2rem)] transition-all duration-300 hover:translate-y-[-2px]",
+                  isEven ? "pr-8" : "pl-8"
+                )}>
+                  <div className="bg-white p-6 rounded-xl hover:bg-gray-50">
+                    <span className="text-sm font-semibold text-infomineo-light inline-block mb-2">{event.date}</span>
+                    <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
+                    <p className="text-gray-600">{event.description}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
