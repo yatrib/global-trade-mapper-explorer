@@ -105,10 +105,9 @@ const Index: React.FC = () => {
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-3xl mx-auto text-center animate-subtle-fade">
             <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">Global Trade Map</h1>
-            <p className="text-lg md:text-xl opacity-90 mb-8 max-w-3xl mx-auto line-clamp-3">
+            <p className="text-lg md:text-xl opacity-90 mb-8 max-w-3xl mx-auto line-clamp-2">
               The Trump administration has declared a national emergency and implemented sweeping tariffs on imports, 
-              with highest rates targeting Chinese goods while establishing baseline tariffs on most other countries. 
-              This America First policy aims to address unfair trade practices and reduce trade deficits.
+              with highest rates targeting Chinese goods while establishing baseline tariffs on most other countries.
             </p>
           </div>
         </div>
@@ -164,8 +163,14 @@ const Index: React.FC = () => {
       {/* Footer */}
       <Footer />
 
-      {/* Change sidebar to a centered dialog */}
-      <Dialog open={isDetailOpen} onOpenChange={setIsDetailOpen}>
+      {/* Change sidebar to a centered dialog that preserves map state */}
+      <Dialog 
+        open={isDetailOpen} 
+        onOpenChange={(open) => {
+          setIsDetailOpen(open);
+          // Don't reset selectedCountry when closing to preserve state
+        }}
+      >
         <DialogContent className="sm:max-w-[700px] max-h-[85vh] overflow-y-auto">
           <DialogTitle>{selectedCountry?.name || "Country Details"}</DialogTitle>
           <CountryDetail country={selectedCountry} />

@@ -4,7 +4,6 @@ import { CountryData } from '@/data/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Lock, X } from 'lucide-react';
-import { formatValue } from '@/lib/utils';
 
 interface CountryPopupProps {
   country: CountryData;
@@ -47,7 +46,7 @@ const CountryPopup: React.FC<CountryPopupProps> = ({
   }
 
   return (
-    <Card className="w-64 relative">
+    <Card className="w-64 relative z-[1000]">
       <button 
         onClick={onClose} 
         className="absolute right-2 top-2 p-1 rounded-full hover:bg-muted z-10"

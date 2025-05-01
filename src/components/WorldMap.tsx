@@ -106,7 +106,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
         },
       });
 
-      // Layer for highlighting countries in the database
+      // Layer for highlighting countries in the database with a consistent color
       map.current.addLayer({
         id: 'database-countries',
         type: 'fill',
@@ -153,6 +153,29 @@ const WorldMap: React.FC<WorldMapProps> = ({
         },
       });
 
+      // Add country labels but only for countries in our database
+      map.current.addLayer({
+        id: 'country-labels',
+        type: 'symbol',
+        source: 'countries',
+        'source-layer': 'country_boundaries',
+        layout: {
+          'text-field': ['get', 'name_en'],
+          'text-font': ['DIN Pro Medium', 'Arial Unicode MS Bold'],
+          'text-size': 12,
+          'text-letter-spacing': 0.1,
+          'text-transform': 'uppercase',
+          'text-offset': [0, 0],
+          'text-anchor': 'center',
+        },
+        paint: {
+          'text-color': '#000000',
+          'text-halo-color': '#ffffff',
+          'text-halo-width': 1,
+        },
+        filter: ['in', 'iso_3166_1'].concat(countryCodes as any[]),
+      });
+
       // Click handler
       map.current.on('click', ['database-countries'], (e) => {
         if (e.features && e.features[0].properties) {
@@ -171,7 +194,8 @@ const WorldMap: React.FC<WorldMapProps> = ({
           const newPopup = new mapboxgl.Popup({
             closeButton: false,
             closeOnClick: false,
-            maxWidth: '300px'
+            maxWidth: '300px',
+            offset: [0, -5], // Add offset to position popup properly
           })
             .setLngLat(e.lngLat)
             .setDOMContent(container)
