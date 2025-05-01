@@ -1,4 +1,3 @@
-
 import { CountryData } from '@/data/types';
 
 // Type definition for the chart initialization function
@@ -47,20 +46,35 @@ export const loadAmChartsScripts = async (): Promise<void> => {
   }
 };
 
+// Format numeric values for display
+const formatNumeric = (value: number | null | undefined): string => {
+  if (value === null || value === undefined) return 'N/A';
+  return value.toFixed(1);
+};
+
+// Format currency values
+const formatCurrency = (value: number | null | undefined): string => {
+  if (value === null || value === undefined) return 'N/A';
+  return `$${value.toFixed(1)}B`;
+};
+
 // Map country data to the format expected by amCharts
 export const mapCountryDataForChart = (countryData: CountryData[]) => {
-  return countryData.map(country => ({
-    id: country.id,
-    name: country.name,
-    gdp2023: country.gdp?.actual2023 || 0,
-    gdp2024: country.gdp?.estimate2024 || 0,
-    usTradeBalance: country.usTradeBalance || 0,
-    shareOfUsImports: country.shareOfUsImports || 0,
-    shareOfUsExports: country.shareOfUsExports || 0,
-    tariffsToUS: country.tariffsToUS || 0,
-    reciprocalTariff: country.reciprocalTariff || 0,
-    countryObject: country // Store the entire country object for reference
-  }));
+  return countryData.map(country => {
+    console.log(`Mapping for chart: ${country.name}, tariffs: ${country.tariffsToUS}`);
+    return {
+      id: country.id,
+      name: country.name,
+      gdp2023: country.gdp?.actual2023 || 0,
+      gdp2024: country.gdp?.estimate2024 || 0,
+      usTradeBalance: country.usTradeBalance || 0,
+      shareOfUsImports: country.shareOfUsImports || 0,
+      shareOfUsExports: country.shareOfUsExports || 0,
+      tariffsToUS: country.tariffsToUS || 0,
+      reciprocalTariff: country.reciprocalTariff || 0,
+      countryObject: country // Store the entire country object for reference
+    };
+  });
 };
 
 // Initialize the chart
@@ -84,6 +98,7 @@ export const initializeAmChart = (
   
   // Map country data to the format expected by amCharts
   const mapData = mapCountryDataForChart(countryData);
+  console.log('Map data for chart:', mapData);
 
   // Create a map of country IDs for quick lookup
   const countryIds = new Set(countryData.map(country => country.id));
@@ -155,7 +170,7 @@ export const initializeAmChart = (
       key: "fill"
     }]);
 
-    // Enhanced tooltip with tariff data
+    // Enhanced tooltip with tariff data - Improved formatting
     polygonSeries.mapPolygons.template.setAll({
       tooltipText: "{name}\n[bold]Tariff Data:[/]\nTariffs to US: {tariffsToUS}%\nReciprocal Tariff: {reciprocalTariff}%\n[bold]Trade:[/]\nTrade Balance: ${usTradeBalance}B",
       stroke: am5.color(0xffffff),
@@ -164,11 +179,6 @@ export const initializeAmChart = (
       cursorOverStyle: "pointer",
       // Updated color for countries without data to #bdbdbd
       fill: am5.color(0xbdbdbd) // #bdbdbd for countries not in our database
-    });
-
-    // Filter data to only include countries in the database
-    const filteredPolygons = am5geodata_worldLow.features.filter((feature: any) => {
-      return countryIds.has(feature.id);
     });
 
     // Add click handler to navigate to country details
@@ -243,6 +253,9 @@ export const initializeAmChart = (
       heatLegend.set("startValue", polygonSeries.getPrivate("valueLow"));
       heatLegend.set("endValue", polygonSeries.getPrivate("valueHigh"));
     });
+    
+    // Log the data that's being set to the polygons
+    console.log("Polygon data before setting:", mapData);
   });
 
   // Return a cleanup function
