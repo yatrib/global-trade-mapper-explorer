@@ -13,9 +13,11 @@ interface SimpleSvgMapProps {
 const SimpleSvgMap: React.FC<SimpleSvgMapProps> = ({ countryData, onSelectCountry }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
-
+  
   useEffect(() => {
     if (!svgRef.current || !countryData.length) return;
+    
+    console.log('Rendering SimpleSvgMap with data:', countryData.length, 'countries');
     
     const svg = d3.select(svgRef.current);
     const width = 960;
@@ -47,12 +49,20 @@ const SimpleSvgMap: React.FC<SimpleSvgMapProps> = ({ countryData, onSelectCountr
     // Create a path generator
     const path = d3.geoPath().projection(projection);
     
-    // Country codes in our database for quick lookup
-    const countryCodesInDb = new Set(countryData.map(country => country.id));
+    // Create a map of country codes for quick lookup
+    const countryMap = new Map(countryData.map(country => [country.id, country]));
+    
+    console.log('Country IDs in our data:', Array.from(countryMap.keys()));
     
     // Load world map data
     d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json").then((data: any) => {
+      if (!data) {
+        console.error('Failed to load map data');
+        return;
+      }
+      
       const countries = topojson.feature(data, data.objects.countries).features;
+      console.log('Loaded map data with', countries.length, 'countries');
       
       // Background for all countries
       svg.selectAll("path.country-base")
@@ -66,18 +76,22 @@ const SimpleSvgMap: React.FC<SimpleSvgMapProps> = ({ countryData, onSelectCountr
         .attr("stroke-width", 0.5);
       
       // Colored overlay for countries in our database
-      svg.selectAll("path.country-data")
+      const countriesWithData = svg.selectAll("path.country-data")
         .data(countries.filter((d: any) => {
           const code = d.properties.iso_a3;
-          return countryCodesInDb.has(code);
-        }))
+          return countryMap.has(code);
+        }));
+      
+      console.log('Countries with matched data:', countriesWithData.size());
+      
+      countriesWithData
         .enter()
         .append("path")
         .attr("class", "country-data")
         .attr("d", path)
         .attr("fill", (d: any) => {
           const code = d.properties.iso_a3;
-          const country = countryData.find(c => c.id === code);
+          const country = countryMap.get(code);
           return country ? getCountryColor(country, 'tariffsToUS') : "transparent";
         })
         .attr("stroke", "#000000")
@@ -85,7 +99,7 @@ const SimpleSvgMap: React.FC<SimpleSvgMapProps> = ({ countryData, onSelectCountr
         .attr("cursor", "pointer")
         .on("mouseover", function(event: any, d: any) {
           const code = d.properties.iso_a3;
-          const country = countryData.find(c => c.id === code);
+          const country = countryMap.get(code);
           
           if (country) {
             d3.select(this).attr("fill-opacity", 0.8);
@@ -94,7 +108,7 @@ const SimpleSvgMap: React.FC<SimpleSvgMapProps> = ({ countryData, onSelectCountr
               .style("visibility", "visible")
               .html(`
                 <div class="font-medium">${country.name}</div>
-                <div>Tariff rate: ${country.tariffsToUS || 'N/A'}%</div>
+                <div>Tariff rate: ${country.tariffsToUS !== null ? country.tariffsToUS + '%' : 'N/A'}</div>
               `);
           }
         })
@@ -109,23 +123,24 @@ const SimpleSvgMap: React.FC<SimpleSvgMapProps> = ({ countryData, onSelectCountr
         })
         .on("click", function(event: any, d: any) {
           const code = d.properties.iso_a3;
-          const country = countryData.find(c => c.id === code);
+          const country = countryMap.get(code);
           if (country) {
             onSelectCountry(country);
           }
         });
       
       // Add labels for countries in our database
-      svg.selectAll("text")
+      svg.selectAll("text.country-label")
         .data(countries.filter((d: any) => {
           const code = d.properties.iso_a3;
-          return countryCodesInDb.has(code);
+          return countryMap.has(code);
         }))
         .enter()
         .append("text")
+        .attr("class", "country-label")
         .attr("transform", (d: any) => {
           const centroid = path.centroid(d);
-          return `translate(${centroid[0]},${centroid[1]})`;
+          return centroid[0] && centroid[1] ? `translate(${centroid[0]},${centroid[1]})` : null;
         })
         .attr("text-anchor", "middle")
         .attr("font-size", "8px")
@@ -133,60 +148,62 @@ const SimpleSvgMap: React.FC<SimpleSvgMapProps> = ({ countryData, onSelectCountr
         .attr("fill", "#000")
         .text((d: any) => {
           const code = d.properties.iso_a3;
-          const country = countryData.find(c => c.id === code);
+          const country = countryMap.get(code);
           return country ? country.name : "";
         });
+      
+      // Add legend
+      const legend = svg.append("g")
+        .attr("transform", `translate(${width - 120}, ${height - 80})`);
+      
+      legend.append("rect")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("width", 100)
+        .attr("height", 70)
+        .attr("fill", "white")
+        .attr("fill-opacity", 0.8)
+        .attr("stroke", "#ccc");
+      
+      legend.append("text")
+        .attr("x", 10)
+        .attr("y", 15)
+        .text("Legend")
+        .attr("font-size", "12px")
+        .attr("font-weight", "500");
+      
+      // High tariffs
+      legend.append("rect")
+        .attr("x", 10)
+        .attr("y", 25)
+        .attr("width", 10)
+        .attr("height", 10)
+        .attr("fill", "#0e7490")
+        .attr("fill-opacity", 0.8);
+      
+      legend.append("text")
+        .attr("x", 25)
+        .attr("y", 35)
+        .text("High tariffs")
+        .attr("font-size", "10px");
+      
+      // Low tariffs
+      legend.append("rect")
+        .attr("x", 10)
+        .attr("y", 45)
+        .attr("width", 10)
+        .attr("height", 10)
+        .attr("fill", "#0e7490")
+        .attr("fill-opacity", 0.3);
+      
+      legend.append("text")
+        .attr("x", 25)
+        .attr("y", 55)
+        .text("Low tariffs")
+        .attr("font-size", "10px");
+    }).catch(error => {
+      console.error('Error loading map data:', error);
     });
-    
-    // Add legend
-    const legend = svg.append("g")
-      .attr("transform", `translate(${width - 120}, ${height - 80})`);
-    
-    legend.append("rect")
-      .attr("x", 0)
-      .attr("y", 0)
-      .attr("width", 100)
-      .attr("height", 70)
-      .attr("fill", "white")
-      .attr("fill-opacity", 0.8)
-      .attr("stroke", "#ccc");
-    
-    legend.append("text")
-      .attr("x", 10)
-      .attr("y", 15)
-      .text("Legend")
-      .attr("font-size", "12px")
-      .attr("font-weight", "500");
-    
-    // High tariffs
-    legend.append("rect")
-      .attr("x", 10)
-      .attr("y", 25)
-      .attr("width", 10)
-      .attr("height", 10)
-      .attr("fill", "#0e7490")
-      .attr("fill-opacity", 0.8);
-    
-    legend.append("text")
-      .attr("x", 25)
-      .attr("y", 35)
-      .text("High tariffs")
-      .attr("font-size", "10px");
-    
-    // Low tariffs
-    legend.append("rect")
-      .attr("x", 10)
-      .attr("y", 45)
-      .attr("width", 10)
-      .attr("height", 10)
-      .attr("fill", "#0e7490")
-      .attr("fill-opacity", 0.3);
-    
-    legend.append("text")
-      .attr("x", 25)
-      .attr("y", 55)
-      .text("Low tariffs")
-      .attr("font-size", "10px");
     
     return () => {
       // Cleanup on unmount
