@@ -32,29 +32,23 @@ export type Database = {
       }
       countries: {
         Row: {
-          area: number
           created_at: string | null
           id: string
           name: string
-          region: Database["public"]["Enums"]["region_type"]
           Type: string | null
           updated_at: string | null
         }
         Insert: {
-          area: number
           created_at?: string | null
           id: string
           name: string
-          region: Database["public"]["Enums"]["region_type"]
           Type?: string | null
           updated_at?: string | null
         }
         Update: {
-          area?: number
           created_at?: string | null
           id?: string
           name?: string
-          region?: Database["public"]["Enums"]["region_type"]
           Type?: string | null
           updated_at?: string | null
         }

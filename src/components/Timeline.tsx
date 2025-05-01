@@ -1,9 +1,10 @@
 
-import React from 'react';
-import { Flag, AlertTriangle, TrendingUp } from 'lucide-react';
+import React, { useState } from 'react';
+import { Flag, AlertTriangle, TrendingUp, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 interface TimelineEvent {
   date: string;
@@ -161,22 +162,26 @@ const sortedEvents = [...combinedUsChina].sort((a, b) => {
   return dateA.getTime() - dateB.getTime();
 });
 
-const TimelineComponent: React.FC<{ events: TimelineEvent[] }> = ({ events }) => {
+const TimelineComponent: React.FC = () => {
+  const [visibleCount, setVisibleCount] = useState(3);
+  const events = sortedEvents.slice(0, visibleCount);
+  
+  const loadMore = () => {
+    setVisibleCount(prev => Math.min(prev + 3, sortedEvents.length));
+  };
+
   return (
-    <div className="relative flex flex-col items-center">
-      {/* Timeline connector line */}
-      <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-infomineo-blue/30 to-infomineo-light/40" style={{ zIndex: 0 }}></div>
+    <div className="relative w-full">
+      {/* Timeline center connector line */}
+      <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-gray-300 to-gray-200" style={{ zIndex: 0 }}></div>
 
       <div className="w-full">
         {events.map((event, index) => {
-          const isEven = index % 2 === 0;
+          const isUSEvent = event.country === 'us';
           
           return (
-            <div 
-              key={index} 
-              className={`relative flex mb-12 ${isEven ? 'justify-start' : 'justify-end'} w-full`}
-            >
-              {/* Timeline node */}
+            <div key={index} className="relative flex mb-12 w-full">
+              {/* Timeline node in center */}
               <div className="absolute left-1/2 transform -translate-x-1/2 z-10">
                 <div className={cn(
                   "w-10 h-10 rounded-full flex items-center justify-center shadow-sm",
@@ -187,34 +192,59 @@ const TimelineComponent: React.FC<{ events: TimelineEvent[] }> = ({ events }) =>
                 </div>
               </div>
               
-              {/* Content box */}
-              <div className={cn(
-                "w-[calc(50%-2rem)]",
-                isEven ? "pr-8" : "pl-8"
-              )}>
-                <Card className={cn(
-                  "hover:shadow-md transition-shadow duration-300",
-                  event.country === 'us' ? "border-l-4 border-l-infomineo-blue" : "border-l-4 border-l-infomineo-red"
-                )}>
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between mb-2">
-                      <span className="text-sm font-semibold text-infomineo-light">{event.date}</span>
-                      <span className={cn(
-                        "text-xs font-bold px-2 py-1 rounded-full",
-                        event.country === 'us' ? "bg-infomineo-blue/10 text-infomineo-blue" : "bg-infomineo-red/10 text-infomineo-red"
-                      )}>
-                        {event.country === 'us' ? 'United States' : 'China'}
-                      </span>
-                    </div>
-                    <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
-                    <p className="text-gray-600">{event.description}</p>
-                  </CardContent>
-                </Card>
-              </div>
+              {/* US event on left, China event on right */}
+              {isUSEvent ? (
+                // US Event (Left)
+                <>
+                  <div className="w-1/2 pr-8">
+                    <Card className="border-l-4 border-l-infomineo-blue hover:shadow-md transition-shadow duration-300">
+                      <CardContent className="p-6">
+                        <div className="flex items-start justify-between mb-2">
+                          <span className="text-sm font-semibold text-infomineo-blue">{event.date}</span>
+                          <span className="text-xs font-bold px-2 py-1 rounded-full bg-infomineo-blue/10 text-infomineo-blue">United States</span>
+                        </div>
+                        <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
+                        <p className="text-gray-600">{event.description}</p>
+                      </CardContent>
+                    </Card>
+                  </div>
+                  <div className="w-1/2"></div> {/* Empty right side */}
+                </>
+              ) : (
+                // China Event (Right)
+                <>
+                  <div className="w-1/2"></div> {/* Empty left side */}
+                  <div className="w-1/2 pl-8">
+                    <Card className="border-l-4 border-l-infomineo-red hover:shadow-md transition-shadow duration-300">
+                      <CardContent className="p-6">
+                        <div className="flex items-start justify-between mb-2">
+                          <span className="text-sm font-semibold text-infomineo-red">{event.date}</span>
+                          <span className="text-xs font-bold px-2 py-1 rounded-full bg-infomineo-red/10 text-infomineo-red">China</span>
+                        </div>
+                        <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
+                        <p className="text-gray-600">{event.description}</p>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </>
+              )}
             </div>
           );
         })}
       </div>
+      
+      {/* Load More Button */}
+      {visibleCount < sortedEvents.length && (
+        <div className="flex justify-center mt-6">
+          <Button 
+            onClick={loadMore}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            Load More <ChevronDown className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
@@ -246,7 +276,7 @@ const Timeline: React.FC = () => {
               <span className="font-medium">China</span>
             </div>
           </div>
-          <TimelineComponent events={sortedEvents} />
+          <TimelineComponent />
         </TabsContent>
         
         {/* U.S. - Canada & Mexico Tab Content - Empty for now */}
