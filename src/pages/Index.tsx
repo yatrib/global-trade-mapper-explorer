@@ -116,7 +116,6 @@ const Index: React.FC = () => {
         <div className="container mx-auto px-4 pb-8">
           <div className="w-full bg-white">
             <AmChartsMap
-              countryData={countryData || []}
               onSelectCountry={handleCountrySelect}
             />
           </div>
