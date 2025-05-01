@@ -8,7 +8,6 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useMapboxToken } from '@/hooks/useMapboxToken';
 import CountryPopup from './CountryPopup';
-import ReactDOM from 'react-dom';
 import { createRoot } from 'react-dom/client';
 
 interface WorldMapProps {
@@ -70,12 +69,17 @@ const WorldMap: React.FC<WorldMapProps> = ({
       projection: 'mercator',
       zoom: 1.5,
       center: [0, 20],
-      minZoom: 1,
-      maxZoom: 8,
-      renderWorldCopies: false
+      minZoom: 1.5,
+      maxZoom: 1.5,
+      renderWorldCopies: false,
+      dragPan: false,
+      scrollZoom: false,
+      doubleClickZoom: false,
+      touchZoomRotate: false
     });
 
-    map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    // Disable all map controls for a static view
+    // No navigation control needed for static map
 
     // Extract country codes for visualization
     const countryCodes = countryData.map(country => country.id);
@@ -224,7 +228,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
   }, [searchTerm, countryData]);
 
   if (isLoading) {
-    return <div className="w-full h-[400px] flex items-center justify-center">Loading map...</div>;
+    return <div className="w-full h-full flex items-center justify-center">Loading map...</div>;
   }
 
   return (
@@ -263,7 +267,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
         </div>
       </div>
       
-      <div className="relative h-[600px] w-full overflow-hidden">
+      <div className="relative h-full w-full">
         <div ref={mapContainer} className="absolute inset-0" />
         
         <div className="absolute bottom-4 right-4 bg-white/80 backdrop-blur-sm p-2 rounded-md border shadow-sm">

@@ -113,9 +113,9 @@ const Index: React.FC = () => {
           </div>
         </div>
 
-        {/* Map Section - Single view map */}
+        {/* Map Section - Static full-size map */}
         <div className="relative">
-          <div className="h-[70vh] w-full bg-white">
+          <div className="h-[600px] w-full bg-white">
             <WorldMap
               selectedCountry={selectedCountry}
               onSelectCountry={handleCountrySelect}
