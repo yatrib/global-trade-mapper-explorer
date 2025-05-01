@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from 'react';
 import { CountryData } from '@/data/types';
 
@@ -64,9 +65,6 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ countryData, onSelectCountry 
       const mapData = countryData.map(country => ({
         id: country.id,
         name: country.name,
-        threatened: country.tariffsToUS || 0,
-        updated: country.reciprocalTariff || 0,
-        // Add all the country data for hovering
         gdp2023: country.gdp?.actual2023 || 0,
         gdp2024: country.gdp?.estimate2024 || 0,
         usTradeBalance: country.usTradeBalance || 0,
@@ -87,10 +85,10 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ countryData, onSelectCountry 
         // Set themes with Infomineo colors
         const myTheme = am5.Theme.new(root);
         myTheme.rule("InterfaceColors").setAll({
-          primaryButton: am5.color(0xc83830),  // Infomineo red
-          primaryButtonHover: am5.Color.lighten(am5.color(0xc83830), 0.2),
-          primaryButtonDown: am5.Color.lighten(am5.color(0xc83830), -0.2),
-          primaryButtonActive: am5.color(0x2C469D),  // Infomineo blue
+          primaryButton: am5.color(0x2C469D),  // Infomineo Royal Blue
+          primaryButtonHover: am5.Color.lighten(am5.color(0x2C469D), 0.2),
+          primaryButtonDown: am5.Color.lighten(am5.color(0x2C469D), -0.2),
+          primaryButtonActive: am5.color(0x41B3E6),  // Infomineo Light Blue
         });
         myTheme.rule("Label").setAll({
           fontSize: "0.85em",
@@ -117,42 +115,11 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ countryData, onSelectCountry 
         );
         graticuleSeries.mapLines.template.set("strokeOpacity", 0.03);
 
-        // Control elements for data view
-        const cont2 = chart.children.push(
-          am5.Container.new(root, {
-            layout: root.horizontalLayout,
-            x: am5.percent(85),
-            centerX: am5.p100,
-            y: am5.percent(100),
-            dy: -40
-          })
-        );
-        cont2.children.push(am5.Label.new(root, { centerY: am5.p50, text: "Tariffs to US" }));
-        
-        const switchButton2 = cont2.children.push(
-          am5.Button.new(root, {
-            themeTags: ["switch"],
-            centerY: am5.p50,
-            icon: am5.Circle.new(root, { themeTags: ["icon"] })
-          })
-        );
-        
-        switchButton2.on("active", function() {
-          if (!switchButton2.get("active")) {
-            polygonSeries.set("valueField", "threatened");
-            polygonSeries.data.setAll(mapData);
-          } else {
-            polygonSeries.set("valueField", "updated");
-            polygonSeries.data.setAll(mapData);
-          }
-        });
-        cont2.children.push(am5.Label.new(root, { centerY: am5.p50, text: "Reciprocal Tariff" }));
-
         // Create polygon series for countries
         const polygonSeries = chart.series.push(
           am5map.MapPolygonSeries.new(root, {
             geoJSON: am5geodata_worldLow,
-            valueField: "threatened",
+            valueField: "gdp2023",
             calculateAggregates: true,
             exclude: ["AQ"] // Exclude Antarctica
           })
@@ -167,18 +134,20 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ countryData, onSelectCountry 
         polygonSeries.set("heatRules", [{
           target: polygonSeries.mapPolygons.template,
           dataField: "value",
-          min: am5.color(0x41B3E6),  // Infomineo light blue
-          max: am5.color(0xC83830),  // Infomineo red
+          min: am5.color(0x41B3E6),  // Infomineo Light Blue
+          max: am5.color(0x2C469D),  // Infomineo Royal Blue
           key: "fill"
         }]);
 
-        // Enhanced tooltip with more data
+        // Enhanced tooltip with economic data
         polygonSeries.mapPolygons.template.setAll({
-          tooltipText: "{name}\n[bold]Tariff Data:[/]\nTariffs to US: {threatened}%\nReciprocal Tariff: {updated}%\n[bold]Economic Data:[/]\nGDP 2023: ${gdp2023}B\nTrade Balance: ${usTradeBalance}B",
+          tooltipText: "{name}\n[bold]Economic Data:[/]\nGDP 2023: ${gdp2023}B\nTrade Balance: ${usTradeBalance}B",
           stroke: am5.color(0xffffff),
           strokeWidth: 0.5,
           interactive: true,
-          cursorOverStyle: "pointer"
+          cursorOverStyle: "pointer",
+          // Set fill for countries without data
+          fill: am5.color(0xF1F1F1) // Light gray for countries not in our database
         });
 
         // Add click handler to navigate to country details
@@ -226,12 +195,12 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ countryData, onSelectCountry 
 
         labelSeries.data.setAll(labelData);
 
-        // Create heat legend
+        // Create heat legend with Infomineo colors
         const heatLegend = chart.children.push(
           am5.HeatLegend.new(root, {
             orientation: "vertical",
-            startColor: am5.color(0x41B3E6),  // Infomineo light blue
-            endColor: am5.color(0xC83830),    // Infomineo red
+            startColor: am5.color(0x41B3E6),  // Infomineo Light Blue
+            endColor: am5.color(0x2C469D),    // Infomineo Royal Blue
             startText: "Lowest",
             endText: "Highest",
             stepCount: 6,
@@ -245,12 +214,12 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ countryData, onSelectCountry 
 
         heatLegend.startLabel.setAll({
           fontSize: 12,
-          fill: am5.color(0x41B3E6)  // Infomineo light blue
+          fill: am5.color(0x41B3E6)  // Infomineo Light Blue
         });
 
         heatLegend.endLabel.setAll({
           fontSize: 12,
-          fill: am5.color(0xC83830)  // Infomineo red
+          fill: am5.color(0x2C469D)  // Infomineo Royal Blue
         });
 
         polygonSeries.events.on("datavalidated", function() {
@@ -278,9 +247,9 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ countryData, onSelectCountry 
   return (
     <div className="w-full bg-white rounded-lg overflow-hidden shadow-lg border">
       <div className="p-3 border-b">
-        <h3 className="text-lg font-medium text-infomineo-blue">Global Tariff Map</h3>
+        <h3 className="text-lg font-medium text-infomineo-blue">Global Economic Map</h3>
         <p className="text-sm text-muted-foreground mt-1">
-          Toggle between different tariff metrics. Click on a country for details.
+          View GDP and trade data by country. Click on a country for details.
         </p>
       </div>
       <div id="chartdiv" ref={chartRef} className="w-full h-[650px]"></div>
