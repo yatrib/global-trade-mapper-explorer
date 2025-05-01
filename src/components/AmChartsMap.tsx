@@ -99,14 +99,16 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ countryData, onSelectCountry 
         });
         root.setThemes([am5themes_Animated.new(root), myTheme]);
 
-        // Create map chart
+        // Create map chart with zoomed out view
         const chart = root.container.children.push(
           am5map.MapChart.new(root, {
             projection: am5map.geoMercator(),
             panX: "none",  // Disable panning
             panY: "none",  // Disable panning
             wheelX: "none", // Disable zooming
-            wheelY: "none"  // Disable zooming
+            wheelY: "none", // Disable zooming
+            // Set initial zoom level to be more zoomed out
+            zoomLevel: 0.85  // Adjust this value to zoom out more
           })
         );
 
@@ -257,19 +259,6 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ countryData, onSelectCountry 
           heatLegend.set("endValue", polygonSeries.getPrivate("valueHigh"));
         });
 
-        // Add title
-        const title = chart.children.push(
-          am5.Label.new(root, {
-            text: "Global Tariff Impact Analysis",
-            fontSize: 20,
-            fontWeight: "500",
-            x: am5.percent(50),
-            centerX: am5.p50,
-            y: 30,
-            fill: am5.color(0x2C469D)  // Infomineo blue
-          })
-        );
-
         // Return a cleanup function
         return () => {
           root.dispose();
@@ -301,3 +290,4 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ countryData, onSelectCountry 
 };
 
 export default AmChartsMap;
+
