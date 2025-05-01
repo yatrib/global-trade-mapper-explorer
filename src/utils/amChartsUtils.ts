@@ -1,3 +1,4 @@
+
 import { CountryData } from '@/data/types';
 
 // Type definition for the chart initialization function
@@ -60,21 +61,34 @@ const formatCurrency = (value: number | null | undefined): string => {
 
 // Map country data to the format expected by amCharts
 export const mapCountryDataForChart = (countryData: CountryData[]) => {
-  return countryData.map(country => {
-    console.log(`Mapping for chart: ${country.name}, tariffs: ${country.tariffsToUS}`);
+  const result = countryData.map(country => {
+    // Verify and log the numeric values for each country
+    console.log(`Mapping for chart: ${country.name}`, {
+      gdp2023: country.gdp.actual2023,
+      gdp2024: country.gdp.estimate2024,
+      usTradeBalance: country.usTradeBalance,
+      shareOfUsImports: country.shareOfUsImports,
+      shareOfUsExports: country.shareOfUsExports,
+      tariffsToUS: country.tariffsToUS,
+      reciprocalTariff: country.reciprocalTariff
+    });
+    
     return {
       id: country.id,
       name: country.name,
-      gdp2023: country.gdp?.actual2023 || 0,
-      gdp2024: country.gdp?.estimate2024 || 0,
-      usTradeBalance: country.usTradeBalance || 0,
-      shareOfUsImports: country.shareOfUsImports || 0,
-      shareOfUsExports: country.shareOfUsExports || 0,
-      tariffsToUS: country.tariffsToUS || 0,
-      reciprocalTariff: country.reciprocalTariff || 0,
+      gdp2023: country.gdp.actual2023,
+      gdp2024: country.gdp.estimate2024,
+      usTradeBalance: country.usTradeBalance,
+      shareOfUsImports: country.shareOfUsImports,
+      shareOfUsExports: country.shareOfUsExports,
+      tariffsToUS: country.tariffsToUS,
+      reciprocalTariff: country.reciprocalTariff,
       countryObject: country // Store the entire country object for reference
     };
   });
+  
+  console.log("Final mapped chart data:", result);
+  return result;
 };
 
 // Initialize the chart
@@ -172,7 +186,7 @@ export const initializeAmChart = (
 
     // Enhanced tooltip with tariff data - Improved formatting
     polygonSeries.mapPolygons.template.setAll({
-      tooltipText: "{name}\n[bold]Tariff Data:[/]\nTariffs to US: {tariffsToUS}%\nReciprocal Tariff: {reciprocalTariff}%\n[bold]Trade:[/]\nTrade Balance: ${usTradeBalance}B",
+      tooltipText: "{name}\n[bold]Tariff Data:[/]\nTariffs to US: {tariffsToUS}%\nReciprocal Tariff: {reciprocalTariff}%\n[bold]Trade:[/]\nTrade Balance: ${usTradeBalance}B\n[bold]GDP:[/]\n2023: ${gdp2023}B\n2024: ${gdp2024}B",
       stroke: am5.color(0xffffff),
       strokeWidth: 0.5,
       interactive: true,
@@ -254,7 +268,7 @@ export const initializeAmChart = (
       heatLegend.set("endValue", polygonSeries.getPrivate("valueHigh"));
     });
     
-    // Log the data that's being set to the polygons
+    // Log the data that's being set to the polygons for debugging
     console.log("Polygon data before setting:", mapData);
   });
 

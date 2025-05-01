@@ -53,30 +53,28 @@ export function useCountryData() {
         
         // Log a full sample country to inspect data structure and actual values
         if (countries.length > 0) {
-          console.log('Full sample country data (raw):', JSON.stringify(countries[0], null, 2));
+          console.log('Sample raw country data (first record):', JSON.stringify(countries[0], null, 2));
         }
         
         // Map the database result to our CountryData type, using Type as region
         const mappedCountries = countries.map(country => {
-          console.log(`Processing country: ${country.name} (${country.id})`);
-          
-          // Retrieve numeric values from the data - note they might be strings in the database
+          // Retrieve data from nested objects
           const gdpData = country.country_gdp?.[0] || {};
           const tradeData = country.us_trade_data?.[0] || {};
           
-          // Display raw values to debug
+          // Log raw data for debugging
           console.log(`Raw GDP data for ${country.name}:`, gdpData);
           console.log(`Raw trade data for ${country.name}:`, tradeData);
           
-          // Fix: Convert numeric strings to numbers, ensuring proper type conversion
-          // Use parseFloat for floating point values
-          const tradeBalance = gdpData?.trade_balance !== undefined ? parseFloat(String(tradeData.trade_balance)) : 0;
-          const shareOfImports = tradeData?.share_of_imports !== undefined ? parseFloat(String(tradeData.share_of_imports)) : 0;
-          const shareOfExports = tradeData?.share_of_exports !== undefined ? parseFloat(String(tradeData.share_of_exports)) : 0;
-          const reciprocalTariff = tradeData?.reciprocal_tariff !== undefined ? parseFloat(String(tradeData.reciprocal_tariff)) : 0;
-          const tariffsToUS = tradeData?.tariffs_to_us !== undefined ? parseFloat(String(tradeData.tariffs_to_us)) : 0;
-          const actual2023 = gdpData?.actual_2023 !== undefined ? parseFloat(String(gdpData.actual_2023)) : 0;
-          const estimate2024 = gdpData?.estimate_2024 !== undefined ? parseFloat(String(gdpData.estimate_2024)) : 0;
+          // Critical fix: Properly extract and convert numeric values
+          // First convert to string to handle possible non-string inputs, then parse as float
+          const actual2023 = gdpData?.actual_2023 != null ? parseFloat(String(gdpData.actual_2023)) : 0;
+          const estimate2024 = gdpData?.estimate_2024 != null ? parseFloat(String(gdpData.estimate_2024)) : 0;
+          const tradeBalance = tradeData?.trade_balance != null ? parseFloat(String(tradeData.trade_balance)) : 0;
+          const shareOfImports = tradeData?.share_of_imports != null ? parseFloat(String(tradeData.share_of_imports)) : 0;
+          const shareOfExports = tradeData?.share_of_exports != null ? parseFloat(String(tradeData.share_of_exports)) : 0;
+          const reciprocalTariff = tradeData?.reciprocal_tariff != null ? parseFloat(String(tradeData.reciprocal_tariff)) : 0;
+          const tariffsToUS = tradeData?.tariffs_to_us != null ? parseFloat(String(tradeData.tariffs_to_us)) : 0;
           
           // Log parsed values for debugging
           console.log(`${country.name} parsed values:`, {
@@ -92,8 +90,8 @@ export function useCountryData() {
           return {
             id: country.id,
             name: country.name,
-            region: country.Type || 'Unknown', // Use Type as region with fallback
-            area: 0, // Since area isn't present in the schema, set a default value
+            region: country.Type || 'Unknown',
+            area: 0, // Since area isn't present in the schema
             gdp: {
               actual2023,
               estimate2024,
@@ -112,9 +110,7 @@ export function useCountryData() {
           } as CountryData;
         });
 
-        console.log(`Successfully mapped ${mappedCountries.length} countries`);
-        
-        // Log a sample of the processed data
+        // Log sample of processed data
         if (mappedCountries.length > 0) {
           console.log('Sample processed country data:', {
             name: mappedCountries[0].name,
