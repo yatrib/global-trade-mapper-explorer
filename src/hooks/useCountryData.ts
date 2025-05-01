@@ -57,67 +57,69 @@ export function useCountryData() {
         }
         
         // Map the database result to our CountryData type, using Type as region
-        const mappedCountries = countries.map(country => {
-          // Extract data from nested arrays properly
-          const gdpData = country.country_gdp?.[0] || {};
-          const tradeData = country.us_trade_data?.[0] || {};
-          
-          // Log the raw nested data for verification
-          console.log(`Raw data for ${country.name}:`, {
-            gdp: gdpData,
-            trade: tradeData
-          });
-          
-          // Safe parsing functions to handle different data types and potential null values
-          const safeParseNumber = (value: any): number => {
-            if (value === null || value === undefined) return 0;
-            // Convert to string first to handle any data type, then parse
-            const numValue = parseFloat(String(value).replace(/,/g, ''));
-            return isNaN(numValue) ? 0 : numValue;
-          };
-          
-          // Extract and parse numeric values
-          const actual2023 = safeParseNumber(gdpData?.actual_2023);
-          const estimate2024 = safeParseNumber(gdpData?.estimate_2024);
-          const tradeBalance = safeParseNumber(tradeData?.trade_balance);
-          const shareOfImports = safeParseNumber(tradeData?.share_of_imports);
-          const shareOfExports = safeParseNumber(tradeData?.share_of_exports);
-          const reciprocalTariff = safeParseNumber(tradeData?.reciprocal_tariff);
-          const tariffsToUS = safeParseNumber(tradeData?.tariffs_to_us);
-          
-          // Log the parsed values for verification
-          console.log(`Parsed values for ${country.name}:`, {
-            actual2023,
-            estimate2024,
-            tradeBalance,
-            shareOfImports,
-            shareOfExports,
-            reciprocalTariff,
-            tariffsToUS
-          });
-          
-          return {
-            id: country.id,
-            name: country.name,
-            region: country.Type || 'Unknown',
-            area: 0, // Since area isn't present in the schema
-            gdp: {
+        const mappedCountries = countries
+          .filter(country => country !== null) // Filter out any null country records
+          .map(country => {
+            // Extract data from nested arrays properly
+            const gdpData = country.country_gdp?.[0] || {};
+            const tradeData = country.us_trade_data?.[0] || {};
+            
+            // Log the raw nested data for verification
+            console.log(`Raw data for ${country.name}:`, {
+              gdp: gdpData,
+              trade: tradeData
+            });
+            
+            // Safe parsing functions to handle different data types and potential null values
+            const safeParseNumber = (value: any): number | null => {
+              if (value === null || value === undefined) return null;
+              // Convert to string first to handle any data type, then parse
+              const numValue = parseFloat(String(value).replace(/,/g, ''));
+              return isNaN(numValue) ? null : numValue;
+            };
+            
+            // Extract and parse numeric values
+            const actual2023 = safeParseNumber(gdpData?.actual_2023);
+            const estimate2024 = safeParseNumber(gdpData?.estimate_2024);
+            const tradeBalance = safeParseNumber(tradeData?.trade_balance);
+            const shareOfImports = safeParseNumber(tradeData?.share_of_imports);
+            const shareOfExports = safeParseNumber(tradeData?.share_of_exports);
+            const reciprocalTariff = safeParseNumber(tradeData?.reciprocal_tariff);
+            const tariffsToUS = safeParseNumber(tradeData?.tariffs_to_us);
+            
+            // Log the parsed values for verification
+            console.log(`Parsed values for ${country.name}:`, {
               actual2023,
               estimate2024,
-            },
-            usTradeBalance: tradeBalance,
-            shareOfUsImports: shareOfImports,
-            shareOfUsExports: shareOfExports,
-            reciprocalTariff: reciprocalTariff,
-            tariffsToUS: tariffsToUS,
-            impactedSectors: country.country_sectors?.map(s => s.sector_name) || [],
-            keyInsights: country.country_insights?.map(i => i.insight_text) || [],
-            nationalReaction: {
-              retaliatory: country.national_reactions?.filter((_, index) => index % 2 === 0).map(r => r.description) || [],
-              domesticSupport: country.national_reactions?.filter((_, index) => index % 2 === 1).map(r => r.description) || [],
-            }
-          } as CountryData;
-        });
+              tradeBalance,
+              shareOfImports,
+              shareOfExports,
+              reciprocalTariff,
+              tariffsToUS
+            });
+            
+            return {
+              id: country.id,
+              name: country.name,
+              region: country.Type || 'Unknown',
+              area: 0, // Since area isn't present in the schema
+              gdp: {
+                actual2023,
+                estimate2024,
+              },
+              usTradeBalance: tradeBalance,
+              shareOfUsImports: shareOfImports,
+              shareOfUsExports: shareOfExports,
+              reciprocalTariff: reciprocalTariff,
+              tariffsToUS: tariffsToUS,
+              impactedSectors: country.country_sectors?.map(s => s.sector_name) || [],
+              keyInsights: country.country_insights?.map(i => i.insight_text) || [],
+              nationalReaction: {
+                retaliatory: country.national_reactions?.filter((r, index) => r && index % 2 === 0).map(r => r?.description).filter(Boolean) || [],
+                domesticSupport: country.national_reactions?.filter((r, index) => r && index % 2 === 1).map(r => r?.description).filter(Boolean) || [],
+              }
+            } as CountryData;
+          });
 
         // Log a sample of processed data for final verification
         if (mappedCountries.length > 0) {

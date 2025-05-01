@@ -2,9 +2,35 @@
 import { CountryData } from '@/data/types';
 import { AmChartsCountryData } from './types';
 
-// Map country data to the format expected by amCharts
+// Map country data to the format expected by amCharts, filtering out countries with null values
 export const mapCountryDataForChart = (countryData: CountryData[]): AmChartsCountryData[] => {
-  const result = countryData.map(country => {
+  // Filter out countries with null or undefined values for key metrics
+  const validCountries = countryData.filter(country => {
+    // Ensure the country has an ID and name at minimum
+    if (!country.id || !country.name) {
+      console.log(`Filtering out country with missing ID or name:`, country);
+      return false;
+    }
+    
+    // We only need one valid metric to show the country on the map
+    const hasValidMetric = 
+      country.gdp?.actual2023 !== null || 
+      country.gdp?.estimate2024 !== null || 
+      country.usTradeBalance !== null || 
+      country.tariffsToUS !== null || 
+      country.reciprocalTariff !== null;
+    
+    if (!hasValidMetric) {
+      console.log(`Filtering out country with no valid metrics:`, country.name);
+    }
+    
+    return hasValidMetric;
+  });
+  
+  console.log(`Filtered ${countryData.length - validCountries.length} countries with no valid metrics`);
+  
+  // Map the valid countries to the AmCharts format
+  const result = validCountries.map(country => {
     // Verify and log the numeric values for this country
     console.log(`Mapping country for chart: ${country.name}`, {
       gdp2023: country.gdp.actual2023,
@@ -37,5 +63,6 @@ export const mapCountryDataForChart = (countryData: CountryData[]): AmChartsCoun
     console.warn("No countries mapped for chart data");
   }
   
+  console.log(`Total countries mapped for chart: ${result.length}`);
   return result;
 };

@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { CountryData } from '@/data/types';
 import AmChartsMap from '@/components/AmChartsMap';
@@ -53,7 +52,7 @@ const Index: React.FC = () => {
     };
   }, []);
 
-  // Remove the restriction on countries - all countries are now visible
+  // Remove the restriction on countries - all valid countries are now shown
   const visibleCountries = countryData || [];
 
   if (isLoading) {

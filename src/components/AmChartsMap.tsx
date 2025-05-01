@@ -16,6 +16,9 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ onSelectCountry }) => {
   useEffect(() => {
     if (!chartRef.current || !countryData || countryData.length === 0) return;
 
+    // Log how many countries we have with data
+    console.log(`Initializing map with ${countryData.length} countries`);
+    
     // Load AmCharts scripts and initialize the chart
     const initChart = async () => {
       try {
@@ -66,6 +69,17 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ onSelectCountry }) => {
       <div className="w-full bg-white rounded-lg overflow-hidden shadow-lg border p-4">
         <div className="text-red-500">
           Error loading map data: {error instanceof Error ? error.message : 'Unknown error'}
+        </div>
+      </div>
+    );
+  }
+
+  // Check if we have any data to display
+  if (!countryData || countryData.length === 0) {
+    return (
+      <div className="w-full bg-white rounded-lg overflow-hidden shadow-lg border p-4">
+        <div className="text-amber-500">
+          No country data available to display on the map.
         </div>
       </div>
     );
