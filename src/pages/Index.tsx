@@ -1,7 +1,9 @@
+
 import React, { useState, useRef } from 'react';
 import { CountryData } from '@/data/types';
 import WorldMap from '@/components/WorldMap';
 import SimpleSvgMap from '@/components/SimpleSvgMap';
+import InteractiveMap from '@/components/InteractiveMap';
 import { Badge } from '@/components/ui/badge';
 import { useCountryData } from '@/hooks/useCountryData';
 import CountryDetail from '@/components/CountryDetail';
@@ -115,11 +117,21 @@ const Index: React.FC = () => {
 
         {/* Map Tabs - For different map visualizations */}
         <div className="container mx-auto px-4 pb-8">
-          <Tabs defaultValue="mapbox" className="w-full">
+          <Tabs defaultValue="interactive" className="w-full">
             <TabsList className="mb-4 w-full justify-start">
+              <TabsTrigger value="interactive">Interactive Map</TabsTrigger>
               <TabsTrigger value="mapbox">Mapbox Map</TabsTrigger>
               <TabsTrigger value="svg">SVG Map</TabsTrigger>
             </TabsList>
+            
+            <TabsContent value="interactive" className="mt-0">
+              <div className="w-full bg-white">
+                <InteractiveMap
+                  countryData={countryData || []}
+                  onSelectCountry={handleCountrySelect}
+                />
+              </div>
+            </TabsContent>
             
             <TabsContent value="mapbox" className="mt-0">
               <div className="h-[600px] w-full bg-white">
