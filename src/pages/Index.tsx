@@ -2,6 +2,7 @@
 import React, { useState, useRef } from 'react';
 import { CountryData } from '@/data/types';
 import WorldMap from '@/components/WorldMap';
+import SimpleSvgMap from '@/components/SimpleSvgMap';
 import { Badge } from '@/components/ui/badge';
 import { useCountryData } from '@/hooks/useCountryData';
 import CountryDetail from '@/components/CountryDetail';
@@ -12,6 +13,7 @@ import ExpertiseSection from '@/components/ExpertiseSection';
 import infomineoLogo from '@/assets/infomineo-logo.png';
 import Footer from '@/components/Footer';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const Index: React.FC = () => {
   const { data: countryData, isLoading, error } = useCountryData();
@@ -112,17 +114,35 @@ const Index: React.FC = () => {
           </div>
         </div>
 
-        {/* Map Section - Static full-size map */}
-        <div className="relative">
-          <div className="h-[600px] w-full bg-white">
-            <WorldMap
-              selectedCountry={selectedCountry}
-              onSelectCountry={handleCountrySelect}
-              countryData={countryData || []}
-              onShowFullAccess={handleGetFullAccess} 
-              removeRestrictions={true}
-            />
-          </div>
+        {/* Map Tabs - For different map visualizations */}
+        <div className="container mx-auto px-4 pb-8">
+          <Tabs defaultValue="mapbox" className="w-full">
+            <TabsList className="mb-4 w-full justify-start">
+              <TabsTrigger value="mapbox">Mapbox Map</TabsTrigger>
+              <TabsTrigger value="svg">SVG Map</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="mapbox" className="mt-0">
+              <div className="h-[600px] w-full bg-white">
+                <WorldMap
+                  selectedCountry={selectedCountry}
+                  onSelectCountry={handleCountrySelect}
+                  countryData={countryData || []}
+                  onShowFullAccess={handleGetFullAccess} 
+                  removeRestrictions={true}
+                />
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="svg" className="mt-0">
+              <div className="w-full bg-white">
+                <SimpleSvgMap
+                  countryData={countryData || []}
+                  onSelectCountry={handleCountrySelect}
+                />
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
       </section>
 
