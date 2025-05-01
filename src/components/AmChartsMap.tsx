@@ -64,8 +64,16 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ countryData, onSelectCountry 
       // Map country data to the format expected by amCharts
       const mapData = countryData.map(country => ({
         id: country.id,
+        name: country.name,
         threatened: country.tariffsToUS || 0,
         updated: country.reciprocalTariff || 0,
+        // Add all the country data for hovering
+        gdp2023: country.gdp?.actual2023 || 0,
+        gdp2024: country.gdp?.estimate2024 || 0,
+        usTradeBalance: country.usTradeBalance || 0,
+        shareOfUsImports: country.shareOfUsImports || 0,
+        shareOfUsExports: country.shareOfUsExports || 0,
+        countryObject: country // Store the entire country object for reference
       }));
 
       // Clear previous chart if it exists
@@ -103,58 +111,6 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ countryData, onSelectCountry 
         );
         graticuleSeries.mapLines.template.set("strokeOpacity", 0.05);
 
-        // Control elements for map/globe view
-        const cont = chart.children.push(
-          am5.Container.new(root, {
-            layout: root.horizontalLayout,
-            x: am5.percent(15),
-            centerX: 0,
-            y: am5.percent(100),
-            dy: -40
-          })
-        );
-        cont.children.push(am5.Label.new(root, { centerY: am5.p50, text: "Map" }));
-        
-        const switchButton = cont.children.push(
-          am5.Button.new(root, {
-            themeTags: ["switch"],
-            centerY: am5.p50,
-            icon: am5.Circle.new(root, { themeTags: ["icon"] })
-          })
-        );
-        
-        // Create polygon series
-        const polygonSeries = chart.series.push(
-          am5map.MapPolygonSeries.new(root, {
-            geoJSON: am5geodata_worldLow,
-            valueField: "threatened",
-            calculateAggregates: true,
-            exclude: ["AQ"] // Exclude Antarctica
-          })
-        );
-
-        // Set polygon series behavior
-        switchButton.on("active", function() {
-          if (!switchButton.get("active")) {
-            chart.set("projection", am5map.geoMercator());
-            chart.set("panY", "translateY");
-            chart.set("rotationY", 0);
-            polygonSeries.set("exclude", ["AQ"]);
-          } else {
-            chart.set("projection", am5map.geoOrthographic());
-            chart.set("panY", "rotateY");
-            chart.set("panX", "rotateX");
-            polygonSeries.set("exclude", []);
-            chart.animate({
-              key: "rotationX",
-              to: chart.get("rotationX") + 360,
-              duration: 15000,
-              easing: am5.ease.inOut(am5.ease.cubic)
-            });
-          }
-        });
-        cont.children.push(am5.Label.new(root, { centerY: am5.p50, text: "Globe" }));
-
         // Control elements for data view
         const cont2 = chart.children.push(
           am5.Container.new(root, {
@@ -178,15 +134,23 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ countryData, onSelectCountry 
         switchButton2.on("active", function() {
           if (!switchButton2.get("active")) {
             polygonSeries.set("valueField", "threatened");
-            chart.set("projection", am5map.geoMercator());
             polygonSeries.data.setAll(mapData);
           } else {
             polygonSeries.set("valueField", "updated");
-            chart.set("projection", am5map.geoMercator());
             polygonSeries.data.setAll(mapData);
           }
         });
         cont2.children.push(am5.Label.new(root, { centerY: am5.p50, text: "Reciprocal Tariff" }));
+
+        // Create polygon series
+        const polygonSeries = chart.series.push(
+          am5map.MapPolygonSeries.new(root, {
+            geoJSON: am5geodata_worldLow,
+            valueField: "threatened",
+            calculateAggregates: true,
+            exclude: ["AQ"] // Exclude Antarctica
+          })
+        );
 
         // Configure polygon styling and tooltips
         const polygonColor = am5.color(0xd9cec8);
@@ -203,23 +167,21 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ countryData, onSelectCountry 
           key: "fill"
         }]);
 
-        // Add click handler to navigate to country details
-        polygonSeries.mapPolygons.template.events.on("click", function(ev) {
-          const clickedCountry = ev.target.dataItem.dataContext;
-          if (clickedCountry && clickedCountry.id) {
-            const countryObject = countryData.find(c => c.id === clickedCountry.id);
-            if (countryObject) {
-              onSelectCountry(countryObject);
-            }
-          }
-        });
-
+        // Enhanced tooltip with more data
         polygonSeries.mapPolygons.template.setAll({
-          tooltipText: "{name}: {value}%",
+          tooltipText: "{name}\n[bold]Tariff Data:[/]\nTariffs to US: {threatened}%\nReciprocal Tariff: {updated}%\n[bold]Economic Data:[/]\nGDP 2023: ${gdp2023}B\nTrade Balance: ${usTradeBalance}B",
           fill: polygonColor,
           stroke: am5.color(0xffffff),
           interactive: true,
           cursorOverStyle: "pointer"
+        });
+
+        // Add click handler to navigate to country details
+        polygonSeries.mapPolygons.template.events.on("click", function(ev) {
+          const clickedCountry = ev.target.dataItem.dataContext;
+          if (clickedCountry && clickedCountry.countryObject) {
+            onSelectCountry(clickedCountry.countryObject);
+          }
         });
 
         polygonSeries.data.setAll(mapData);
@@ -289,7 +251,7 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ countryData, onSelectCountry 
       <div className="p-3 border-b">
         <h3 className="text-lg font-medium">AmCharts Tariff Map</h3>
         <p className="text-sm text-muted-foreground mt-1">
-          Toggle between map/globe views and different tariff metrics. Click on a country for details.
+          Toggle between different tariff metrics. Click on a country for details.
         </p>
       </div>
       <div id="chartdiv" ref={chartRef} className="w-full h-[650px]"></div>
