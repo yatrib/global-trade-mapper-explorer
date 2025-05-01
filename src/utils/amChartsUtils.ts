@@ -156,8 +156,8 @@ export const initializeAmChart = (
       strokeWidth: 0.5,
       interactive: true,
       cursorOverStyle: "pointer",
-      // Set fill for countries without data
-      fill: am5.color(0xF1F1F1) // Light gray for countries not in our database
+      // Use darker gray for countries without data (updated)
+      fill: am5.color(0x333333) // Darker gray (#333333) for countries not in our database
     });
 
     // Add click handler to navigate to country details
