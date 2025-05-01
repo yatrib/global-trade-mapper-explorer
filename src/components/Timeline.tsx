@@ -3,6 +3,7 @@ import React from 'react';
 import { Flag, AlertTriangle, TrendingUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface TimelineEvent {
   date: string;
@@ -10,131 +11,155 @@ interface TimelineEvent {
   description: string;
   icon: React.ReactNode;
   isHighlighted?: boolean;
+  country: 'us' | 'china';
 }
 
-// U.S. - China timeline events data
-const usEvents: TimelineEvent[] = [
+// Combined US and China timeline events data, sorted by date
+const combinedUsChina: TimelineEvent[] = [
   {
     date: 'Feb 1, 2025',
     title: 'Initial Tariffs Ordered',
     description: 'Trump ordered a 10% tariff on all Chinese imports, adding to existing duties from both his previous administration and the Biden era, effective February 4.',
     icon: <Flag className="h-6 w-6 text-white" />,
-    isHighlighted: true
+    isHighlighted: true,
+    country: 'us'
   },
   {
     date: 'Feb 4, 2025',
     title: 'Tariffs Take Effect',
     description: '10% tariffs on Chinese imports take effect.',
-    icon: <Flag className="h-6 w-6 text-white" />
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'us'
+  },
+  {
+    date: 'Feb 4, 2025',
+    title: 'Retaliatory Tariffs Announced',
+    description: 'China announces retaliatory 15% tariffs on U.S. coal and liquefied natural gas, a 10% tariff on cruder oil, agricultural machinery, and large cars, and an anti-monopoly investigation into Google.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    isHighlighted: true,
+    country: 'china'
+  },
+  {
+    date: 'Feb 10, 2025',
+    title: 'Tariffs Implementation',
+    description: 'China imposes 15% tariffs on coal and liquefied natural gas products, and 10% tariffs on crude oil, agricultural machinery, and large-engine cars imported from the U.S.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'china'
   },
   {
     date: 'Mar 4, 2025',
     title: 'Tariffs Doubled',
     description: 'Trump doubles tariffs on all Chinese imports to 20%.',
     icon: <TrendingUp className="h-6 w-6 text-white" />,
-    isHighlighted: true
-  },
-  {
-    date: 'Apr 2, 2025',
-    title: '"Liberation Day" Agenda',
-    description: 'Trump announces new 34% tariff on Chinese imports.',
-    icon: <Flag className="h-6 w-6 text-white" />
-  },
-  {
-    date: 'Apr 7, 2025',
-    title: 'Additional Tariff Threat',
-    description: 'Trump threatens an additional 50% tariff on China, which could raise total tariffs to 104%.',
-    icon: <AlertTriangle className="h-6 w-6 text-white" />,
-    isHighlighted: true
-  },
-  {
-    date: 'Apr 9, 2025',
-    title: 'Selective Tariff Pause',
-    description: 'Trump pauses reciprocal tariffs for 90 days for most countries, but keeps China at 125%.',
-    icon: <Flag className="h-6 w-6 text-white" />
-  },
-  {
-    date: 'Apr 10, 2025',
-    title: 'Total Tariff Clarification',
-    description: 'White House clarifies total China tariff is 145% when fentanyl-related duties are included.',
-    icon: <Flag className="h-6 w-6 text-white" />
-  },
-  {
-    date: 'Apr 11, 2025',
-    title: 'Electronics Tariff Exemption',
-    description: 'The U.S. exempts most countries from electronics tariffs under its reciprocal policy but keeps a 20% rate on Chinese electronics.',
-    icon: <Flag className="h-6 w-6 text-white" />
-  },
-  {
-    date: 'Apr 22, 2025',
-    title: 'Diplomatic Stance',
-    description: 'Trump says he\'s waiting for Xi to initiate talks and claims a "very good relationship."',
-    icon: <Flag className="h-6 w-6 text-white" />
-  },
-  {
-    date: 'Apr 23, 2025',
-    title: 'Potential Tariff Reduction',
-    description: 'Trump signals potential tariff reduction: base rate may drop from 145% to 50–65%, with strategic items still facing up to 100%.',
-    icon: <TrendingUp className="h-6 w-6 text-white" />,
-    isHighlighted: true
-  }
-];
-
-const chinaEvents: TimelineEvent[] = [
-  {
-    date: 'Feb 4, 2025',
-    title: 'Retaliatory Tariffs Announced',
-    description: 'China announces retaliatory 15% tariffs on U.S. coal and liquefied natural gas, a 10% tariff on cruder oil, agricultural machinery, and large cars, and an anti-monopoly investigation into Google.',
-    icon: <Flag className="h-6 w-6 text-white" />,
-    isHighlighted: true
-  },
-  {
-    date: 'Feb 10, 2025',
-    title: 'Tariffs Implementation',
-    description: 'China imposes 15% tariffs on coal and liquefied natural gas products, and 10% tariffs on crude oil, agricultural machinery, and large-engine cars imported from the U.S.',
-    icon: <Flag className="h-6 w-6 text-white" />
+    isHighlighted: true,
+    country: 'us'
   },
   {
     date: 'Mar 4, 2025',
     title: 'Agricultural Tariffs Announced',
     description: 'China announces 15% tariffs on U.S. chicken, wheat, corn, and cotton, and a 10% tariff on sorghum, soybeans, pork, beef, aquatic products, fruits, vegetables, and dairy products (effective Mar 10) and expands export controls to two dozen additional U.S. firms.',
     icon: <AlertTriangle className="h-6 w-6 text-white" />,
-    isHighlighted: true
+    isHighlighted: true,
+    country: 'china'
   },
   {
     date: 'Mar 10, 2025',
     title: 'Farm Products Tariffs',
     description: 'China\'s tariffs on American farm products take effect.',
-    icon: <Flag className="h-6 w-6 text-white" />
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'china'
+  },
+  {
+    date: 'Apr 2, 2025',
+    title: '"Liberation Day" Agenda',
+    description: 'Trump announces new 34% tariff on Chinese imports.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'us'
   },
   {
     date: 'Apr 4, 2025',
     title: 'Matching Tariffs Announced',
     description: 'China announces a matching 34% tariff on all U.S. imports (effective Apr 10), expands rare earth export controls, and sanctions 27 more U.S. companies.',
     icon: <AlertTriangle className="h-6 w-6 text-white" />,
-    isHighlighted: true
+    isHighlighted: true,
+    country: 'china'
+  },
+  {
+    date: 'Apr 7, 2025',
+    title: 'Additional Tariff Threat',
+    description: 'Trump threatens an additional 50% tariff on China, which could raise total tariffs to 104%.',
+    icon: <AlertTriangle className="h-6 w-6 text-white" />,
+    isHighlighted: true,
+    country: 'us'
+  },
+  {
+    date: 'Apr 9, 2025',
+    title: 'Selective Tariff Pause',
+    description: 'Trump pauses reciprocal tariffs for 90 days for most countries, but keeps China at 125%.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'us'
   },
   {
     date: 'Apr 9, 2025',
     title: 'Additional Tariffs Response',
     description: 'China responds with an additional 50% tariff on all U.S. goods (effective Apr 10), raising total duties to 84%.',
     icon: <AlertTriangle className="h-6 w-6 text-white" />,
-    isHighlighted: true
+    isHighlighted: true,
+    country: 'china'
+  },
+  {
+    date: 'Apr 10, 2025',
+    title: 'Total Tariff Clarification',
+    description: 'White House clarifies total China tariff is 145% when fentanyl-related duties are included.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'us'
+  },
+  {
+    date: 'Apr 11, 2025',
+    title: 'Electronics Tariff Exemption',
+    description: 'The U.S. exempts most countries from electronics tariffs under its reciprocal policy but keeps a 20% rate on Chinese electronics.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'us'
   },
   {
     date: 'Apr 11, 2025',
     title: 'Total Tariff Increase',
     description: 'China raises its total duties on all U.S. goods to 125%.',
     icon: <AlertTriangle className="h-6 w-6 text-white" />,
-    isHighlighted: true
+    isHighlighted: true,
+    country: 'china'
+  },
+  {
+    date: 'Apr 22, 2025',
+    title: 'Diplomatic Stance',
+    description: 'Trump says he\'s waiting for Xi to initiate talks and claims a "very good relationship."',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'us'
   },
   {
     date: 'Apr 22, 2025',
     title: 'Diplomatic Strategy',
     description: 'Xi avoids direct talks, instead launches diplomatic outreach to other trade partners.',
-    icon: <Flag className="h-6 w-6 text-white" />
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'china'
+  },
+  {
+    date: 'Apr 23, 2025',
+    title: 'Potential Tariff Reduction',
+    description: 'Trump signals potential tariff reduction: base rate may drop from 145% to 50–65%, with strategic items still facing up to 100%.',
+    icon: <TrendingUp className="h-6 w-6 text-white" />,
+    isHighlighted: true,
+    country: 'us'
   }
 ];
+
+// Sort events by date string
+const sortedEvents = [...combinedUsChina].sort((a, b) => {
+  // Parse date strings into comparable format (assuming format is 'MMM D, YYYY')
+  const dateA = new Date(a.date);
+  const dateB = new Date(b.date);
+  return dateA.getTime() - dateB.getTime();
+});
 
 const TimelineComponent: React.FC<{ events: TimelineEvent[] }> = ({ events }) => {
   return (
@@ -155,7 +180,8 @@ const TimelineComponent: React.FC<{ events: TimelineEvent[] }> = ({ events }) =>
               <div className="absolute left-1/2 transform -translate-x-1/2 z-10">
                 <div className={cn(
                   "w-10 h-10 rounded-full flex items-center justify-center shadow-sm",
-                  event.isHighlighted ? "bg-infomineo-gradient" : "bg-infomineo-blue"
+                  event.isHighlighted ? "bg-infomineo-gradient" : 
+                    event.country === 'us' ? "bg-infomineo-blue" : "bg-infomineo-red"
                 )}>
                   {event.icon}
                 </div>
@@ -166,11 +192,24 @@ const TimelineComponent: React.FC<{ events: TimelineEvent[] }> = ({ events }) =>
                 "w-[calc(50%-2rem)]",
                 isEven ? "pr-8" : "pl-8"
               )}>
-                <div className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300">
-                  <span className="text-sm font-semibold text-infomineo-light inline-block mb-2">{event.date}</span>
-                  <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
-                  <p className="text-gray-600">{event.description}</p>
-                </div>
+                <Card className={cn(
+                  "hover:shadow-md transition-shadow duration-300",
+                  event.country === 'us' ? "border-l-4 border-l-infomineo-blue" : "border-l-4 border-l-infomineo-red"
+                )}>
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between mb-2">
+                      <span className="text-sm font-semibold text-infomineo-light">{event.date}</span>
+                      <span className={cn(
+                        "text-xs font-bold px-2 py-1 rounded-full",
+                        event.country === 'us' ? "bg-infomineo-blue/10 text-infomineo-blue" : "bg-infomineo-red/10 text-infomineo-red"
+                      )}>
+                        {event.country === 'us' ? 'United States' : 'China'}
+                      </span>
+                    </div>
+                    <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
+                    <p className="text-gray-600">{event.description}</p>
+                  </CardContent>
+                </Card>
               </div>
             </div>
           );
@@ -196,17 +235,18 @@ const Timeline: React.FC = () => {
         </TabsList>
         
         {/* U.S. - China Tab Content */}
-        <TabsContent value="us-china" className="space-y-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <h3 className="text-2xl font-bold mb-6 text-center">United States</h3>
-              <TimelineComponent events={usEvents} />
+        <TabsContent value="us-china">
+          <div className="mb-6 flex justify-center gap-8">
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-infomineo-blue rounded-full"></div>
+              <span className="font-medium">United States</span>
             </div>
-            <div>
-              <h3 className="text-2xl font-bold mb-6 text-center">China</h3>
-              <TimelineComponent events={chinaEvents} />
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-infomineo-red rounded-full"></div>
+              <span className="font-medium">China</span>
             </div>
           </div>
+          <TimelineComponent events={sortedEvents} />
         </TabsContent>
         
         {/* U.S. - Canada & Mexico Tab Content - Empty for now */}
