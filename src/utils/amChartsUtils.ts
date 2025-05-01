@@ -62,8 +62,8 @@ const formatCurrency = (value: number | null | undefined): string => {
 // Map country data to the format expected by amCharts
 export const mapCountryDataForChart = (countryData: CountryData[]) => {
   const result = countryData.map(country => {
-    // Verify and log the numeric values for each country
-    console.log(`Mapping for chart: ${country.name}`, {
+    // Verify and log the numeric values for this country
+    console.log(`Mapping country for chart: ${country.name}`, {
       gdp2023: country.gdp.actual2023,
       gdp2024: country.gdp.estimate2024,
       usTradeBalance: country.usTradeBalance,
@@ -87,7 +87,13 @@ export const mapCountryDataForChart = (countryData: CountryData[]) => {
     };
   });
   
-  console.log("Final mapped chart data:", result);
+  // Log the first few countries in the result to verify data is correct
+  if (result.length > 0) {
+    console.log("Mapped chart data sample (first 3 countries):", result.slice(0, 3));
+  } else {
+    console.warn("No countries mapped for chart data");
+  }
+  
   return result;
 };
 
@@ -112,11 +118,10 @@ export const initializeAmChart = (
   
   // Map country data to the format expected by amCharts
   const mapData = mapCountryDataForChart(countryData);
-  console.log('Map data for chart:', mapData);
-
+  
   // Create a map of country IDs for quick lookup
   const countryIds = new Set(countryData.map(country => country.id));
-  console.log("Countries available in database:", countryIds);
+  console.log("Countries available in database:", Array.from(countryIds));
 
   // Clear previous chart if it exists
   container.innerHTML = '';
@@ -198,6 +203,7 @@ export const initializeAmChart = (
     // Add click handler to navigate to country details
     polygonSeries.mapPolygons.template.events.on("click", function(ev: any) {
       const clickedCountry = ev.target.dataItem.dataContext;
+      console.log("Country clicked:", clickedCountry);
       if (clickedCountry && clickedCountry.countryObject) {
         onSelectCountry(clickedCountry.countryObject);
       }
@@ -269,7 +275,7 @@ export const initializeAmChart = (
     });
     
     // Log the data that's being set to the polygons for debugging
-    console.log("Polygon data before setting:", mapData);
+    console.log("Final polygon data for map:", mapData);
   });
 
   // Return a cleanup function

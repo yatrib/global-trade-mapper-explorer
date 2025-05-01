@@ -51,33 +51,42 @@ export function useCountryData() {
 
         console.log('Countries fetched successfully:', countries.length);
         
-        // Log a full sample country to inspect data structure and actual values
+        // Log a sample country to inspect the full structure of the data
         if (countries.length > 0) {
-          console.log('Sample raw country data (first record):', JSON.stringify(countries[0], null, 2));
+          console.log('Sample country data structure (first record):', JSON.stringify(countries[0], null, 2));
         }
         
         // Map the database result to our CountryData type, using Type as region
         const mappedCountries = countries.map(country => {
-          // Retrieve data from nested objects
+          // Extract data from nested arrays properly
           const gdpData = country.country_gdp?.[0] || {};
           const tradeData = country.us_trade_data?.[0] || {};
           
-          // Log raw data for debugging
-          console.log(`Raw GDP data for ${country.name}:`, gdpData);
-          console.log(`Raw trade data for ${country.name}:`, tradeData);
+          // Log the raw nested data for verification
+          console.log(`Raw data for ${country.name}:`, {
+            gdp: gdpData,
+            trade: tradeData
+          });
           
-          // Critical fix: Properly extract and convert numeric values
-          // First convert to string to handle possible non-string inputs, then parse as float
-          const actual2023 = gdpData?.actual_2023 != null ? parseFloat(String(gdpData.actual_2023)) : 0;
-          const estimate2024 = gdpData?.estimate_2024 != null ? parseFloat(String(gdpData.estimate_2024)) : 0;
-          const tradeBalance = tradeData?.trade_balance != null ? parseFloat(String(tradeData.trade_balance)) : 0;
-          const shareOfImports = tradeData?.share_of_imports != null ? parseFloat(String(tradeData.share_of_imports)) : 0;
-          const shareOfExports = tradeData?.share_of_exports != null ? parseFloat(String(tradeData.share_of_exports)) : 0;
-          const reciprocalTariff = tradeData?.reciprocal_tariff != null ? parseFloat(String(tradeData.reciprocal_tariff)) : 0;
-          const tariffsToUS = tradeData?.tariffs_to_us != null ? parseFloat(String(tradeData.tariffs_to_us)) : 0;
+          // Safe parsing functions to handle different data types and potential null values
+          const safeParseNumber = (value: any): number => {
+            if (value === null || value === undefined) return 0;
+            // Convert to string first to handle any data type, then parse
+            const numValue = parseFloat(String(value).replace(/,/g, ''));
+            return isNaN(numValue) ? 0 : numValue;
+          };
           
-          // Log parsed values for debugging
-          console.log(`${country.name} parsed values:`, {
+          // Extract and parse numeric values
+          const actual2023 = safeParseNumber(gdpData?.actual_2023);
+          const estimate2024 = safeParseNumber(gdpData?.estimate_2024);
+          const tradeBalance = safeParseNumber(tradeData?.trade_balance);
+          const shareOfImports = safeParseNumber(tradeData?.share_of_imports);
+          const shareOfExports = safeParseNumber(tradeData?.share_of_exports);
+          const reciprocalTariff = safeParseNumber(tradeData?.reciprocal_tariff);
+          const tariffsToUS = safeParseNumber(tradeData?.tariffs_to_us);
+          
+          // Log the parsed values for verification
+          console.log(`Parsed values for ${country.name}:`, {
             actual2023,
             estimate2024,
             tradeBalance,
@@ -110,12 +119,17 @@ export function useCountryData() {
           } as CountryData;
         });
 
-        // Log sample of processed data
+        // Log a sample of processed data for final verification
         if (mappedCountries.length > 0) {
-          console.log('Sample processed country data:', {
+          console.log('Final processed country data (first record):', {
+            id: mappedCountries[0].id,
             name: mappedCountries[0].name,
+            gdp: mappedCountries[0].gdp,
+            usTradeBalance: mappedCountries[0].usTradeBalance,
             tariffsToUS: mappedCountries[0].tariffsToUS,
-            gdp: mappedCountries[0].gdp
+            reciprocalTariff: mappedCountries[0].reciprocalTariff,
+            shareOfExports: mappedCountries[0].shareOfUsExports,
+            shareOfImports: mappedCountries[0].shareOfUsImports
           });
         }
         
