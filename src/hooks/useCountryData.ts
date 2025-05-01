@@ -10,14 +10,13 @@ export function useCountryData() {
       console.log('Fetching country data from Supabase...');
       
       try {
-        // Get countries data from Supabase
+        // Get countries data from Supabase, using Type instead of region
         const { data: countries, error: countriesError } = await supabase
           .from('countries')
           .select(`
             id,
             name,
-            region,
-            area,
+            Type,
             country_gdp (
               actual_2023,
               estimate_2024
@@ -52,15 +51,15 @@ export function useCountryData() {
 
         console.log('Countries fetched successfully:', countries.length);
         
-        // Map the database result to our CountryData type
+        // Map the database result to our CountryData type, using Type as region
         const mappedCountries = countries.map(country => {
           console.log(`Mapping country: ${country.name} (${country.id})`);
           
           return {
             id: country.id,
             name: country.name,
-            region: country.region,
-            area: country.area,
+            region: country.Type || 'Unknown', // Use Type as region with fallback
+            area: 0, // Since area isn't present in the schema, set a default value
             gdp: {
               actual2023: country.country_gdp?.[0]?.actual_2023 || 0,
               estimate2024: country.country_gdp?.[0]?.estimate_2024 || 0,
