@@ -1,7 +1,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { CountryData } from '@/data/types';
-import { loadAmChartsScripts, initializeAmChart, AmChartsInstance } from '@/utils/amChartsUtils';
+import { loadAmChartsScripts, initializeAmChart, AmChartsInstance } from '@/utils/amCharts';
 import { useCountryData } from '@/hooks/useCountryData';
 
 interface AmChartsMapProps {
