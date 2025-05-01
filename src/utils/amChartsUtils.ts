@@ -57,6 +57,8 @@ export const mapCountryDataForChart = (countryData: CountryData[]) => {
     usTradeBalance: country.usTradeBalance || 0,
     shareOfUsImports: country.shareOfUsImports || 0,
     shareOfUsExports: country.shareOfUsExports || 0,
+    tariffsToUS: country.tariffsToUS || 0,
+    reciprocalTariff: country.reciprocalTariff || 0,
     countryObject: country // Store the entire country object for reference
   }));
 };
@@ -82,6 +84,10 @@ export const initializeAmChart = (
   
   // Map country data to the format expected by amCharts
   const mapData = mapCountryDataForChart(countryData);
+
+  // Create a map of country IDs for quick lookup
+  const countryIds = new Set(countryData.map(country => country.id));
+  console.log("Countries available in database:", countryIds);
 
   // Clear previous chart if it exists
   container.innerHTML = '';
@@ -129,7 +135,7 @@ export const initializeAmChart = (
     const polygonSeries = chart.series.push(
       am5map.MapPolygonSeries.new(root, {
         geoJSON: am5geodata_worldLow,
-        valueField: "gdp2023",
+        valueField: "tariffsToUS", // Use tariffs as the default value field
         calculateAggregates: true,
         exclude: ["AQ"] // Exclude Antarctica
       })
@@ -149,15 +155,20 @@ export const initializeAmChart = (
       key: "fill"
     }]);
 
-    // Enhanced tooltip with economic data
+    // Enhanced tooltip with tariff data
     polygonSeries.mapPolygons.template.setAll({
-      tooltipText: "{name}\n[bold]Economic Data:[/]\nGDP 2023: ${gdp2023}B\nTrade Balance: ${usTradeBalance}B",
+      tooltipText: "{name}\n[bold]Tariff Data:[/]\nTariffs to US: {tariffsToUS}%\nReciprocal Tariff: {reciprocalTariff}%\n[bold]Trade:[/]\nTrade Balance: ${usTradeBalance}B",
       stroke: am5.color(0xffffff),
       strokeWidth: 0.5,
       interactive: true,
       cursorOverStyle: "pointer",
       // Updated color for countries without data to #bdbdbd
       fill: am5.color(0xbdbdbd) // #bdbdbd for countries not in our database
+    });
+
+    // Filter data to only include countries in the database
+    const filteredPolygons = am5geodata_worldLow.features.filter((feature: any) => {
+      return countryIds.has(feature.id);
     });
 
     // Add click handler to navigate to country details
@@ -168,6 +179,7 @@ export const initializeAmChart = (
       }
     });
 
+    // Set the data for the polygons
     polygonSeries.data.setAll(mapData);
 
     // Add labels for country names
@@ -191,17 +203,12 @@ export const initializeAmChart = (
       });
     });
 
-    // Add major country labels only for readability
-    const labelData = mapData
-      .filter(country => {
-        const majorCountries = ["US", "CN", "RU", "BR", "IN", "CA", "AU", "FR", "DE", "JP", "GB", "MX", "ZA", "SA"];
-        return majorCountries.includes(country.id);
-      })
-      .map(country => ({
-        id: country.id,
-        name: country.name,
-        geometry: { type: "Point", coordinates: am5geodata_worldLow.features.find((f: any) => f.id === country.id)?.geometry?.coordinates?.[0]?.[0] || [0, 0] }
-      }));
+    // Add labels only for countries that exist in the database
+    const labelData = mapData.map(country => ({
+      id: country.id,
+      name: country.name,
+      geometry: { type: "Point", coordinates: am5geodata_worldLow.features.find((f: any) => f.id === country.id)?.geometry?.coordinates?.[0]?.[0] || [0, 0] }
+    }));
 
     labelSeries.data.setAll(labelData);
 
@@ -211,8 +218,8 @@ export const initializeAmChart = (
         orientation: "vertical",
         startColor: am5.color(0x41B3E6),  // Infomineo Light Blue
         endColor: am5.color(0x2C469D),    // Infomineo Royal Blue
-        startText: "Lowest",
-        endText: "Highest",
+        startText: "Low Tariffs",
+        endText: "High Tariffs",
         stepCount: 6,
         x: am5.p100,
         centerX: am5.p100,

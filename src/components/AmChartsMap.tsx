@@ -2,18 +2,19 @@
 import React, { useEffect, useRef } from 'react';
 import { CountryData } from '@/data/types';
 import { loadAmChartsScripts, initializeAmChart, AmChartsInstance } from '@/utils/amChartsUtils';
+import { useCountryData } from '@/hooks/useCountryData';
 
 interface AmChartsMapProps {
-  countryData: CountryData[];
   onSelectCountry: (country: CountryData) => void;
 }
 
-const AmChartsMap: React.FC<AmChartsMapProps> = ({ countryData, onSelectCountry }) => {
+const AmChartsMap: React.FC<AmChartsMapProps> = ({ onSelectCountry }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstanceRef = useRef<AmChartsInstance | undefined>();
+  const { data: countryData, isLoading, error } = useCountryData();
 
   useEffect(() => {
-    if (!chartRef.current || !countryData.length) return;
+    if (!chartRef.current || !countryData || countryData.length === 0) return;
 
     // Load AmCharts scripts and initialize the chart
     const initChart = async () => {
@@ -48,6 +49,27 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ countryData, onSelectCountry 
       }
     };
   }, [countryData, onSelectCountry]);
+
+  if (isLoading) {
+    return (
+      <div className="w-full bg-white rounded-lg overflow-hidden shadow-lg border p-4">
+        <div className="animate-pulse flex flex-col space-y-4">
+          <div className="h-6 bg-gray-200 rounded w-1/4"></div>
+          <div className="h-[500px] bg-gray-200 rounded"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full bg-white rounded-lg overflow-hidden shadow-lg border p-4">
+        <div className="text-red-500">
+          Error loading map data: {error instanceof Error ? error.message : 'Unknown error'}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full bg-white rounded-lg overflow-hidden shadow-lg border">
