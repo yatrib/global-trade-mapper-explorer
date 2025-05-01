@@ -85,31 +85,36 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ countryData, onSelectCountry 
         // Create root element
         const root = am5.Root.new(chartRef.current);
 
-        // Set themes
+        // Set themes with Infomineo colors
         const myTheme = am5.Theme.new(root);
         myTheme.rule("InterfaceColors").setAll({
-          primaryButton: am5.color(0xc83830),
+          primaryButton: am5.color(0xc83830),  // Infomineo red
           primaryButtonHover: am5.Color.lighten(am5.color(0xc83830), 0.2),
           primaryButtonDown: am5.Color.lighten(am5.color(0xc83830), -0.2),
-          primaryButtonActive: am5.color(0xd9cec8),
+          primaryButtonActive: am5.color(0x2C469D),  // Infomineo blue
         });
         myTheme.rule("Label").setAll({
-          fontSize: "0.8em"
+          fontSize: "0.85em",
+          fill: am5.color(0x333333)
         });
         root.setThemes([am5themes_Animated.new(root), myTheme]);
 
         // Create map chart
         const chart = root.container.children.push(
           am5map.MapChart.new(root, {
-            projection: am5map.geoMercator()
+            projection: am5map.geoMercator(),
+            panX: "none",  // Disable panning
+            panY: "none",  // Disable panning
+            wheelX: "none", // Disable zooming
+            wheelY: "none"  // Disable zooming
           })
         );
 
-        // Add graticule series (grid lines)
+        // Add graticule series (grid lines) - more subtle
         const graticuleSeries = chart.series.unshift(
           am5map.GraticuleSeries.new(root, { step: 10 })
         );
-        graticuleSeries.mapLines.template.set("strokeOpacity", 0.05);
+        graticuleSeries.mapLines.template.set("strokeOpacity", 0.03);
 
         // Control elements for data view
         const cont2 = chart.children.push(
@@ -142,7 +147,7 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ countryData, onSelectCountry 
         });
         cont2.children.push(am5.Label.new(root, { centerY: am5.p50, text: "Reciprocal Tariff" }));
 
-        // Create polygon series
+        // Create polygon series for countries
         const polygonSeries = chart.series.push(
           am5map.MapPolygonSeries.new(root, {
             geoJSON: am5geodata_worldLow,
@@ -153,25 +158,24 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ countryData, onSelectCountry 
         );
 
         // Configure polygon styling and tooltips
-        const polygonColor = am5.color(0xd9cec8);
-
         polygonSeries.mapPolygons.template.events.on("pointerover", function(ev) {
           heatLegend.showValue(ev.target.dataItem.get("value"));
         });
 
+        // Use Infomineo colors for the heatmap
         polygonSeries.set("heatRules", [{
           target: polygonSeries.mapPolygons.template,
           dataField: "value",
-          min: am5.color(0xd3a29f),
-          max: am5.color(0x6f0600),
+          min: am5.color(0x41B3E6),  // Infomineo light blue
+          max: am5.color(0xC83830),  // Infomineo red
           key: "fill"
         }]);
 
         // Enhanced tooltip with more data
         polygonSeries.mapPolygons.template.setAll({
           tooltipText: "{name}\n[bold]Tariff Data:[/]\nTariffs to US: {threatened}%\nReciprocal Tariff: {updated}%\n[bold]Economic Data:[/]\nGDP 2023: ${gdp2023}B\nTrade Balance: ${usTradeBalance}B",
-          fill: polygonColor,
           stroke: am5.color(0xffffff),
+          strokeWidth: 0.5,
           interactive: true,
           cursorOverStyle: "pointer"
         });
@@ -186,15 +190,50 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ countryData, onSelectCountry 
 
         polygonSeries.data.setAll(mapData);
 
+        // Add labels for country names
+        const labelSeries = chart.series.push(
+          am5map.MapPointSeries.new(root, {})
+        );
+
+        labelSeries.bullets.push(function() {
+          return am5.Bullet.new(root, {
+            sprite: am5.Label.new(root, {
+              text: "{name}",
+              fill: am5.color(0x333333),
+              strokeOpacity: 0,
+              centerX: am5.p50,
+              centerY: am5.p50,
+              fontSize: "0.7em",
+              fontWeight: "400",
+              populateText: true,
+              oversizedBehavior: "hide"
+            })
+          });
+        });
+
+        // Add major country labels only for readability
+        const labelData = mapData
+          .filter(country => {
+            const majorCountries = ["US", "CN", "RU", "BR", "IN", "CA", "AU", "FR", "DE", "JP", "GB", "MX", "ZA", "SA"];
+            return majorCountries.includes(country.id);
+          })
+          .map(country => ({
+            id: country.id,
+            name: country.name,
+            geometry: { type: "Point", coordinates: am5geodata_worldLow.features.find(f => f.id === country.id)?.geometry?.coordinates?.[0]?.[0] || [0, 0] }
+          }));
+
+        labelSeries.data.setAll(labelData);
+
         // Create heat legend
         const heatLegend = chart.children.push(
           am5.HeatLegend.new(root, {
             orientation: "vertical",
-            startColor: am5.color(0xd3a29f),
-            endColor: am5.color(0x6f0600),
+            startColor: am5.color(0x41B3E6),  // Infomineo light blue
+            endColor: am5.color(0xC83830),    // Infomineo red
             startText: "Lowest",
             endText: "Highest",
-            stepCount: 8,
+            stepCount: 6,
             x: am5.p100,
             centerX: am5.p100,
             paddingRight: 20,
@@ -205,12 +244,12 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ countryData, onSelectCountry 
 
         heatLegend.startLabel.setAll({
           fontSize: 12,
-          fill: heatLegend.get("startColor")
+          fill: am5.color(0x41B3E6)  // Infomineo light blue
         });
 
         heatLegend.endLabel.setAll({
           fontSize: 12,
-          fill: heatLegend.get("endColor")
+          fill: am5.color(0xC83830)  // Infomineo red
         });
 
         polygonSeries.events.on("datavalidated", function() {
@@ -223,9 +262,11 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ countryData, onSelectCountry 
           am5.Label.new(root, {
             text: "Global Tariff Impact Analysis",
             fontSize: 20,
+            fontWeight: "500",
             x: am5.percent(50),
             centerX: am5.p50,
-            y: 40
+            y: 30,
+            fill: am5.color(0x2C469D)  // Infomineo blue
           })
         );
 
@@ -249,7 +290,7 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ countryData, onSelectCountry 
   return (
     <div className="w-full bg-white rounded-lg overflow-hidden shadow-lg border">
       <div className="p-3 border-b">
-        <h3 className="text-lg font-medium">AmCharts Tariff Map</h3>
+        <h3 className="text-lg font-medium text-infomineo-blue">Global Tariff Map</h3>
         <p className="text-sm text-muted-foreground mt-1">
           Toggle between different tariff metrics. Click on a country for details.
         </p>

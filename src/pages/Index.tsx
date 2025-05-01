@@ -1,9 +1,6 @@
 
 import React, { useState, useRef } from 'react';
 import { CountryData } from '@/data/types';
-import WorldMap from '@/components/WorldMap';
-import SimpleSvgMap from '@/components/SimpleSvgMap';
-import InteractiveMap from '@/components/InteractiveMap';
 import AmChartsMap from '@/components/AmChartsMap';
 import { Badge } from '@/components/ui/badge';
 import { useCountryData } from '@/hooks/useCountryData';
@@ -15,7 +12,6 @@ import ExpertiseSection from '@/components/ExpertiseSection';
 import infomineoLogo from '@/assets/infomineo-logo.png';
 import Footer from '@/components/Footer';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const Index: React.FC = () => {
   const { data: countryData, isLoading, error } = useCountryData();
@@ -116,55 +112,14 @@ const Index: React.FC = () => {
           </div>
         </div>
 
-        {/* Map Tabs - For different map visualizations */}
+        {/* Map Container - Now only showing AmCharts Map */}
         <div className="container mx-auto px-4 pb-8">
-          <Tabs defaultValue="interactive" className="w-full">
-            <TabsList className="mb-4 w-full justify-start">
-              <TabsTrigger value="interactive">Interactive Map</TabsTrigger>
-              <TabsTrigger value="amcharts">AmCharts Map</TabsTrigger>
-              <TabsTrigger value="mapbox">Mapbox Map</TabsTrigger>
-              <TabsTrigger value="svg">SVG Map</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="interactive" className="mt-0">
-              <div className="w-full bg-white">
-                <InteractiveMap
-                  countryData={countryData || []}
-                  onSelectCountry={handleCountrySelect}
-                />
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="amcharts" className="mt-0">
-              <div className="w-full bg-white">
-                <AmChartsMap
-                  countryData={countryData || []}
-                  onSelectCountry={handleCountrySelect}
-                />
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="mapbox" className="mt-0">
-              <div className="h-[600px] w-full bg-white">
-                <WorldMap
-                  selectedCountry={selectedCountry}
-                  onSelectCountry={handleCountrySelect}
-                  countryData={countryData || []}
-                  onShowFullAccess={handleGetFullAccess} 
-                  removeRestrictions={true}
-                />
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="svg" className="mt-0">
-              <div className="w-full bg-white">
-                <SimpleSvgMap
-                  countryData={countryData || []}
-                  onSelectCountry={handleCountrySelect}
-                />
-              </div>
-            </TabsContent>
-          </Tabs>
+          <div className="w-full bg-white">
+            <AmChartsMap
+              countryData={countryData || []}
+              onSelectCountry={handleCountrySelect}
+            />
+          </div>
         </div>
       </section>
 
