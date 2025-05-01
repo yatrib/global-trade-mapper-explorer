@@ -11,7 +11,7 @@ import Timeline from '@/components/Timeline';
 import ExpertiseSection from '@/components/ExpertiseSection';
 import infomineoLogo from '@/assets/infomineo-logo.png';
 import Footer from '@/components/Footer';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 
 const Index: React.FC = () => {
   const { data: countryData, isLoading, error } = useCountryData();
@@ -89,7 +89,7 @@ const Index: React.FC = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section - Updated title and description */}
+      {/* Hero Section - Updated title and smaller description */}
       <section className="bg-infomineo-gradient text-white">
         <header className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
@@ -105,14 +105,10 @@ const Index: React.FC = () => {
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-3xl mx-auto text-center animate-subtle-fade">
             <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">Global Trade Map</h1>
-            <p className="text-xl md:text-2xl opacity-90 mb-10 max-w-3xl mx-auto">
+            <p className="text-lg md:text-xl opacity-90 mb-8 max-w-3xl mx-auto line-clamp-3">
               The Trump administration has declared a national emergency and implemented sweeping tariffs on imports, 
               with highest rates targeting Chinese goods while establishing baseline tariffs on most other countries. 
-              This America First policy aims to address perceived unfair trade practices, re-shore manufacturing, and 
-              reduce trade deficits. The measures are reshaping global supply chains and triggering diplomatic responses, 
-              with many countries seeking trade adjustments. The IMF has reduced its global growth forecast due to supply 
-              chain disruptions, and economists warn that despite intentions to protect American jobs, there could be negative 
-              effects on U.S. employment in export-dependent sectors.
+              This America First policy aims to address unfair trade practices and reduce trade deficits.
             </p>
           </div>
         </div>
@@ -171,6 +167,7 @@ const Index: React.FC = () => {
       {/* Change sidebar to a centered dialog */}
       <Dialog open={isDetailOpen} onOpenChange={setIsDetailOpen}>
         <DialogContent className="sm:max-w-[700px] max-h-[85vh] overflow-y-auto">
+          <DialogTitle>{selectedCountry?.name || "Country Details"}</DialogTitle>
           <CountryDetail country={selectedCountry} />
         </DialogContent>
       </Dialog>

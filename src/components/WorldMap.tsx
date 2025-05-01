@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { useMapboxToken } from '@/hooks/useMapboxToken';
 import CountryPopup from './CountryPopup';
 import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 interface WorldMapProps {
   selectedCountry: CountryData | null;
@@ -33,14 +34,14 @@ const WorldMap: React.FC<WorldMapProps> = ({
   const { data: mapboxToken, isLoading } = useMapboxToken();
 
   const popupRef = useRef<mapboxgl.Popup | null>(null);
-  const popupContainerRef = useRef<HTMLDivElement | null>(null);
+  const popupRootRef = useRef<{ root: any, container: HTMLDivElement } | null>(null);
 
   const cleanupPopup = () => {
     try {
-      // First unmount any React component
-      if (popupContainerRef.current) {
-        ReactDOM.unmountComponentAtNode(popupContainerRef.current);
-        popupContainerRef.current = null;
+      // First unmount any React component using createRoot (React 18 way)
+      if (popupRootRef.current) {
+        popupRootRef.current.root.unmount();
+        popupRootRef.current = null;
       }
 
       // Then remove the mapbox popup
@@ -59,7 +60,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
   };
 
   useEffect(() => {
-    if (!mapContainer.current || !mapboxToken || isLoading) return;
+    if (!mapContainer.current || !mapboxToken || isLoading || !countryData.length) return;
 
     mapboxgl.accessToken = mapboxToken;
 
@@ -75,6 +76,10 @@ const WorldMap: React.FC<WorldMapProps> = ({
     });
 
     map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+    // Extract country codes for visualization
+    const countryCodes = countryData.map(country => country.id);
+    console.log("Countries loaded from database:", countryCodes);
 
     map.current.on('load', () => {
       if (!map.current) return;
@@ -97,9 +102,9 @@ const WorldMap: React.FC<WorldMapProps> = ({
         },
       });
 
-      // When restrictions removed, all countries are colored based on tariff data
+      // Layer for highlighting countries in the database
       map.current.addLayer({
-        id: 'all-countries',
+        id: 'database-countries',
         type: 'fill',
         source: 'countries',
         'source-layer': 'country_boundaries',
@@ -111,10 +116,25 @@ const WorldMap: React.FC<WorldMapProps> = ({
               country.id,
               getCountryColor(country, 'tariffsToUS')
             ]),
-            '#e0e0e0' // Default color for countries not in our data
+            'transparent' // Default color for countries not in our data
           ],
           'fill-opacity': 0.8,
         },
+        filter: ['in', 'iso_3166_1'].concat(countryCodes as any[]),
+      });
+
+      // Add layer for highlighted database countries outlines
+      map.current.addLayer({
+        id: 'database-countries-outline',
+        type: 'line',
+        source: 'countries',
+        'source-layer': 'country_boundaries',
+        paint: {
+          'line-color': '#000000',
+          'line-width': 1,
+          'line-opacity': 0.8,
+        },
+        filter: ['in', 'iso_3166_1'].concat(countryCodes as any[]),
       });
 
       // Borders layer
@@ -125,12 +145,12 @@ const WorldMap: React.FC<WorldMapProps> = ({
         'source-layer': 'country_boundaries',
         paint: {
           'line-color': '#ffffff',
-          'line-width': 1,
+          'line-width': 0.5,
         },
       });
 
       // Click handler
-      map.current.on('click', ['all-countries'], (e) => {
+      map.current.on('click', ['database-countries'], (e) => {
         if (e.features && e.features[0].properties) {
           const countryCode = e.features[0].properties.iso_3166_1;
           const country = countryData.find(c => c.id === countryCode);
@@ -142,7 +162,6 @@ const WorldMap: React.FC<WorldMapProps> = ({
 
           // Create new container for this popup
           const container = document.createElement('div');
-          popupContainerRef.current = container;
           
           // Create and set new popup
           const newPopup = new mapboxgl.Popup({
@@ -157,8 +176,12 @@ const WorldMap: React.FC<WorldMapProps> = ({
           // Store reference to popup
           popupRef.current = newPopup;
 
-          // Render CountryPopup component into the container
-          ReactDOM.render(
+          // Create a React root for this container (React 18 way)
+          const root = createRoot(container);
+          popupRootRef.current = { root, container };
+
+          // Render CountryPopup component using the root
+          root.render(
             <CountryPopup 
               country={country} 
               onShowAllData={() => {
@@ -167,17 +190,16 @@ const WorldMap: React.FC<WorldMapProps> = ({
               }}
               onClose={closePopup}
               isRestricted={false}
-            />,
-            container
+            />
           );
         }
       });
 
-      map.current.on('mouseenter', ['all-countries'], () => {
+      map.current.on('mouseenter', ['database-countries'], () => {
         if (map.current) map.current.getCanvas().style.cursor = 'pointer';
       });
 
-      map.current.on('mouseleave', ['all-countries'], () => {
+      map.current.on('mouseleave', ['database-countries'], () => {
         if (map.current) map.current.getCanvas().style.cursor = '';
       });
     });
