@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import * as topojson from 'topojson-client';
 import { CountryData } from '@/data/types';
-import { getCountryColor } from '@/data/countries';
 import { ChevronDown, Info } from 'lucide-react';
 import {
   HoverCard,
@@ -193,14 +192,17 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({ countryData, onSelectCo
       
       const colorScale = getColorScale();
       
-      // Colored overlay for countries in our database
-      const countriesWithData = g.selectAll("path.country-data")
-        .data(filteredCountries.filter((d: any) => {
-          const code = d.properties.iso_a3;
-          return countryMap.has(code);
-        }));
+      // Colored overlay for countries in our database with improved click handling
+      const countriesWithData = filteredCountries.filter((d: any) => {
+        const code = d.properties.iso_a3;
+        return countryMap.has(code);
+      });
+
+      // Create separate layers for interaction to ensure click events work
       
-      countriesWithData
+      // First layer - colored countries (visible)
+      g.selectAll("path.country-data")
+        .data(countriesWithData)
         .enter()
         .append("path")
         .attr("class", "country-data")
@@ -214,20 +216,36 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({ countryData, onSelectCo
           return value !== null ? colorScale(value) : "#ccc";
         })
         .attr("stroke", "#000000")
-        .attr("stroke-width", 0.8)
+        .attr("stroke-width", 0.8);
+      
+      // Second layer - transparent clickable overlay with larger hit area
+      g.selectAll("path.country-interaction")
+        .data(countriesWithData)
+        .enter()
+        .append("path")
+        .attr("class", "country-interaction")
+        .attr("d", path)
+        .attr("fill", "transparent")
+        .attr("stroke", "transparent")
+        .attr("stroke-width", 2)
         .attr("cursor", "pointer")
+        .attr("pointer-events", "all") // Ensure clicks register
         .on("mouseover", function(event: any, d: any) {
           const code = d.properties.iso_a3;
           const country = countryMap.get(code);
           
           if (country) {
-            d3.select(this).attr("fill-opacity", 0.8);
+            // Highlight the country
+            d3.select(this.parentNode)
+              .select(`path.country-data[d="${d3.select(this).attr("d")}"]`)
+              .attr("fill-opacity", 0.8);
             
             tooltip
               .style("visibility", "visible")
               .html(`
                 <div class="font-medium">${country.name}</div>
                 <div>${getMetricLabel(selectedMetric)}: ${formatMetricValue(getMetricValue(country, selectedMetric), selectedMetric)}</div>
+                <div class="text-xs text-blue-600">Click for details</div>
               `);
           }
         })
@@ -237,23 +255,26 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({ countryData, onSelectCo
             .style("left", (event.pageX + 10) + "px");
         })
         .on("mouseout", function() {
-          d3.select(this).attr("fill-opacity", 1);
+          // Reset highlight
+          d3.select(this.parentNode)
+            .selectAll("path.country-data")
+            .attr("fill-opacity", 1);
+          
           tooltip.style("visibility", "hidden");
         })
         .on("click", function(event: any, d: any) {
+          event.stopPropagation(); // Prevent zoom behavior from triggering
           const code = d.properties.iso_a3;
           const country = countryMap.get(code);
           if (country) {
+            console.log(`Country clicked: ${country.name} (${country.id})`);
             onSelectCountry(country);
           }
         });
       
       // Add labels for countries in our database
       g.selectAll("text.country-label")
-        .data(filteredCountries.filter((d: any) => {
-          const code = d.properties.iso_a3;
-          return countryMap.has(code);
-        }))
+        .data(countriesWithData)
         .enter()
         .append("text")
         .attr("class", "country-label")
@@ -265,6 +286,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({ countryData, onSelectCo
         .attr("font-size", "8px")
         .attr("font-weight", "500")
         .attr("fill", "#000")
+        .attr("pointer-events", "none") // Don't interfere with clicks
         .text((d: any) => {
           const code = d.properties.iso_a3;
           const country = countryMap.get(code);
