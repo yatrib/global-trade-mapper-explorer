@@ -22,7 +22,7 @@ export const initializeAmChart = (
   const am5themes_Animated = win.am5themes_Animated;
   const am5geodata_worldLow = win.am5geodata_worldLow;
   
-  // Map country data to the format expected by amCharts
+  // Map country data to the format expected by amCharts - now showing all countries from the database
   const mapData = mapCountryDataForChart(countryData);
   
   // Create a map of country IDs for quick lookup
@@ -75,7 +75,6 @@ export const initializeAmChart = (
     const polygonSeries = chart.series.push(
       am5map.MapPolygonSeries.new(root, {
         geoJSON: am5geodata_worldLow,
-        valueField: "tariffsToUS", // Use tariffs as the default value field
         calculateAggregates: true,
         exclude: ["AQ"] // Exclude Antarctica
       })
@@ -83,10 +82,12 @@ export const initializeAmChart = (
 
     // Configure polygon styling and tooltips
     polygonSeries.mapPolygons.template.events.on("pointerover", function(ev: any) {
-      heatLegend.showValue(ev.target.dataItem.get("value"));
+      if (ev.target.dataItem.get("value") !== undefined) {
+        heatLegend.showValue(ev.target.dataItem.get("value"));
+      }
     });
 
-    // Use Infomineo colors for the heatmap
+    // Use Infomineo colors for countries that have data
     polygonSeries.set("heatRules", [{
       target: polygonSeries.mapPolygons.template,
       dataField: "value",
@@ -102,8 +103,27 @@ export const initializeAmChart = (
       strokeWidth: 0.5,
       interactive: true,
       cursorOverStyle: "pointer",
-      // Updated color for countries without data to #bdbdbd
-      fill: am5.color(0xbdbdbd) // #bdbdbd for countries not in our database
+      // Default color for countries not in our database
+      fill: am5.color(0xCCCCCC) // Light gray for countries not in our database
+    });
+
+    // Set different color for countries in our database based on whether they have data
+    polygonSeries.mapPolygons.template.adapters.add("fill", function(fill, target) {
+      const dataItem = target.dataItem;
+      if (dataItem) {
+        const dataContext = dataItem.dataContext as any;
+        if (dataContext && dataContext.id && countryIds.has(dataContext.id)) {
+          // Country is in our database
+          if (dataContext.tariffsToUS !== null && dataContext.tariffsToUS !== undefined) {
+            // Use color heat rule if has tariff data
+            return fill;
+          } else {
+            // Use special color for countries in DB but without tariff data
+            return am5.color(0x95C8E8); // Lighter blue for countries in DB without tariffs
+          }
+        }
+      }
+      return am5.color(0xCCCCCC); // Default light gray for countries not in our database
     });
 
     // Add click handler to navigate to country details
@@ -118,7 +138,7 @@ export const initializeAmChart = (
     // Set the data for the polygons
     polygonSeries.data.setAll(mapData);
 
-    // Add labels for country names
+    // Add labels for country names (only for countries in our database)
     const labelSeries = chart.series.push(
       am5map.MapPointSeries.new(root, {})
     );
@@ -140,11 +160,17 @@ export const initializeAmChart = (
     });
 
     // Add labels only for countries that exist in the database
-    const labelData = mapData.map(country => ({
-      id: country.id,
-      name: country.name,
-      geometry: { type: "Point", coordinates: am5geodata_worldLow.features.find((f: any) => f.id === country.id)?.geometry?.coordinates?.[0]?.[0] || [0, 0] }
-    }));
+    const labelData = mapData
+      .filter(country => country.id && country.name)
+      .map(country => {
+        const feature = am5geodata_worldLow.features.find((f: any) => f.id === country.id);
+        const coordinates = feature?.geometry?.coordinates?.[0]?.[0] || [0, 0];
+        return {
+          id: country.id,
+          name: country.name,
+          geometry: { type: "Point", coordinates: coordinates }
+        };
+      });
 
     labelSeries.data.setAll(labelData);
 

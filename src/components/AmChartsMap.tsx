@@ -14,7 +14,7 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ onSelectCountry }) => {
   const { data: countryData, isLoading, error } = useCountryData();
 
   useEffect(() => {
-    if (!chartRef.current || !countryData || countryData.length === 0) return;
+    if (!chartRef.current || !countryData) return;
 
     // Log how many countries we have with data
     console.log(`Initializing map with ${countryData.length} countries`);
@@ -31,7 +31,7 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ onSelectCountry }) => {
             chartInstanceRef.current.dispose();
           }
           
-          // Create new chart instance
+          // Create new chart instance with all countries from the database
           chartInstanceRef.current = initializeAmChart(
             chartRef.current,
             countryData,
@@ -74,17 +74,7 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ onSelectCountry }) => {
     );
   }
 
-  // Check if we have any data to display
-  if (!countryData || countryData.length === 0) {
-    return (
-      <div className="w-full bg-white rounded-lg overflow-hidden shadow-lg border p-4">
-        <div className="text-amber-500">
-          No country data available to display on the map.
-        </div>
-      </div>
-    );
-  }
-
+  // Show map as long as we have any country data, even if some countries have null metrics
   return (
     <div className="w-full bg-white rounded-lg overflow-hidden shadow-lg border">
       <div className="p-3 border-b">
