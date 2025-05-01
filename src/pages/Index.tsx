@@ -1,6 +1,6 @@
 
 import React, { useState, useRef } from 'react';
-import { CountryData, MetricType } from '@/data/types';
+import { CountryData } from '@/data/types';
 import WorldMap from '@/components/WorldMap';
 import { Badge } from '@/components/ui/badge';
 import { useCountryData } from '@/hooks/useCountryData';
@@ -9,13 +9,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { DownloadReportForm } from '@/components/DownloadReportForm';
 import Timeline from '@/components/Timeline';
 import ExpertiseSection from '@/components/ExpertiseSection';
-import { metricOptions } from '@/data/countries';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
 import infomineoLogo from '@/assets/infomineo-logo.png';
 import Footer from '@/components/Footer';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 
 const Index: React.FC = () => {
-  const [selectedMetric, setSelectedMetric] = useState<MetricType>('gdp2023');
   const { data: countryData, isLoading, error } = useCountryData();
   const [selectedCountry, setSelectedCountry] = useState<CountryData | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -91,7 +89,7 @@ const Index: React.FC = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section - Improved header visibility */}
+      {/* Hero Section - Updated title and description */}
       <section className="bg-infomineo-gradient text-white">
         <header className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
@@ -106,18 +104,24 @@ const Index: React.FC = () => {
 
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-3xl mx-auto text-center animate-subtle-fade">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">Decoding the U.S.-China Trade War: Global Tariffs Explained</h1>
-            <p className="text-xl md:text-2xl opacity-90 mb-10 max-w-2xl mx-auto">Explore the ripple effects of tariffs across G20 nations and beyond.</p>
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">Global Trade Map</h1>
+            <p className="text-xl md:text-2xl opacity-90 mb-10 max-w-3xl mx-auto">
+              The Trump administration has declared a national emergency and implemented sweeping tariffs on imports, 
+              with highest rates targeting Chinese goods while establishing baseline tariffs on most other countries. 
+              This America First policy aims to address perceived unfair trade practices, re-shore manufacturing, and 
+              reduce trade deficits. The measures are reshaping global supply chains and triggering diplomatic responses, 
+              with many countries seeking trade adjustments. The IMF has reduced its global growth forecast due to supply 
+              chain disruptions, and economists warn that despite intentions to protect American jobs, there could be negative 
+              effects on U.S. employment in export-dependent sectors.
+            </p>
           </div>
         </div>
 
-        {/* Map Section - Kept as is */}
+        {/* Map Section - Single view map */}
         <div className="relative">
           <div className="h-[70vh] w-full bg-white">
             <WorldMap
               selectedCountry={selectedCountry}
-              selectedMetric={selectedMetric}
-              onSelectMetric={setSelectedMetric}
               onSelectCountry={handleCountrySelect}
               countryData={countryData || []}
               onShowFullAccess={handleGetFullAccess} 

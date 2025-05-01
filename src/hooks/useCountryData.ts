@@ -7,6 +7,7 @@ export function useCountryData() {
   return useQuery({
     queryKey: ['countries'],
     queryFn: async () => {
+      // Get countries data from Supabase
       const { data: countries, error: countriesError } = await supabase
         .from('countries')
         .select(`
@@ -36,9 +37,20 @@ export function useCountryData() {
           )
         `);
 
-      if (countriesError) throw countriesError;
+      if (countriesError) {
+        console.error('Error fetching countries:', countriesError);
+        throw countriesError;
+      }
 
-      return countries.map(country => ({
+      if (!countries || countries.length === 0) {
+        console.warn('No countries found in database');
+        return [];
+      }
+
+      console.log('Countries from DB:', countries);
+
+      // Map the database result to our CountryData type
+      const mappedCountries = countries.map(country => ({
         id: country.id,
         name: country.name,
         region: country.region,
@@ -59,6 +71,11 @@ export function useCountryData() {
           domesticSupport: country.national_reactions?.filter((_, index) => index % 2 === 1).map(r => r.description) || [],
         }
       })) as CountryData[];
-    }
+
+      console.log('Mapped countries:', mappedCountries);
+      return mappedCountries;
+    },
+    retry: 1,
+    refetchOnWindowFocus: false,
   });
 }

@@ -1,36 +1,25 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { CountryData, MetricType } from '../data/types';
-import { getCountryColor, metricOptions } from '../data/countries';
-import { Search, ChevronDown } from "lucide-react";
+import { CountryData } from '../data/types';
+import { getCountryColor } from '../data/countries';
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useMapboxToken } from '@/hooks/useMapboxToken';
 import CountryPopup from './CountryPopup';
 import ReactDOM from 'react-dom';
-import { Button } from '@/components/ui/button';
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
 
 interface WorldMapProps {
   selectedCountry: CountryData | null;
-  selectedMetric: MetricType;
-  onSelectMetric: (metric: MetricType) => void;
   onSelectCountry: (country: CountryData) => void;
   countryData: CountryData[];
-  onShowFullAccess: () => void; // Updated to not require a CountryData parameter
+  onShowFullAccess: () => void;
   removeRestrictions?: boolean;
 }
 
 const WorldMap: React.FC<WorldMapProps> = ({ 
   selectedCountry, 
-  selectedMetric,
-  onSelectMetric,
   onSelectCountry,
   countryData,
   onShowFullAccess,
@@ -77,7 +66,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/light-v11',
-      projection: 'mercator', // Changed from equalEarth to mercator for flat display
+      projection: 'mercator',
       zoom: 1.5,
       center: [0, 20],
       minZoom: 1,
@@ -108,60 +97,25 @@ const WorldMap: React.FC<WorldMapProps> = ({
         },
       });
 
-      // Show all countries if restrictions removed
-      if (!removeRestrictions) {
-        // Layer for restricted countries (darker gray)
-        map.current.addLayer({
-          id: 'restricted-countries',
-          type: 'fill',
-          source: 'countries',
-          'source-layer': 'country_boundaries',
-          paint: {
-            'fill-color': '#9CA3AF',
-            'fill-opacity': 0.7,
-          },
-          filter: ['in', 'iso_3166_1'].concat(countryData.slice(5).map(c => c.id)),
-        });
-
-        // Layer for visible countries (colored)
-        map.current.addLayer({
-          id: 'visible-countries',
-          type: 'fill',
-          source: 'countries',
-          'source-layer': 'country_boundaries',
-          paint: {
-            'fill-color': [
-              'match',
-              ['get', 'iso_3166_1'],
-              countryData.slice(0, 5).map(c => c.id),
-              getCountryColor(countryData[0], selectedMetric),
-              'transparent'
-            ],
-            'fill-opacity': 0.8,
-          },
-          filter: ['in', 'iso_3166_1'].concat(countryData.slice(0, 5).map(c => c.id)),
-        });
-      } else {
-        // When restrictions removed, all countries are colored
-        map.current.addLayer({
-          id: 'all-countries',
-          type: 'fill',
-          source: 'countries',
-          'source-layer': 'country_boundaries',
-          paint: {
-            'fill-color': [
-              'match',
-              ['get', 'iso_3166_1'],
-              ...countryData.flatMap(country => [
-                country.id,
-                getCountryColor(country, selectedMetric)
-              ]),
-              '#e0e0e0' // Default color for countries not in our data
-            ],
-            'fill-opacity': 0.8,
-          },
-        });
-      }
+      // When restrictions removed, all countries are colored based on tariff data
+      map.current.addLayer({
+        id: 'all-countries',
+        type: 'fill',
+        source: 'countries',
+        'source-layer': 'country_boundaries',
+        paint: {
+          'fill-color': [
+            'match',
+            ['get', 'iso_3166_1'],
+            ...countryData.flatMap(country => [
+              country.id,
+              getCountryColor(country, 'tariffsToUS')
+            ]),
+            '#e0e0e0' // Default color for countries not in our data
+          ],
+          'fill-opacity': 0.8,
+        },
+      });
 
       // Borders layer
       map.current.addLayer({
@@ -175,17 +129,13 @@ const WorldMap: React.FC<WorldMapProps> = ({
         },
       });
 
-      // Click handlers
-      const layerIds = removeRestrictions ? ['all-countries'] : ['visible-countries', 'restricted-countries'];
-      
-      map.current.on('click', layerIds, (e) => {
+      // Click handler
+      map.current.on('click', ['all-countries'], (e) => {
         if (e.features && e.features[0].properties) {
           const countryCode = e.features[0].properties.iso_3166_1;
           const country = countryData.find(c => c.id === countryCode);
           
           if (!country) return;
-          
-          const isRestricted = !removeRestrictions && countryData.indexOf(country) >= 5;
           
           // Clean up existing popup first
           cleanupPopup();
@@ -216,18 +166,18 @@ const WorldMap: React.FC<WorldMapProps> = ({
                 onSelectCountry(country);
               }}
               onClose={closePopup}
-              isRestricted={isRestricted}
+              isRestricted={false}
             />,
             container
           );
         }
       });
 
-      map.current.on('mouseenter', layerIds, () => {
+      map.current.on('mouseenter', ['all-countries'], () => {
         if (map.current) map.current.getCanvas().style.cursor = 'pointer';
       });
 
-      map.current.on('mouseleave', layerIds, () => {
+      map.current.on('mouseleave', ['all-countries'], () => {
         if (map.current) map.current.getCanvas().style.cursor = '';
       });
     });
@@ -238,37 +188,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
         map.current.remove();
       }
     };
-  }, [mapboxToken, isLoading, countryData, selectedMetric, onSelectCountry, onShowFullAccess, removeRestrictions]);
-
-  useEffect(() => {
-    if (!map.current || !map.current.isStyleLoaded()) return;
-
-    if (removeRestrictions) {
-      if (map.current.getLayer('all-countries')) {
-        map.current.setPaintProperty('all-countries', 'fill-color', [
-          'match',
-          ['get', 'iso_3166_1'],
-          ...countryData.flatMap(country => [
-            country.id,
-            getCountryColor(country, selectedMetric)
-          ]),
-          '#e0e0e0' // Default color for countries not in our data
-        ]);
-      }
-    } else {
-      if (map.current.getLayer('visible-countries')) {
-        map.current.setPaintProperty('visible-countries', 'fill-color', [
-          'match',
-          ['get', 'iso_3166_1'],
-          ...countryData.slice(0, 5).flatMap(country => [
-            country.id,
-            getCountryColor(country, selectedMetric)
-          ]),
-          'transparent'
-        ]);
-      }
-    }
-  }, [selectedMetric, countryData, removeRestrictions]);
+  }, [mapboxToken, isLoading, countryData, onSelectCountry, onShowFullAccess, removeRestrictions]);
 
   useEffect(() => {
     if (searchTerm) {
@@ -290,11 +210,11 @@ const WorldMap: React.FC<WorldMapProps> = ({
       <div className="p-3 border-b">
         <div className="flex flex-col gap-2">
           <div className="relative">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
             <Input
               type="text"
               placeholder="Search countries..."
-              className="pl-9 h-9"
+              className="pl-9 h-9 text-gray-800"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               onFocus={() => setIsSearchFocused(true)}
@@ -306,7 +226,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
                 {filteredCountries.map((country) => (
                   <div
                     key={country.id}
-                    className="p-2 hover:bg-muted cursor-pointer"
+                    className="p-2 hover:bg-muted cursor-pointer text-gray-700"
                     onClick={() => {
                       onSelectCountry(country);
                       setSearchTerm('');
@@ -317,22 +237,6 @@ const WorldMap: React.FC<WorldMapProps> = ({
                 ))}
               </div>
             )}
-          </div>
-          
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs text-muted-foreground min-w-fit">Selected metric:</span>
-            <Select value={selectedMetric} onValueChange={(value) => onSelectMetric(value as MetricType)}>
-              <SelectTrigger className="h-8 text-xs w-[160px]">
-                <SelectValue placeholder="Select data metric" />
-              </SelectTrigger>
-              <SelectContent className="z-50">
-                {metricOptions.map(metric => (
-                  <SelectItem key={metric.id} value={metric.id} className="text-xs">
-                    {metric.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
           </div>
         </div>
       </div>
@@ -346,30 +250,17 @@ const WorldMap: React.FC<WorldMapProps> = ({
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-1">
                 <div className="w-3 h-3 bg-cyan-700 opacity-80 rounded-sm"></div>
-                <span className="text-xs">High value</span>
+                <span className="text-xs">High tariffs</span>
               </div>
               <div className="flex items-center gap-1">
                 <div className="w-3 h-3 bg-cyan-700 opacity-30 rounded-sm"></div>
-                <span className="text-xs">Low value</span>
+                <span className="text-xs">Low tariffs</span>
               </div>
               <div className="flex items-center gap-1">
                 <div className="w-3 h-3 bg-gray-200 rounded-sm"></div>
                 <span className="text-xs">No data</span>
               </div>
             </div>
-            
-            {(selectedMetric === 'usTradeBalance') && (
-              <div className="flex flex-col gap-1 ml-4 border-l pl-4">
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 bg-red-500 opacity-80 rounded-sm"></div>
-                  <span className="text-xs">Trade deficit</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 bg-blue-500 opacity-80 rounded-sm"></div>
-                  <span className="text-xs">Trade surplus</span>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>

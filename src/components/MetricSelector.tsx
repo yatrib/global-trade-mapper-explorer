@@ -15,11 +15,16 @@ const MetricSelector: React.FC<MetricSelectorProps> = ({
   selectedMetric, 
   onSelectMetric 
 }) => {
+  // Filter to only show tariff-related metrics
+  const filteredMetrics = metrics.filter(metric => 
+    metric.id === 'tariffsToUS' || metric.id === 'reciprocalTariff'
+  );
+  
   return (
     <div className="rounded-lg border bg-card p-4 shadow-sm w-full">
-      <h2 className="text-lg font-semibold mb-2">Data Metrics</h2>
+      <h2 className="text-lg font-semibold mb-2">Tariff Metrics</h2>
       <p className="text-sm text-muted-foreground mb-4">
-        Select a metric to view on the map
+        Select a tariff metric to view on the map
       </p>
       <Tabs
         defaultValue={selectedMetric}
@@ -27,8 +32,8 @@ const MetricSelector: React.FC<MetricSelectorProps> = ({
         onValueChange={(value) => onSelectMetric(value as MetricType)}
         className="w-full"
       >
-        <TabsList className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mb-2 h-auto bg-gray-100 p-1">
-          {metrics.map((metric) => (
+        <TabsList className="grid grid-cols-2 gap-2 mb-2 h-auto bg-gray-100 p-1">
+          {filteredMetrics.map((metric) => (
             <TabsTrigger
               key={metric.id}
               value={metric.id}
@@ -45,7 +50,7 @@ const MetricSelector: React.FC<MetricSelectorProps> = ({
       </Tabs>
       <div className="mt-2 p-2 bg-gray-50 rounded-md border border-gray-100">
         <p className="text-xs text-muted-foreground">
-          {metrics.find(m => m.id === selectedMetric)?.description || 'Select a metric'}
+          {filteredMetrics.find(m => m.id === selectedMetric)?.description || 'Select a metric'}
         </p>
       </div>
     </div>
