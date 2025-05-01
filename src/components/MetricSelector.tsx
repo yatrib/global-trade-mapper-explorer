@@ -15,16 +15,16 @@ const MetricSelector: React.FC<MetricSelectorProps> = ({
   selectedMetric, 
   onSelectMetric 
 }) => {
-  // Filter to only show tariff-related metrics
+  // Filter to only show GDP and trade balance metrics
   const filteredMetrics = metrics.filter(metric => 
-    metric.id === 'tariffsToUS' || metric.id === 'reciprocalTariff'
+    metric.id === 'gdp2023' || metric.id === 'gdp2024' || metric.id === 'usTradeBalance'
   );
   
   return (
     <div className="rounded-lg border bg-card p-4 shadow-sm w-full">
-      <h2 className="text-lg font-semibold mb-2">Tariff Metrics</h2>
+      <h2 className="text-lg font-semibold mb-2">Economic Metrics</h2>
       <p className="text-sm text-muted-foreground mb-4">
-        Select a tariff metric to view on the map
+        Select a metric to view on the map
       </p>
       <Tabs
         defaultValue={selectedMetric}
@@ -32,7 +32,7 @@ const MetricSelector: React.FC<MetricSelectorProps> = ({
         onValueChange={(value) => onSelectMetric(value as MetricType)}
         className="w-full"
       >
-        <TabsList className="grid grid-cols-2 gap-2 mb-2 h-auto bg-gray-100 p-1">
+        <TabsList className="grid grid-cols-3 gap-2 mb-2 h-auto bg-gray-100 p-1">
           {filteredMetrics.map((metric) => (
             <TabsTrigger
               key={metric.id}

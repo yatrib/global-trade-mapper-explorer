@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { CountryData } from '@/data/types';
 
@@ -290,4 +289,3 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ countryData, onSelectCountry 
 };
 
 export default AmChartsMap;
-
