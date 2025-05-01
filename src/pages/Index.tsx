@@ -4,6 +4,7 @@ import { CountryData } from '@/data/types';
 import WorldMap from '@/components/WorldMap';
 import SimpleSvgMap from '@/components/SimpleSvgMap';
 import InteractiveMap from '@/components/InteractiveMap';
+import AmChartsMap from '@/components/AmChartsMap';
 import { Badge } from '@/components/ui/badge';
 import { useCountryData } from '@/hooks/useCountryData';
 import CountryDetail from '@/components/CountryDetail';
@@ -120,6 +121,7 @@ const Index: React.FC = () => {
           <Tabs defaultValue="interactive" className="w-full">
             <TabsList className="mb-4 w-full justify-start">
               <TabsTrigger value="interactive">Interactive Map</TabsTrigger>
+              <TabsTrigger value="amcharts">AmCharts Map</TabsTrigger>
               <TabsTrigger value="mapbox">Mapbox Map</TabsTrigger>
               <TabsTrigger value="svg">SVG Map</TabsTrigger>
             </TabsList>
@@ -127,6 +129,15 @@ const Index: React.FC = () => {
             <TabsContent value="interactive" className="mt-0">
               <div className="w-full bg-white">
                 <InteractiveMap
+                  countryData={countryData || []}
+                  onSelectCountry={handleCountrySelect}
+                />
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="amcharts" className="mt-0">
+              <div className="w-full bg-white">
+                <AmChartsMap
                   countryData={countryData || []}
                   onSelectCountry={handleCountrySelect}
                 />
