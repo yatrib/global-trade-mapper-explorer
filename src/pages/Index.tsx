@@ -163,7 +163,7 @@ const Index: React.FC = () => {
       {/* Footer */}
       <Footer />
 
-      {/* Change sidebar to a centered dialog that preserves map state */}
+      {/* Dialog that preserves map state and doesn't reset selectedCountry when closing */}
       <Dialog 
         open={isDetailOpen} 
         onOpenChange={(open) => {

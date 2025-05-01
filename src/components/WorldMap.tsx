@@ -78,9 +78,6 @@ const WorldMap: React.FC<WorldMapProps> = ({
       touchZoomRotate: false
     });
 
-    // Disable all map controls for a static view
-    // No navigation control needed for static map
-
     // Extract country codes for visualization
     const countryCodes = countryData.map(country => country.id);
     console.log("Countries loaded from database:", countryCodes);
@@ -106,7 +103,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
         },
       });
 
-      // Layer for highlighting countries in the database with a consistent color
+      // Layer for highlighting countries in the database with a color
       map.current.addLayer({
         id: 'database-countries',
         type: 'fill',
@@ -153,7 +150,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
         },
       });
 
-      // Add country labels but only for countries in our database
+      // Add country labels but only for countries in our database (SINGLE LAYER)
       map.current.addLayer({
         id: 'country-labels',
         type: 'symbol',
@@ -163,15 +160,16 @@ const WorldMap: React.FC<WorldMapProps> = ({
           'text-field': ['get', 'name_en'],
           'text-font': ['DIN Pro Medium', 'Arial Unicode MS Bold'],
           'text-size': 12,
-          'text-letter-spacing': 0.1,
           'text-transform': 'uppercase',
           'text-offset': [0, 0],
           'text-anchor': 'center',
+          'text-allow-overlap': false, // Prevent label overlap
+          'text-ignore-placement': false, // Respect other placements
         },
         paint: {
           'text-color': '#000000',
           'text-halo-color': '#ffffff',
-          'text-halo-width': 1,
+          'text-halo-width': 1.5,
         },
         filter: ['in', 'iso_3166_1'].concat(countryCodes as any[]),
       });
@@ -190,14 +188,23 @@ const WorldMap: React.FC<WorldMapProps> = ({
           // Create new container for this popup
           const container = document.createElement('div');
           
+          // Calculate popup position based on viewport
+          const lngLat = e.lngLat;
+          const screenPoint = map.current!.project(lngLat);
+          
+          // Adjust position if near edges
+          const mapBounds = map.current!.getContainer().getBoundingClientRect();
+          const offset = [0, -10]; // Default offset
+          
           // Create and set new popup
           const newPopup = new mapboxgl.Popup({
             closeButton: false,
             closeOnClick: false,
             maxWidth: '300px',
-            offset: [0, -5], // Add offset to position popup properly
+            offset: offset,
+            className: 'country-popup'
           })
-            .setLngLat(e.lngLat)
+            .setLngLat(lngLat)
             .setDOMContent(container)
             .addTo(map.current!);
             
