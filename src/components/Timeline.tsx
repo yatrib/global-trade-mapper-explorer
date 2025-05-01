@@ -68,7 +68,7 @@ const usEvents: TimelineEvent[] = [
   {
     date: 'Apr 22, 2025',
     title: 'Diplomatic Stance',
-    description: 'Trump says he's waiting for Xi to initiate talks and claims a "very good relationship."',
+    description: 'Trump says he\'s waiting for Xi to initiate talks and claims a "very good relationship."',
     icon: <Flag className="h-6 w-6 text-white" />
   },
   {
@@ -104,7 +104,7 @@ const chinaEvents: TimelineEvent[] = [
   {
     date: 'Mar 10, 2025',
     title: 'Farm Products Tariffs',
-    description: 'China's tariffs on American farm products take effect.',
+    description: 'China\'s tariffs on American farm products take effect.',
     icon: <Flag className="h-6 w-6 text-white" />
   },
   {
