@@ -68,14 +68,15 @@ export function useCountryData() {
           console.log(`Raw GDP data for ${country.name}:`, gdpData);
           console.log(`Raw trade data for ${country.name}:`, tradeData);
           
-          // Ensure numeric values are properly parsed - convert string to number, handle null/undefined
-          const tradeBalance = tradeData.trade_balance !== null ? Number(tradeData.trade_balance) || 0 : 0;
-          const shareOfImports = tradeData.share_of_imports !== null ? Number(tradeData.share_of_imports) || 0 : 0;
-          const shareOfExports = tradeData.share_of_exports !== null ? Number(tradeData.share_of_exports) || 0 : 0;
-          const reciprocalTariff = tradeData.reciprocal_tariff !== null ? Number(tradeData.reciprocal_tariff) || 0 : 0;
-          const tariffsToUS = tradeData.tariffs_to_us !== null ? Number(tradeData.tariffs_to_us) || 0 : 0;
-          const actual2023 = gdpData.actual_2023 !== null ? Number(gdpData.actual_2023) || 0 : 0;
-          const estimate2024 = gdpData.estimate_2024 !== null ? Number(gdpData.estimate_2024) || 0 : 0;
+          // Fix: Convert numeric strings to numbers, ensuring proper type conversion
+          // Use parseFloat for floating point values
+          const tradeBalance = gdpData?.trade_balance !== undefined ? parseFloat(String(tradeData.trade_balance)) : 0;
+          const shareOfImports = tradeData?.share_of_imports !== undefined ? parseFloat(String(tradeData.share_of_imports)) : 0;
+          const shareOfExports = tradeData?.share_of_exports !== undefined ? parseFloat(String(tradeData.share_of_exports)) : 0;
+          const reciprocalTariff = tradeData?.reciprocal_tariff !== undefined ? parseFloat(String(tradeData.reciprocal_tariff)) : 0;
+          const tariffsToUS = tradeData?.tariffs_to_us !== undefined ? parseFloat(String(tradeData.tariffs_to_us)) : 0;
+          const actual2023 = gdpData?.actual_2023 !== undefined ? parseFloat(String(gdpData.actual_2023)) : 0;
+          const estimate2024 = gdpData?.estimate_2024 !== undefined ? parseFloat(String(gdpData.estimate_2024)) : 0;
           
           // Log parsed values for debugging
           console.log(`${country.name} parsed values:`, {
