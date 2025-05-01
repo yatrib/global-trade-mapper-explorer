@@ -50,22 +50,43 @@ export function useCountryData() {
         }
 
         console.log('Countries fetched successfully:', countries.length);
-        console.log('Sample country data:', countries[0]);
+        
+        // Log a full sample country to inspect data structure and actual values
+        if (countries.length > 0) {
+          console.log('Full sample country data (raw):', JSON.stringify(countries[0], null, 2));
+        }
         
         // Map the database result to our CountryData type, using Type as region
         const mappedCountries = countries.map(country => {
-          console.log(`Mapping country: ${country.name} (${country.id})`);
+          console.log(`Processing country: ${country.name} (${country.id})`);
           
-          // Ensure numeric values are properly parsed
-          const tradeBalance = parseFloat(country.us_trade_data?.[0]?.trade_balance) || 0;
-          const shareOfImports = parseFloat(country.us_trade_data?.[0]?.share_of_imports) || 0;
-          const shareOfExports = parseFloat(country.us_trade_data?.[0]?.share_of_exports) || 0;
-          const reciprocalTariff = parseFloat(country.us_trade_data?.[0]?.reciprocal_tariff) || 0;
-          const tariffsToUS = parseFloat(country.us_trade_data?.[0]?.tariffs_to_us) || 0;
-          const actual2023 = parseFloat(country.country_gdp?.[0]?.actual_2023) || 0;
-          const estimate2024 = parseFloat(country.country_gdp?.[0]?.estimate_2024) || 0;
+          // Retrieve numeric values from the data - note they might be strings in the database
+          const gdpData = country.country_gdp?.[0] || {};
+          const tradeData = country.us_trade_data?.[0] || {};
           
-          console.log(`Country ${country.name} tariffs: ${tariffsToUS}, reciprocal: ${reciprocalTariff}`);
+          // Display raw values to debug
+          console.log(`Raw GDP data for ${country.name}:`, gdpData);
+          console.log(`Raw trade data for ${country.name}:`, tradeData);
+          
+          // Ensure numeric values are properly parsed - convert string to number, handle null/undefined
+          const tradeBalance = tradeData.trade_balance !== null ? Number(tradeData.trade_balance) || 0 : 0;
+          const shareOfImports = tradeData.share_of_imports !== null ? Number(tradeData.share_of_imports) || 0 : 0;
+          const shareOfExports = tradeData.share_of_exports !== null ? Number(tradeData.share_of_exports) || 0 : 0;
+          const reciprocalTariff = tradeData.reciprocal_tariff !== null ? Number(tradeData.reciprocal_tariff) || 0 : 0;
+          const tariffsToUS = tradeData.tariffs_to_us !== null ? Number(tradeData.tariffs_to_us) || 0 : 0;
+          const actual2023 = gdpData.actual_2023 !== null ? Number(gdpData.actual_2023) || 0 : 0;
+          const estimate2024 = gdpData.estimate_2024 !== null ? Number(gdpData.estimate_2024) || 0 : 0;
+          
+          // Log parsed values for debugging
+          console.log(`${country.name} parsed values:`, {
+            actual2023,
+            estimate2024,
+            tradeBalance,
+            shareOfImports,
+            shareOfExports,
+            reciprocalTariff,
+            tariffsToUS
+          });
           
           return {
             id: country.id,
@@ -73,8 +94,8 @@ export function useCountryData() {
             region: country.Type || 'Unknown', // Use Type as region with fallback
             area: 0, // Since area isn't present in the schema, set a default value
             gdp: {
-              actual2023: actual2023,
-              estimate2024: estimate2024,
+              actual2023,
+              estimate2024,
             },
             usTradeBalance: tradeBalance,
             shareOfUsImports: shareOfImports,
@@ -91,6 +112,16 @@ export function useCountryData() {
         });
 
         console.log(`Successfully mapped ${mappedCountries.length} countries`);
+        
+        // Log a sample of the processed data
+        if (mappedCountries.length > 0) {
+          console.log('Sample processed country data:', {
+            name: mappedCountries[0].name,
+            tariffsToUS: mappedCountries[0].tariffsToUS,
+            gdp: mappedCountries[0].gdp
+          });
+        }
+        
         return mappedCountries;
       } catch (error) {
         console.error('Error in useCountryData hook:', error);
