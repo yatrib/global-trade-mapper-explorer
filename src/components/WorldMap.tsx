@@ -194,7 +194,8 @@ const WorldMap: React.FC<WorldMapProps> = ({
           
           // Adjust position if near edges
           const mapBounds = map.current!.getContainer().getBoundingClientRect();
-          const offset = [0, -10]; // Default offset
+          // Fix: Properly type the offset as a tuple [number, number] instead of number[]
+          const offset: [number, number] = [0, -10];
           
           // Create and set new popup
           const newPopup = new mapboxgl.Popup({
