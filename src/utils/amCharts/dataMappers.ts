@@ -21,6 +21,7 @@ export const mapCountryDataForChart = (countryData: CountryData[]): AmChartsCoun
     return {
       id: country.id,
       name: country.name,
+      value: country.tariffsToUS || 0, // Use tariffs for color intensity or 0 if null
       gdp2023: country.gdp?.actual2023 || null,
       gdp2024: country.gdp?.estimate2024 || null,
       usTradeBalance: country.usTradeBalance || null,
@@ -35,6 +36,14 @@ export const mapCountryDataForChart = (countryData: CountryData[]): AmChartsCoun
   // Log the first few countries in the result to verify data is correct
   if (result.length > 0) {
     console.log("Mapped chart data sample (first 3 countries):", result.slice(0, 3));
+    
+    // Debug - check if Canada is in the result
+    const canada = result.find(c => c.id === "CA");
+    if (canada) {
+      console.log("Canada data found in map data:", canada);
+    } else {
+      console.warn("Canada data NOT found in mapped data!");
+    }
   } else {
     console.warn("No countries mapped for chart data");
   }

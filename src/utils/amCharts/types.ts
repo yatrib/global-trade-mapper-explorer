@@ -21,9 +21,10 @@ export type AmChartsMetric = 'tariffsToUS' | 'reciprocalTariff' | 'gdp2023' | 'g
 export interface AmChartsCountryData {
   id: string;
   name: string;
-  gdp2023: number;
-  gdp2024: number;
-  usTradeBalance: number;
+  value?: number; // Value used for heat map coloring
+  gdp2023: number | null;
+  gdp2024: number | null;
+  usTradeBalance: number | null;
   shareOfUsImports: number | null;
   shareOfUsExports: number | null;
   tariffsToUS: number | null;

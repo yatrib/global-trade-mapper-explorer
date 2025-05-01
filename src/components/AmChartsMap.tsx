@@ -19,6 +19,14 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ onSelectCountry }) => {
     // Log how many countries we have with data
     console.log(`Initializing map with ${countryData.length} countries`);
     
+    // Debug - check if Canada exists in countryData
+    const canada = countryData.find(c => c.id === "CA");
+    if (canada) {
+      console.log("Canada found in country data:", canada);
+    } else {
+      console.warn("Canada NOT found in country data!");
+    }
+    
     // Load AmCharts scripts and initialize the chart
     const initChart = async () => {
       try {

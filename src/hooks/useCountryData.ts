@@ -54,6 +54,14 @@ export function useCountryData() {
         // Log a sample country to inspect the full structure of the data
         if (countries.length > 0) {
           console.log('Sample country data structure (first record):', JSON.stringify(countries[0], null, 2));
+          
+          // Debug - check if Canada exists in database results
+          const canada = countries.find(c => c.id === "CA");
+          if (canada) {
+            console.log("Canada found in database results:", canada);
+          } else {
+            console.warn("Canada NOT found in database results!");
+          }
         }
         
         // Map the database result to our CountryData type, using Type as region
@@ -130,9 +138,22 @@ export function useCountryData() {
             usTradeBalance: mappedCountries[0].usTradeBalance,
             tariffsToUS: mappedCountries[0].tariffsToUS,
             reciprocalTariff: mappedCountries[0].reciprocalTariff,
-            shareOfExports: mappedCountries[0].shareOfUsExports,
-            shareOfImports: mappedCountries[0].shareOfUsImports
           });
+          
+          // Debug - check if Canada exists in mapped countries
+          const canada = mappedCountries.find(c => c.id === "CA");
+          if (canada) {
+            console.log("Canada found in mapped countries:", {
+              id: canada.id,
+              name: canada.name,
+              gdp: canada.gdp,
+              usTradeBalance: canada.usTradeBalance,
+              tariffsToUS: canada.tariffsToUS,
+              reciprocalTariff: canada.reciprocalTariff,
+            });
+          } else {
+            console.warn("Canada NOT found in mapped countries!");
+          }
         }
         
         return mappedCountries;
