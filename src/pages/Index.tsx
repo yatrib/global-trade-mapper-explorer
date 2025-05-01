@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { CountryData } from '@/data/types';
 import WorldMap from '@/components/WorldMap';
