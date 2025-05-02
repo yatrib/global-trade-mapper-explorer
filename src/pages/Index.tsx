@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import { CountryData } from '@/data/types';
 import AmChartsMap from '@/components/AmChartsMap';
@@ -8,7 +9,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { DownloadReportForm } from '@/components/DownloadReportForm';
 import Timeline from '@/components/Timeline';
 import ExpertiseSection from '@/components/ExpertiseSection';
-import infomineoLogo from '@/assets/infomineo-logo.png';
 import Footer from '@/components/Footer';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 
@@ -93,7 +93,7 @@ const Index: React.FC = () => {
         <header className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <img src={infomineoLogo} alt="Infomineo Logo" className="h-10 w-auto" />
+              <img src="https://infomineo.com/wp-content/uploads/2024/02/InfomineoLogo01.webp" alt="Infomineo Logo" className="h-10 w-auto" />
             </div>
             <Badge variant="outline" className="text-sm px-3 py-1.5 bg-white/10 backdrop-blur text-white border-transparent font-medium">
               Latest Data: Feb 2025

@@ -1,6 +1,4 @@
-
 import React from 'react';
-import infomineoLogo from '@/assets/infomineo-logo.png';
 import { Github, Twitter, Facebook, Linkedin } from 'lucide-react';
 
 const Footer: React.FC = () => {
@@ -9,7 +7,7 @@ const Footer: React.FC = () => {
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
           <div className="mb-8 md:mb-0">
-            <img src={infomineoLogo} alt="Infomineo Logo" className="h-12 w-auto mb-5" />
+            <img src="https://infomineo.com/wp-content/uploads/2024/02/InfomineoLogo01.webp" alt="Infomineo Logo" className="h-12 w-auto mb-5" />
             <p className="text-gray-600 max-w-md text-sm leading-relaxed">
               Providing data-driven insights on global market trends, with specialized expertise 
               in emerging markets and trade dynamics. Our analyses help organizations navigate 
