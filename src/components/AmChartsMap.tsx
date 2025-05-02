@@ -76,7 +76,7 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ onSelectCountry }) => {
     return (
       <div className="w-full bg-white rounded-lg overflow-hidden shadow-lg border p-4">
         <div className="text-red-500">
-          Error loading map data: {error instanceof Error ? error.message : 'Unknown error'}
+          Error loading map data: {typeof error === 'object' && error !== null ? (error as Error).message : String(error)}
         </div>
       </div>
     );

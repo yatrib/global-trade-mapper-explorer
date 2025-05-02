@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { CountryData } from '@/data/types';
 import AmChartsMap from '@/components/AmChartsMap';
@@ -67,7 +66,7 @@ const Index: React.FC = () => {
   if (error) {
     return (
       <div className="min-h-screen bg-infomineo-gradient flex items-center justify-center">
-        <p className="text-lg text-infomineo-red">Error loading data: {error.message}</p>
+        <p className="text-lg text-infomineo-red">Error loading data: {typeof error === 'object' && error !== null ? (error as Error).message : String(error)}</p>
       </div>
     );
   }

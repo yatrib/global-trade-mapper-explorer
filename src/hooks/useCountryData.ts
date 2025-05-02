@@ -7,7 +7,7 @@ const DATA_URL = 'https://raw.githubusercontent.com/infomineo/dataset-visualizat
 const useCountryData = () => {
   const [countryData, setCountryData] = useState<CountryData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<Error | string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,7 +23,7 @@ const useCountryData = () => {
         const transformedData = transformData(rawData);
         setCountryData(transformedData);
       } catch (e: any) {
-        setError(`Failed to fetch data: ${e.message}`);
+        setError(e instanceof Error ? e : new Error(`Failed to fetch data: ${e}`));
         console.error("Error fetching country data:", e);
       } finally {
         setLoading(false);
@@ -89,11 +89,11 @@ const useCountryData = () => {
           usTradeBalance: tradeBalance,
           shareOfUsImports: shareOfImports,
           shareOfUsExports: shareOfExports,
-          impactedSectors: country.country_sectors?.map(s => s.sector_name) || [],
-          keyInsights: country.country_insights?.map(i => i.insight_text) || [],
+          impactedSectors: country.country_sectors?.map((s: any) => s.sector_name) || [],
+          keyInsights: country.country_insights?.map((i: any) => i.insight_text) || [],
           nationalReaction: {
-            retaliatory: country.country_reactions?.filter(r => r.reaction_type === 'Retaliatory').map(r => r.reaction_text) || [],
-            domesticSupport: country.country_reactions?.filter(r => r.reaction_type === 'Domestic Support').map(r => r.reaction_text) || []
+            retaliatory: country.country_reactions?.filter((r: any) => r.reaction_type === 'Retaliatory').map((r: any) => r.reaction_text) || [],
+            domesticSupport: country.country_reactions?.filter((r: any) => r.reaction_type === 'Domestic Support').map((r: any) => r.reaction_text) || []
           }
         };
       } catch (error) {
