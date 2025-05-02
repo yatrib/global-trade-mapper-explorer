@@ -60,13 +60,13 @@ const CountryPopup: React.FC<CountryPopupProps> = ({
         
         <div className="space-y-2">
           <div>
-            <div className="text-sm text-muted-foreground">GDP 2023 ($B)</div>
-            <div className="font-medium">${country.gdp.actual2023.toFixed(1)}B</div>
+            <div className="text-sm text-muted-foreground">Tariffs to US</div>
+            <div className="font-medium">{country.tariffsToUS !== null ? `${country.tariffsToUS.toFixed(1)}%` : 'N/A'}</div>
           </div>
           
           <div>
-            <div className="text-sm text-muted-foreground">Trade Balance ($B)</div>
-            <div className="font-medium">${(country.usTradeBalance / 1000).toFixed(1)}B</div>
+            <div className="text-sm text-muted-foreground">Reciprocal Tariff</div>
+            <div className="font-medium">{country.reciprocalTariff !== null ? `${country.reciprocalTariff.toFixed(1)}%` : 'N/A'}</div>
           </div>
         </div>
 

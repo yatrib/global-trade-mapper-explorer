@@ -174,7 +174,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
         filter: ['in', 'iso_3166_1'].concat(countryCodes as any[]),
       });
 
-      // Click handler
+      // Only allow clicking and hovering on countries that exist in our database
       map.current.on('click', ['database-countries'], (e) => {
         if (e.features && e.features[0].properties) {
           const countryCode = e.features[0].properties.iso_3166_1;
@@ -231,6 +231,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
         }
       });
 
+      // Only show pointer cursor for countries in our database
       map.current.on('mouseenter', ['database-countries'], () => {
         if (map.current) map.current.getCanvas().style.cursor = 'pointer';
       });

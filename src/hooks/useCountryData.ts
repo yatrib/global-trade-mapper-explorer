@@ -67,17 +67,17 @@ const useCountryData = () => {
           // Find trade data for this country
           const trade = tradeData?.find(t => t.country_id === country.id);
           
-          // Find sectors for this country
+          // Find sectors for this country (only include if data exists)
           const sectors = sectorsData
             ?.filter(s => s.country_id === country.id)
             .map(s => s.sector_name) || [];
             
-          // Find insights for this country
+          // Find insights for this country (only include if data exists)
           const insights = insightsData
             ?.filter(i => i.country_id === country.id)
             .map(i => i.insight_text) || [];
             
-          // Group reactions by type (we don't have type in the schema, so treating all as retaliatory for now)
+          // Group reactions by type (only include if data exists)
           const reactions = reactionsData
             ?.filter(r => r.country_id === country.id)
             .map(r => r.description) || [];
@@ -95,12 +95,12 @@ const useCountryData = () => {
             shareOfUsExports: trade?.share_of_exports || null,
             reciprocalTariff: trade?.reciprocal_tariff || null,
             tariffsToUS: trade?.tariffs_to_us || null,
-            impactedSectors: sectors,
-            keyInsights: insights,
+            impactedSectors: sectors.length > 0 ? sectors : [], // Only include if there's data
+            keyInsights: insights.length > 0 ? insights : [], // Only include if there's data
             nationalReaction: {
               // Since we don't have type differentiation in the schema,
               // we'll treat all reactions as retaliatory for now
-              retaliatory: reactions,
+              retaliatory: reactions.length > 0 ? reactions : [],
               domesticSupport: [] 
             }
           };
