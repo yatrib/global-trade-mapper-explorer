@@ -111,9 +111,9 @@ const Index: React.FC = () => {
           </div>
         </div>
 
-        {/* Map Container - Now only showing AmCharts Map */}
+        {/* Map Container with improved filter controls */}
         <div className="container mx-auto px-4 pb-8">
-          <div className="w-full bg-white">
+          <div className="w-full bg-white rounded-lg shadow-lg">
             <AmChartsMap
               onSelectCountry={handleCountrySelect}
             />

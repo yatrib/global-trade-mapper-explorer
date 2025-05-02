@@ -1,4 +1,3 @@
-
 import { CountryData } from '@/data/types';
 import { AmChartsInstance, WindowWithAmCharts } from './types';
 import { mapCountryDataForChart } from './dataMappers';
@@ -8,7 +7,8 @@ import { formatCurrency, formatPercentage } from './formatters';
 export const initializeAmChart = (
   container: HTMLElement, 
   countryData: CountryData[],
-  onSelectCountry: (country: CountryData) => void
+  onSelectCountry: (country: CountryData) => void,
+  typeFilter?: string
 ): AmChartsInstance | undefined => {
   const win = window as unknown as WindowWithAmCharts;
   
@@ -23,12 +23,19 @@ export const initializeAmChart = (
   const am5themes_Animated = win.am5themes_Animated;
   const am5geodata_worldLow = win.am5geodata_worldLow;
   
-  // Map country data to the format expected by amCharts - now showing all countries from the database
-  const mapData = mapCountryDataForChart(countryData);
+  // Filter countries by type if a filter is provided
+  const filteredCountryData = typeFilter 
+    ? countryData.filter(country => country.region === typeFilter)
+    : countryData;
+    
+  console.log(`Filtered countries by type ${typeFilter}:`, filteredCountryData.length);
+  
+  // Map country data to the format expected by amCharts - now showing filtered countries
+  const mapData = mapCountryDataForChart(filteredCountryData);
   
   // Create a map of country IDs for quick lookup
-  const countryIds = new Set(countryData.map(country => country.id));
-  console.log("Countries available in database:", Array.from(countryIds));
+  const countryIds = new Set(filteredCountryData.map(country => country.id));
+  console.log("Countries available after filtering:", Array.from(countryIds));
 
   // Clear previous chart if it exists
   container.innerHTML = '';
@@ -171,8 +178,6 @@ export const initializeAmChart = (
       });
 
     labelSeries.data.setAll(labelData);
-    
-    // Remove heat legend as we're using a consistent color now
     
     // Log the data that's being set to the polygons for debugging
     console.log("Final polygon data for map:", mapData);

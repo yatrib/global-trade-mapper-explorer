@@ -1,96 +1,75 @@
 
-import React, { useEffect, useRef } from 'react';
-import { CountryData } from '@/data/types';
-import { loadAmChartsScripts, initializeAmChart, AmChartsInstance } from '@/utils/amCharts';
+import React, { useEffect, useRef, useState } from 'react';
 import useCountryData from '@/hooks/useCountryData';
+import { initializeAmChart } from '@/utils/amCharts/chartInitializer';
+import { AmChartsInstance } from '@/utils/amCharts/types';
+import CountryTypeFilter from './CountryTypeFilter';
 
 interface AmChartsMapProps {
-  onSelectCountry: (country: CountryData) => void;
+  onSelectCountry: (country: any) => void;
 }
 
 const AmChartsMap: React.FC<AmChartsMapProps> = ({ onSelectCountry }) => {
+  const { countryData, loading, error } = useCountryData();
   const chartRef = useRef<HTMLDivElement>(null);
-  const chartInstanceRef = useRef<AmChartsInstance | undefined>();
-  const { countryData, loading: isLoading, error } = useCountryData();
+  const chartInstance = useRef<AmChartsInstance | undefined>();
+  const [selectedType, setSelectedType] = useState<string | null>(null);
 
+  // Load the chart when component mounts or when countryData changes
   useEffect(() => {
-    if (!chartRef.current || !countryData) return;
+    if (!chartRef.current || loading || error || !countryData?.length) return;
 
-    // Log how many countries we have with data
-    console.log(`Initializing map with ${countryData.length} countries`);
-    
-    // Debug - check if Canada exists in countryData
-    const canada = countryData.find(c => c.id === "CA");
-    if (canada) {
-      console.log("Canada found in country data:", canada);
-    } else {
-      console.warn("Canada NOT found in country data!");
+    // Clean up previous chart instance if it exists
+    if (chartInstance.current) {
+      chartInstance.current.dispose();
     }
-    
-    // Load AmCharts scripts and initialize the chart
-    const initChart = async () => {
-      try {
-        await loadAmChartsScripts();
-        
-        // Initialize chart with container and data
-        if (chartRef.current) {
-          // Clean up previous instance if it exists
-          if (chartInstanceRef.current) {
-            chartInstanceRef.current.dispose();
-          }
-          
-          // Create new chart instance with all countries from the database
-          chartInstanceRef.current = initializeAmChart(
-            chartRef.current,
-            countryData,
-            onSelectCountry
-          );
-        }
-      } catch (error) {
-        console.error('Failed to initialize AmCharts map:', error);
-      }
-    };
 
-    initChart();
-
-    // Clean up on unmount
-    return () => {
-      if (chartInstanceRef.current) {
-        chartInstanceRef.current.dispose();
-      }
-    };
-  }, [countryData, onSelectCountry]);
-
-  if (isLoading) {
-    return (
-      <div className="w-full bg-white rounded-lg overflow-hidden shadow-lg border p-4">
-        <div className="animate-pulse flex flex-col space-y-4">
-          <div className="h-6 bg-gray-200 rounded w-1/4"></div>
-          <div className="h-[500px] bg-gray-200 rounded"></div>
-        </div>
-      </div>
+    // Initialize a new chart
+    chartInstance.current = initializeAmChart(
+      chartRef.current,
+      countryData,
+      onSelectCountry,
+      selectedType || undefined
     );
+
+    // Clean up when component unmounts
+    return () => {
+      if (chartInstance.current) {
+        chartInstance.current.dispose();
+      }
+    };
+  }, [countryData, loading, error, onSelectCountry, selectedType]);
+
+  if (loading) {
+    return <div className="h-[600px] flex items-center justify-center">Loading map data...</div>;
   }
 
   if (error) {
-    return (
-      <div className="w-full bg-white rounded-lg overflow-hidden shadow-lg border p-4">
-        <div className="text-red-500">
-          Error loading map data: {typeof error === 'object' && error !== null ? (error as Error).message : String(error)}
-        </div>
-      </div>
-    );
+    return <div className="h-[600px] flex items-center justify-center text-red-500">Error loading map: {error.toString()}</div>;
   }
 
-  // Show map as long as we have any country data, even if some countries have null metrics
+  if (!countryData || countryData.length === 0) {
+    return <div className="h-[600px] flex items-center justify-center">No country data available</div>;
+  }
+
   return (
-    <div className="w-full bg-white rounded-lg overflow-hidden shadow-lg border">
-      <div className="p-3 border-b">
-        <p className="text-sm text-muted-foreground mt-1">
-          View GDP and trade data by country. Click on a country for details.
-        </p>
+    <div className="bg-white rounded-lg overflow-hidden">
+      <div className="p-4 border-b flex justify-between items-center">
+        <CountryTypeFilter 
+          countryData={countryData}
+          selectedType={selectedType}
+          onSelectType={setSelectedType}
+        />
+        
+        <div className="flex items-center gap-2 text-sm text-gray-500">
+          {selectedType ? (
+            <span>Showing {countryData.filter(c => c.region === selectedType).length} countries</span>
+          ) : (
+            <span>Showing all {countryData.length} countries</span>
+          )}
+        </div>
       </div>
-      <div id="chartdiv" ref={chartRef} className="w-full h-[650px]"></div>
+      <div className="h-[600px]" ref={chartRef}></div>
     </div>
   );
 };
