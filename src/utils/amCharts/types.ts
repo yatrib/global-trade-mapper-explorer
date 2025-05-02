@@ -22,12 +22,12 @@ export interface AmChartsCountryData {
   id: string;
   name: string;
   value: number; // Value used for heat map coloring (always use a default of 0 if null)
-  gdp2023: number | null;
-  gdp2024: number | null;
-  usTradeBalance: number | null;
-  shareOfUsImports: number | null;
-  shareOfUsExports: number | null;
-  tariffsToUS: number | null;
-  reciprocalTariff: number | null;
+  gdp2023: string | null;
+  gdp2024: string | null;
+  usTradeBalance: string | null;
+  shareOfUsImports: string | null;
+  shareOfUsExports: string | null;
+  tariffsToUS: string | null;
+  reciprocalTariff: string | null;
   countryObject: CountryData;
 }
