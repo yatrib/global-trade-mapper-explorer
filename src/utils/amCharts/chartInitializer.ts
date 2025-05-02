@@ -106,7 +106,7 @@ export const initializeAmChart = (
         const dataContext = dataItem.dataContext as any;
         if (dataContext && dataContext.id && countryIds.has(dataContext.id)) {
           // Country is in our database - use a consistent Ocean Blue color
-          return am5.color(0x0EA5E9);
+          return am5.color(0x2c469d);
         }
       }
       return am5.color(0xCCCCCC); // Default light gray for countries not in our database
