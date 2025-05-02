@@ -86,7 +86,6 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ onSelectCountry }) => {
   return (
     <div className="w-full bg-white rounded-lg overflow-hidden shadow-lg border">
       <div className="p-3 border-b">
-        <h3 className="text-lg font-medium text-infomineo-blue">Global Economic Map</h3>
         <p className="text-sm text-muted-foreground mt-1">
           View GDP and trade data by country. Click on a country for details.
         </p>
