@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -103,22 +102,14 @@ const WorldMap: React.FC<WorldMapProps> = ({
         },
       });
 
-      // Layer for highlighting countries in the database with a color
+      // Layer for highlighting countries in the database with a consistent blue color
       map.current.addLayer({
         id: 'database-countries',
         type: 'fill',
         source: 'countries',
         'source-layer': 'country_boundaries',
         paint: {
-          'fill-color': [
-            'match',
-            ['get', 'iso_3166_1'],
-            ...countryData.flatMap(country => [
-              country.id,
-              getCountryColor(country, 'tariffsToUS')
-            ]),
-            'transparent' // Default color for countries not in our data
-          ],
+          'fill-color': '#0EA5E9',  // Ocean Blue - consistent color for all countries in our database
           'fill-opacity': 0.8,
         },
         filter: ['in', 'iso_3166_1'].concat(countryCodes as any[]),
@@ -308,12 +299,8 @@ const WorldMap: React.FC<WorldMapProps> = ({
           <div className="flex gap-2 items-center">
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-1">
-                <div className="w-3 h-3 bg-cyan-700 opacity-80 rounded-sm"></div>
-                <span className="text-xs">High tariffs</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="w-3 h-3 bg-cyan-700 opacity-30 rounded-sm"></div>
-                <span className="text-xs">Low tariffs</span>
+                <div className="w-3 h-3 bg-[#0EA5E9] opacity-80 rounded-sm"></div>
+                <span className="text-xs">Countries with data</span>
               </div>
               <div className="flex items-center gap-1">
                 <div className="w-3 h-3 bg-gray-200 rounded-sm"></div>

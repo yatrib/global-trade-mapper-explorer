@@ -14,8 +14,8 @@ export function formatValue(value: number | null | undefined): string {
   
   // Format to 1 decimal place without thousands separators
   if (value >= 1000) {
-    return (value / 1000).toFixed(1);
+    return `$${(value / 1000).toFixed(1)}B`;
   }
   
-  return value.toFixed(1);
+  return `$${value.toFixed(1)}`;
 }

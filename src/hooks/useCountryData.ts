@@ -85,8 +85,7 @@ const useCountryData = () => {
           return {
             id: country.id,
             name: country.name,
-            // Remove region/type from popup display
-            region: '', // Removed Type field as region
+            // Completely remove region field
             gdp: {
               actual2023: gdp?.actual_2023 || null,
               estimate2024: gdp?.estimate_2024 || null
@@ -96,11 +95,10 @@ const useCountryData = () => {
             shareOfUsExports: trade?.share_of_exports || null,
             reciprocalTariff: trade?.reciprocal_tariff || null,
             tariffsToUS: trade?.tariffs_to_us || null,
-            impactedSectors: sectors.length > 0 ? sectors : [], // Only include if there's data
-            keyInsights: insights.length > 0 ? insights : [], // Only include if there's data
+            // Only include these arrays if they have data
+            impactedSectors: sectors.length > 0 ? sectors : [],
+            keyInsights: insights.length > 0 ? insights : [],
             nationalReaction: {
-              // Since we don't have type differentiation in the schema,
-              // we'll treat all reactions as retaliatory for now
               retaliatory: reactions.length > 0 ? reactions : [],
               domesticSupport: [] 
             }

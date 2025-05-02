@@ -84,22 +84,13 @@ export const initializeAmChart = (
     // Configure polygon styling and tooltips
     polygonSeries.mapPolygons.template.events.on("pointerover", function(ev: any) {
       if (ev.target.dataItem.get("value") !== undefined) {
-        heatLegend.showValue(ev.target.dataItem.get("value"));
+        // No heatLegend to update now
       }
     });
 
-    // Use Infomineo colors for countries that have data
-    polygonSeries.set("heatRules", [{
-      target: polygonSeries.mapPolygons.template,
-      dataField: "value",
-      min: am5.color(0x41B3E6),  // Infomineo Light Blue
-      max: am5.color(0x2C469D),  // Infomineo Royal Blue
-      key: "fill"
-    }]);
-
-    // Enhanced tooltip with tariff data - Only show tariffs data
+    // Set consistent blue color for countries that have data (0x0EA5E9 - Ocean Blue)
     polygonSeries.mapPolygons.template.setAll({
-      tooltipText: "{name}\n[bold]Tariff Data:[/]\nTariffs to US: {tariffsToUS}%\nReciprocal Tariff: {reciprocalTariff}%",
+      tooltipText: "{name}\n[bold]Tariff Data:[/]\nTariffs to US: {tariffsToUS}\nReciprocal Tariff: {reciprocalTariff}",
       stroke: am5.color(0xffffff),
       strokeWidth: 0.5,
       interactive: true,
@@ -108,20 +99,14 @@ export const initializeAmChart = (
       fill: am5.color(0xCCCCCC) // Light gray for countries not in our database
     });
 
-    // Set different color for countries in our database based on whether they have data
+    // Use a consistent blue for countries in our database
     polygonSeries.mapPolygons.template.adapters.add("fill", function(fill, target) {
       const dataItem = target.dataItem;
       if (dataItem) {
         const dataContext = dataItem.dataContext as any;
         if (dataContext && dataContext.id && countryIds.has(dataContext.id)) {
-          // Country is in our database
-          if (dataContext.tariffsToUS !== null && dataContext.tariffsToUS !== undefined) {
-            // Use color heat rule if has tariff data
-            return fill;
-          } else {
-            // Use special color for countries in DB but without tariff data
-            return am5.color(0x95C8E8); // Lighter blue for countries in DB without tariffs
-          }
+          // Country is in our database - use a consistent Ocean Blue color
+          return am5.color(0x0EA5E9);
         }
       }
       return am5.color(0xCCCCCC); // Default light gray for countries not in our database
@@ -186,38 +171,8 @@ export const initializeAmChart = (
       });
 
     labelSeries.data.setAll(labelData);
-
-    // Create heat legend with Infomineo colors
-    const heatLegend = chart.children.push(
-      am5.HeatLegend.new(root, {
-        orientation: "vertical",
-        startColor: am5.color(0x41B3E6),  // Infomineo Light Blue
-        endColor: am5.color(0x2C469D),    // Infomineo Royal Blue
-        startText: "Low Tariffs",
-        endText: "High Tariffs",
-        stepCount: 6,
-        x: am5.p100,
-        centerX: am5.p100,
-        paddingRight: 20,
-        paddingTop: 20,
-        paddingBottom: 20
-      })
-    );
-
-    heatLegend.startLabel.setAll({
-      fontSize: 12,
-      fill: am5.color(0x41B3E6)  // Infomineo Light Blue
-    });
-
-    heatLegend.endLabel.setAll({
-      fontSize: 12,
-      fill: am5.color(0x2C469D)  // Infomineo Royal Blue
-    });
-
-    polygonSeries.events.on("datavalidated", function() {
-      heatLegend.set("startValue", polygonSeries.getPrivate("valueLow"));
-      heatLegend.set("endValue", polygonSeries.getPrivate("valueHigh"));
-    });
+    
+    // Remove heat legend as we're using a consistent color now
     
     // Log the data that's being set to the polygons for debugging
     console.log("Final polygon data for map:", mapData);
