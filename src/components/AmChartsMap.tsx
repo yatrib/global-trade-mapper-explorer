@@ -2,7 +2,7 @@
 import React, { useEffect, useRef } from 'react';
 import { CountryData } from '@/data/types';
 import { loadAmChartsScripts, initializeAmChart, AmChartsInstance } from '@/utils/amCharts';
-import { useCountryData } from '@/hooks/useCountryData';
+import useCountryData from '@/hooks/useCountryData';
 
 interface AmChartsMapProps {
   onSelectCountry: (country: CountryData) => void;
@@ -11,7 +11,7 @@ interface AmChartsMapProps {
 const AmChartsMap: React.FC<AmChartsMapProps> = ({ onSelectCountry }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstanceRef = useRef<AmChartsInstance | undefined>();
-  const { data: countryData, isLoading, error } = useCountryData();
+  const { countryData, loading: isLoading, error } = useCountryData();
 
   useEffect(() => {
     if (!chartRef.current || !countryData) return;

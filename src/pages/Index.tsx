@@ -1,8 +1,9 @@
+
 import React, { useState, useRef } from 'react';
 import { CountryData } from '@/data/types';
 import AmChartsMap from '@/components/AmChartsMap';
 import { Badge } from '@/components/ui/badge';
-import { useCountryData } from '@/hooks/useCountryData';
+import useCountryData from '@/hooks/useCountryData';
 import CountryDetail from '@/components/CountryDetail';
 import { Card, CardContent } from '@/components/ui/card';
 import { DownloadReportForm } from '@/components/DownloadReportForm';
@@ -13,7 +14,7 @@ import Footer from '@/components/Footer';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 
 const Index: React.FC = () => {
-  const { data: countryData, isLoading, error } = useCountryData();
+  const { countryData, loading: isLoading, error } = useCountryData();
   const [selectedCountry, setSelectedCountry] = useState<CountryData | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
