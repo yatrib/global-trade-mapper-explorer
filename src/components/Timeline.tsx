@@ -253,7 +253,7 @@ const Timeline: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="text-center mb-16">
-        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Key Moments in the Global Trade War</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">A Closer Look at the Most Affected Economies</h2>
         <p className="text-lg text-gray-600">Track the evolution of trade policies and their global impact</p>
       </div>
 
