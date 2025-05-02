@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { CountryData } from '@/data/types';
 import AmChartsMap from '@/components/AmChartsMap';
@@ -11,6 +10,8 @@ import Timeline from '@/components/Timeline';
 import ExpertiseSection from '@/components/ExpertiseSection';
 import Footer from '@/components/Footer';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { ExternalLink } from 'lucide-react';
 
 const Index: React.FC = () => {
   const { countryData, loading: isLoading, error } = useCountryData();
@@ -95,9 +96,16 @@ const Index: React.FC = () => {
             <div className="flex items-center gap-3">
               <img src="https://infomineo.com/wp-content/uploads/2024/02/InfomineoLogo01.webp" alt="Infomineo Logo" className="h-10 w-auto" />
             </div>
-            <Badge variant="outline" className="text-sm px-3 py-1.5 bg-white/10 backdrop-blur text-white border-transparent font-medium">
-              Latest Data: Feb 2025
-            </Badge>
+            <Button 
+              variant="outline" 
+              size="sm"
+              className="bg-white hover:bg-white/90 text-infomineo-blue"
+              asChild
+            >
+              <a href="https://infomineo.com/contact-us/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
+                Contact Us <ExternalLink size={14} />
+              </a>
+            </Button>
           </div>
         </header>
 
