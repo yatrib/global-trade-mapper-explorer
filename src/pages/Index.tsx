@@ -111,10 +111,9 @@ const Index: React.FC = () => {
 
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-3xl mx-auto text-center animate-subtle-fade">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">Global Trade Map</h1>
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">U.S. Tariffs 2025 Tracker</h1>
             <p className="text-lg md:text-xl opacity-90 mb-8 max-w-3xl mx-auto line-clamp-2">
-              The Trump administration has declared a national emergency and implemented sweeping tariffs on imports, 
-              with highest rates targeting Chinese goods while establishing baseline tariffs on most other countries.
+              Track the latest U.S. tariff implementations and their global impact with our interactive map below. Monitor real-time data on affected countries, product categories, trade flow changes, and economic responses as this major trade policy shift continues to reshape international commerce.
             </p>
           </div>
         </div>
