@@ -13,6 +13,7 @@ export const formatCurrency = (value: number | null | undefined): string => {
   const absValue = Math.abs(value);
   const sign = value < 0 ? '-' : '';
   
+  // Format to show cleanly as $X.XB without thousands separators
   return `$${sign}${absValue.toFixed(1)}B`;
 };
 

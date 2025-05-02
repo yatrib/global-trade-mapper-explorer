@@ -2,6 +2,7 @@
 import { CountryData } from '@/data/types';
 import { AmChartsInstance, WindowWithAmCharts } from './types';
 import { mapCountryDataForChart } from './dataMappers';
+import { formatCurrency, formatPercentage } from './formatters';
 
 // Initialize the chart
 export const initializeAmChart = (
@@ -96,9 +97,9 @@ export const initializeAmChart = (
       key: "fill"
     }]);
 
-    // Enhanced tooltip with tariff data - Improved formatting
+    // Enhanced tooltip with tariff data - Only show tariffs data
     polygonSeries.mapPolygons.template.setAll({
-      tooltipText: "{name}\n[bold]Tariff Data:[/]\nTariffs to US: {tariffsToUS}%\nReciprocal Tariff: {reciprocalTariff}%\n[bold]Trade:[/]\nTrade Balance: ${usTradeBalance}B\n[bold]GDP:[/]\n2023: ${gdp2023}B\n2024: ${gdp2024}B",
+      tooltipText: "{name}\n[bold]Tariff Data:[/]\nTariffs to US: {tariffsToUS}%\nReciprocal Tariff: {reciprocalTariff}%",
       stroke: am5.color(0xffffff),
       strokeWidth: 0.5,
       interactive: true,
@@ -137,6 +138,18 @@ export const initializeAmChart = (
 
     // Set the data for the polygons
     polygonSeries.data.setAll(mapData);
+
+    // Only add interactivity to countries in our database
+    polygonSeries.mapPolygons.template.adapters.add("interactive", function(interactive, target) {
+      const dataItem = target.dataItem;
+      if (dataItem) {
+        const dataContext = dataItem.dataContext as any;
+        if (dataContext && dataContext.id && countryIds.has(dataContext.id)) {
+          return true; // Make interactive only if in our database
+        }
+      }
+      return false; // Non-interactive for countries not in our database
+    });
 
     // Add labels for country names (only for countries in our database)
     const labelSeries = chart.series.push(

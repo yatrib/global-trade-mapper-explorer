@@ -1,6 +1,7 @@
 
 import { CountryData } from '@/data/types';
 import { AmChartsCountryData } from './types';
+import { formatCurrency, formatPercentage } from './formatters';
 
 // Map country data to the format expected by amCharts, showing all countries in the database
 export const mapCountryDataForChart = (countryData: CountryData[]): AmChartsCountryData[] => {
@@ -22,13 +23,13 @@ export const mapCountryDataForChart = (countryData: CountryData[]): AmChartsCoun
       id: country.id,
       name: country.name,
       value: country.tariffsToUS || 0, // Use tariffs for color intensity or 0 if null
-      gdp2023: country.gdp?.actual2023 || null,
-      gdp2024: country.gdp?.estimate2024 || null,
-      usTradeBalance: country.usTradeBalance || null,
-      shareOfUsImports: country.shareOfUsImports || null,
-      shareOfUsExports: country.shareOfUsExports || null,
-      tariffsToUS: country.tariffsToUS || null,
-      reciprocalTariff: country.reciprocalTariff || null,
+      gdp2023: country.gdp?.actual2023 ? formatCurrency(country.gdp.actual2023) : null,
+      gdp2024: country.gdp?.estimate2024 ? formatCurrency(country.gdp.estimate2024) : null,
+      usTradeBalance: country.usTradeBalance ? formatCurrency(country.usTradeBalance) : null,
+      shareOfUsImports: country.shareOfUsImports ? formatPercentage(country.shareOfUsImports) : null,
+      shareOfUsExports: country.shareOfUsExports ? formatPercentage(country.shareOfUsExports) : null,
+      tariffsToUS: country.tariffsToUS ? formatPercentage(country.tariffsToUS) : null,
+      reciprocalTariff: country.reciprocalTariff ? formatPercentage(country.reciprocalTariff) : null,
       countryObject: country // Store the entire country object for reference
     };
   }).filter(Boolean) as AmChartsCountryData[]; // Filter out any null entries

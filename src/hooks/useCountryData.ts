@@ -85,7 +85,8 @@ const useCountryData = () => {
           return {
             id: country.id,
             name: country.name,
-            region: country.Type || 'Unknown', // Using Type field as region
+            // Remove region/type from popup display
+            region: '', // Removed Type field as region
             gdp: {
               actual2023: gdp?.actual_2023 || null,
               estimate2024: gdp?.estimate_2024 || null
