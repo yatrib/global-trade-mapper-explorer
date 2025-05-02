@@ -5,7 +5,6 @@ export const countryData: CountryData[] = [
     id: 'CN',
     name: 'China',
     region: 'Asia',
-    area: 9706961,
     gdp: {
       actual2023: 17680,
       estimate2024: 19220,
@@ -30,7 +29,6 @@ export const countryData: CountryData[] = [
     id: 'FR',
     name: 'France',
     region: 'Europe',
-    area: 551695,
     gdp: {
       actual2023: 2923,
       estimate2024: 3017,
@@ -55,7 +53,6 @@ export const countryData: CountryData[] = [
     id: 'RU',
     name: 'Russia',
     region: 'Eurasia',
-    area: 17098246,
     gdp: {
       actual2023: 1862,
       estimate2024: 1915,
@@ -80,7 +77,6 @@ export const countryData: CountryData[] = [
     id: 'CA',
     name: 'Canada',
     region: 'North America',
-    area: 9984670,
     gdp: {
       actual2023: 2107,
       estimate2024: 2221,
@@ -105,7 +101,6 @@ export const countryData: CountryData[] = [
     id: 'DE',
     name: 'Germany',
     region: 'Europe',
-    area: 357588,
     gdp: {
       actual2023: 4456,
       estimate2024: 4512,

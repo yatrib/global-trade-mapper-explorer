@@ -41,9 +41,6 @@ const CountryDetail: React.FC<CountryDetailProps> = ({ country }) => {
           <Badge variant="outline" className="bg-gray-50 border-transparent text-gray-600">
             {country.region}
           </Badge>
-          <Badge variant="outline" className="bg-gray-50 border-transparent text-gray-600">
-            Area: {country.area.toLocaleString()} km²
-          </Badge>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
