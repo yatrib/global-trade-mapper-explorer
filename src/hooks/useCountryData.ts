@@ -85,7 +85,7 @@ const useCountryData = () => {
           return {
             id: country.id,
             name: country.name,
-            // Completely remove region field
+            region: country.Type || '', // Add region field back using Type or empty string
             gdp: {
               actual2023: gdp?.actual_2023 || null,
               estimate2024: gdp?.estimate_2024 || null

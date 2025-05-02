@@ -1,9 +1,8 @@
 
-
 export interface CountryData {
   id: string;
   name: string;
-  region: string; // Add back region for compatibility
+  region: string; // Keep region in the type definition
   gdp: {
     actual2023: number | null;
     estimate2024: number | null;
