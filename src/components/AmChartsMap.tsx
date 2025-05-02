@@ -52,6 +52,11 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ onSelectCountry }) => {
     return <div className="h-[600px] flex items-center justify-center">No country data available</div>;
   }
 
+  // Calculate filtered countries count
+  const filteredCountriesCount = selectedType 
+    ? countryData.filter(c => c.region === selectedType).length 
+    : countryData.length;
+
   return (
     <div className="bg-white rounded-lg overflow-hidden">
       <div className="p-4 border-b flex justify-between items-center">
@@ -62,11 +67,7 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ onSelectCountry }) => {
         />
         
         <div className="flex items-center gap-2 text-sm text-gray-500">
-          {selectedType ? (
-            <span>Showing {countryData.filter(c => c.region === selectedType).length} countries</span>
-          ) : (
-            <span>Showing all {countryData.length} countries</span>
-          )}
+          <span>Showing {filteredCountriesCount} {filteredCountriesCount === 1 ? 'country' : 'countries'}</span>
         </div>
       </div>
       <div className="h-[600px]" ref={chartRef}></div>

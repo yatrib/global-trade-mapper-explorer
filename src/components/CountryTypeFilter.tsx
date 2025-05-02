@@ -29,14 +29,14 @@ const CountryTypeFilter: React.FC<CountryTypeFilterProps> = ({
     <div className="flex items-center gap-2">
       <span className="text-sm font-medium">Filter by type:</span>
       <Select
-        value={selectedType || ""}
-        onValueChange={(value) => onSelectType(value || null)}
+        value={selectedType || "all"}
+        onValueChange={(value) => onSelectType(value === "all" ? null : value)}
       >
         <SelectTrigger className="w-[180px] h-9">
           <SelectValue placeholder="All Countries" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="">All Countries</SelectItem>
+          <SelectItem value="all">All Countries</SelectItem>
           {countryTypes.map((type) => (
             <SelectItem key={type} value={type}>
               {type}
