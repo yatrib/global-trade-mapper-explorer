@@ -1,13 +1,12 @@
+
 export interface CountryData {
   id: string;
   name: string;
-  region: string;
-  area: number;
   gdp: {
-    actual2023: number;
-    estimate2024: number;
+    actual2023: number | null;
+    estimate2024: number | null;
   };
-  usTradeBalance: number;
+  usTradeBalance: number | null;
   shareOfUsImports: number | null;
   shareOfUsExports: number | null;
   reciprocalTariff: number | null;

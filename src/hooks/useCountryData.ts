@@ -72,12 +72,6 @@ export function useCountryData() {
             const gdpData = country.country_gdp?.[0] || {};
             const tradeData = country.us_trade_data?.[0] || {};
             
-            // Log the raw nested data for verification
-            console.log(`Raw data for ${country.name}:`, {
-              gdp: gdpData,
-              trade: tradeData
-            });
-            
             // Safe parsing functions to handle different data types and potential null values
             const safeParseNumber = (value: any): number | null => {
               if (value === null || value === undefined) return null;
@@ -96,21 +90,25 @@ export function useCountryData() {
             const tariffsToUS = safeParseNumber(tradeData?.tariffs_to_us);
             
             // Log the parsed values for verification
-            console.log(`Parsed values for ${country.name}:`, {
-              actual2023,
-              estimate2024,
-              tradeBalance,
-              shareOfImports,
-              shareOfExports,
-              reciprocalTariff,
-              tariffsToUS
-            });
+            if (country.id === 'CA') {
+              console.log(`Parsed values for Canada:`, {
+                actual2023,
+                estimate2024,
+                tradeBalance,
+                shareOfImports,
+                shareOfExports,
+                reciprocalTariff,
+                tariffsToUS,
+                gdpData,
+                tradeData
+              });
+            }
             
             return {
               id: country.id,
               name: country.name,
-              region: country.Type || 'Unknown',
-              area: 0, // Since area isn't present in the schema
+              reciprocalTariff: reciprocalTariff,
+              tariffsToUS: tariffsToUS,
               gdp: {
                 actual2023,
                 estimate2024,
@@ -118,8 +116,6 @@ export function useCountryData() {
               usTradeBalance: tradeBalance,
               shareOfUsImports: shareOfImports,
               shareOfUsExports: shareOfExports,
-              reciprocalTariff: reciprocalTariff,
-              tariffsToUS: tariffsToUS,
               impactedSectors: country.country_sectors?.map(s => s.sector_name) || [],
               keyInsights: country.country_insights?.map(i => i.insight_text) || [],
               nationalReaction: {
