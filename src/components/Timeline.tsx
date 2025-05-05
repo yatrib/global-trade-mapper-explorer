@@ -12,7 +12,7 @@ interface TimelineEvent {
   description: string;
   icon: React.ReactNode;
   isHighlighted?: boolean;
-  country: 'us' | 'china';
+  country: 'us' | 'china' | 'middle-east';
 }
 
 // Combined US and China timeline events data, sorted by date
@@ -154,6 +154,40 @@ const combinedUsChina: TimelineEvent[] = [
   }
 ];
 
+// Middle East timeline events
+const middleEastEvents: TimelineEvent[] = [
+  {
+    date: 'Feb 15, 2025',
+    title: 'Tariff Exemptions for UAE',
+    description: 'The U.S. announces partial tariff exemptions for key imports from the UAE as part of strategic partnerships in the region.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    isHighlighted: true,
+    country: 'middle-east'
+  },
+  {
+    date: 'Mar 1, 2025',
+    title: 'Saudi Arabia Trade Agreement',
+    description: 'U.S. and Saudi Arabia sign preliminary agreement on reduced tariffs for energy technology exports.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'middle-east'
+  },
+  {
+    date: 'Mar 22, 2025',
+    title: 'Egypt Export Restrictions',
+    description: 'Egypt responds to U.S. aluminum tariffs with new restrictions on certain agricultural exports to American markets.',
+    icon: <AlertTriangle className="h-6 w-6 text-white" />,
+    isHighlighted: true,
+    country: 'middle-east'
+  },
+  {
+    date: 'Apr 12, 2025',
+    title: 'Qatar Energy Partnership',
+    description: 'U.S. establishes preferential trade status for Qatari energy imports, exempting them from recent global tariff increases.',
+    icon: <TrendingUp className="h-6 w-6 text-white" />,
+    country: 'middle-east'
+  }
+];
+
 // Sort events by date string
 const sortedEvents = [...combinedUsChina].sort((a, b) => {
   // Parse date strings into comparable format (assuming format is 'MMM D, YYYY')
@@ -162,12 +196,19 @@ const sortedEvents = [...combinedUsChina].sort((a, b) => {
   return dateA.getTime() - dateB.getTime();
 });
 
-const TimelineComponent: React.FC = () => {
+// Sort Middle East events
+const sortedMiddleEastEvents = [...middleEastEvents].sort((a, b) => {
+  const dateA = new Date(a.date);
+  const dateB = new Date(b.date);
+  return dateA.getTime() - dateB.getTime();
+});
+
+const TimelineComponent: React.FC<{ events: TimelineEvent[] }> = ({ events }) => {
   const [visibleCount, setVisibleCount] = useState(3);
-  const events = sortedEvents.slice(0, visibleCount);
+  const visibleEvents = events.slice(0, visibleCount);
   
   const loadMore = () => {
-    setVisibleCount(prev => Math.min(prev + 3, sortedEvents.length));
+    setVisibleCount(prev => Math.min(prev + 3, events.length));
   };
 
   return (
@@ -176,8 +217,8 @@ const TimelineComponent: React.FC = () => {
       <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-gray-300 to-gray-200" style={{ zIndex: 0 }}></div>
 
       <div className="w-full">
-        {events.map((event, index) => {
-          const isUSEvent = event.country === 'us';
+        {visibleEvents.map((event, index) => {
+          const isUSEvent = event.country === 'us' || event.country === 'middle-east';
           
           return (
             <div key={index} className="relative flex mb-12 w-full">
@@ -186,22 +227,24 @@ const TimelineComponent: React.FC = () => {
                 <div className={cn(
                   "w-10 h-10 rounded-full flex items-center justify-center shadow-sm",
                   event.isHighlighted ? "bg-infomineo-gradient" : 
-                    event.country === 'us' ? "bg-infomineo-blue" : "bg-infomineo-red"
+                    event.country === 'us' || event.country === 'middle-east' ? "bg-infomineo-blue" : "bg-infomineo-red"
                 )}>
                   {event.icon}
                 </div>
               </div>
               
-              {/* US event on left, China event on right */}
+              {/* US/Middle East event on left, China event on right */}
               {isUSEvent ? (
-                // US Event (Left)
+                // US/Middle East Event (Left)
                 <>
                   <div className="w-1/2 pr-8">
                     <Card className="border-l-4 border-l-infomineo-blue hover:shadow-md transition-shadow duration-300">
                       <CardContent className="p-6">
                         <div className="flex items-start justify-between mb-2">
                           <span className="text-sm font-semibold text-infomineo-blue">{event.date}</span>
-                          <span className="text-xs font-bold px-2 py-1 rounded-full bg-infomineo-blue/10 text-infomineo-blue">United States</span>
+                          <span className="text-xs font-bold px-2 py-1 rounded-full bg-infomineo-blue/10 text-infomineo-blue">
+                            {event.country === 'middle-east' ? "Middle East" : "United States"}
+                          </span>
                         </div>
                         <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
                         <p className="text-gray-600">{event.description}</p>
@@ -234,7 +277,7 @@ const TimelineComponent: React.FC = () => {
       </div>
       
       {/* Load More Button */}
-      {visibleCount < sortedEvents.length && (
+      {visibleCount < events.length && (
         <div className="flex justify-center mt-6">
           <Button 
             onClick={loadMore}
@@ -258,8 +301,9 @@ const Timeline: React.FC = () => {
       </div>
 
       <Tabs defaultValue="us-china" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 mb-10">
+        <TabsList className="grid w-full grid-cols-4 mb-10">
           <TabsTrigger value="us-china">U.S. - China</TabsTrigger>
+          <TabsTrigger value="us-middle-east">U.S. - Middle East</TabsTrigger>
           <TabsTrigger value="us-canada-mexico">U.S. - Canada & Mexico</TabsTrigger>
           <TabsTrigger value="us-eu">U.S. - European Union</TabsTrigger>
         </TabsList>
@@ -276,7 +320,18 @@ const Timeline: React.FC = () => {
               <span className="font-medium">China</span>
             </div>
           </div>
-          <TimelineComponent />
+          <TimelineComponent events={sortedEvents} />
+        </TabsContent>
+        
+        {/* U.S. - Middle East Tab Content */}
+        <TabsContent value="us-middle-east">
+          <div className="mb-6 flex justify-center gap-8">
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-infomineo-blue rounded-full"></div>
+              <span className="font-medium">United States & Middle East</span>
+            </div>
+          </div>
+          <TimelineComponent events={sortedMiddleEastEvents} />
         </TabsContent>
         
         {/* U.S. - Canada & Mexico Tab Content - Empty for now */}

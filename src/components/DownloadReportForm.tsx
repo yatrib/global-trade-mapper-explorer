@@ -40,7 +40,12 @@ export function DownloadReportForm() {
               <FormControl>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/60" strokeWidth={1.5} />
-                  <Input placeholder="Your name" {...field} className="pl-10 bg-white/10 border-transparent text-white focus:border-white/30 rounded-lg" required />
+                  <Input 
+                    placeholder="Your name" 
+                    {...field} 
+                    className="pl-10 bg-white/10 border-transparent text-white focus:border-white/30 rounded-lg placeholder:text-white/90" 
+                    required 
+                  />
                 </div>
               </FormControl>
             </FormItem>
@@ -55,7 +60,13 @@ export function DownloadReportForm() {
               <FormControl>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/60" strokeWidth={1.5} />
-                  <Input placeholder="you@company.com" {...field} type="email" className="pl-10 bg-white/10 border-transparent text-white focus:border-white/30 rounded-lg" required />
+                  <Input 
+                    placeholder="you@company.com" 
+                    {...field} 
+                    type="email" 
+                    className="pl-10 bg-white/10 border-transparent text-white focus:border-white/30 rounded-lg placeholder:text-white/90" 
+                    required 
+                  />
                 </div>
               </FormControl>
             </FormItem>
@@ -70,7 +81,12 @@ export function DownloadReportForm() {
               <FormControl>
                 <div className="relative">
                   <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/60" strokeWidth={1.5} />
-                  <Input placeholder="Your company" {...field} className="pl-10 bg-white/10 border-transparent text-white focus:border-white/30 rounded-lg" required />
+                  <Input 
+                    placeholder="Your company" 
+                    {...field} 
+                    className="pl-10 bg-white/10 border-transparent text-white focus:border-white/30 rounded-lg placeholder:text-white/90" 
+                    required 
+                  />
                 </div>
               </FormControl>
             </FormItem>
