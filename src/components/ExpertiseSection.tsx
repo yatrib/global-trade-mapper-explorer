@@ -1,6 +1,7 @@
 
 import React from 'react';
-import { BarChart3, Globe, Handshake } from 'lucide-react';
+import { BarChart3, Globe, Handshake, ExternalLink } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const ExpertiseSection: React.FC = () => {
   return (
@@ -31,6 +32,20 @@ const ExpertiseSection: React.FC = () => {
             title="Tailored Solutions"
             description="We develop customized research solutions that align perfectly with your business objectives."
           />
+        </div>
+        
+        {/* New CTA Button */}
+        <div className="text-center mt-16">
+          <Button 
+            variant="default"
+            size="lg" 
+            className="bg-infomineo-blue hover:bg-infomineo-blue/90"
+            asChild
+          >
+            <a href="https://infomineo.com/contact-us/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+              Get in Touch Today <ExternalLink size={16} />
+            </a>
+          </Button>
         </div>
       </div>
     </section>

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Flag, AlertTriangle, TrendingUp, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -323,15 +322,11 @@ const Timeline: React.FC = () => {
           <TimelineComponent events={sortedEvents} />
         </TabsContent>
         
-        {/* U.S. - Middle East Tab Content */}
+        {/* U.S. - Middle East Tab Content - Now empty with "coming soon" message */}
         <TabsContent value="us-middle-east">
-          <div className="mb-6 flex justify-center gap-8">
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-infomineo-blue rounded-full"></div>
-              <span className="font-medium">United States & Middle East</span>
-            </div>
+          <div className="flex items-center justify-center py-16">
+            <p className="text-lg text-gray-500 italic">Content coming soon for U.S. - Middle East trade relations.</p>
           </div>
-          <TimelineComponent events={sortedMiddleEastEvents} />
         </TabsContent>
         
         {/* U.S. - Canada & Mexico Tab Content - Empty for now */}
