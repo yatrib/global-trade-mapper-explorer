@@ -22,10 +22,30 @@ export function DownloadReportForm() {
     }
   });
 
-  const onSubmit = (data: DownloadFormData) => {
-    toast.success("Thank you! We'll send the insights to your email shortly.");
-    console.log('Form submitted:', data);
-    form.reset();
+  const onSubmit = async (data: DownloadFormData) => {
+    try {
+      // Send data to the webhook
+      await fetch('https://hook.eu2.make.com/4rulbma7noyux9at2usuaau9pgsuc8nl', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        mode: 'no-cors',
+        body: JSON.stringify({
+          id: 'infomineo-form',
+          title: 'Trump Tarrifs',
+          formType: 'download',
+          ...data
+        }),
+      });
+      
+      toast.success("Thank you! We'll send the insights to your email shortly.");
+      console.log('Form submitted:', data);
+      form.reset();
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      toast.error('There was a problem submitting your request. Please try again.');
+    }
   };
 
   return (
