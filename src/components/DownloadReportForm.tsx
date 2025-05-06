@@ -8,7 +8,8 @@ import { toast } from 'sonner';
 import { Mail, User, Building } from 'lucide-react';
 
 interface DownloadFormData {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   company: string;
 }
@@ -16,7 +17,8 @@ interface DownloadFormData {
 export function DownloadReportForm() {
   const form = useForm<DownloadFormData>({
     defaultValues: {
-      name: '',
+      firstName: '',
+      lastName: '',
       email: '',
       company: ''
     }
@@ -24,6 +26,8 @@ export function DownloadReportForm() {
 
   const onSubmit = async (data: DownloadFormData) => {
     try {
+      const pageUrl = window.location.href;
+      
       // Send data to the webhook without wrapping it
       await fetch('https://hook.eu2.make.com/4rulbma7noyux9at2usuaau9pgsuc8nl', {
         method: 'POST',
@@ -35,9 +39,11 @@ export function DownloadReportForm() {
           id: 'infomineo-form',
           title: 'Trump Tarrifs',
           formType: 'download',
-          name: data.name,
+          firstName: data.firstName,
+          lastName: data.lastName,
           email: data.email,
-          company: data.company
+          company: data.company,
+          pageUrl: pageUrl
         }),
       });
       
@@ -53,26 +59,46 @@ export function DownloadReportForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 w-full">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-white/90 font-medium mb-1.5">Full Name</FormLabel>
-              <FormControl>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/60" strokeWidth={1.5} />
-                  <Input 
-                    placeholder="Your name" 
-                    {...field} 
-                    className="pl-10 bg-white/10 border-transparent text-white focus:border-white/30 rounded-lg placeholder:text-white/90" 
-                    required 
-                  />
-                </div>
-              </FormControl>
-            </FormItem>
-          )}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="firstName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-white/90 font-medium mb-1.5">First Name</FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/60" strokeWidth={1.5} />
+                    <Input 
+                      placeholder="First name" 
+                      {...field} 
+                      className="pl-10 bg-white/10 border-transparent text-white focus:border-white/30 rounded-lg placeholder:text-white/90" 
+                    />
+                  </div>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="lastName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-white/90 font-medium mb-1.5">Last Name</FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/60" strokeWidth={1.5} />
+                    <Input 
+                      placeholder="Last name" 
+                      {...field} 
+                      className="pl-10 bg-white/10 border-transparent text-white focus:border-white/30 rounded-lg placeholder:text-white/90" 
+                    />
+                  </div>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </div>
         <FormField
           control={form.control}
           name="email"
@@ -107,7 +133,6 @@ export function DownloadReportForm() {
                     placeholder="Your company" 
                     {...field} 
                     className="pl-10 bg-white/10 border-transparent text-white focus:border-white/30 rounded-lg placeholder:text-white/90" 
-                    required 
                   />
                 </div>
               </FormControl>
