@@ -24,7 +24,7 @@ export function DownloadReportForm() {
 
   const onSubmit = async (data: DownloadFormData) => {
     try {
-      // Send data to the webhook
+      // Send data to the webhook without wrapping it
       await fetch('https://hook.eu2.make.com/4rulbma7noyux9at2usuaau9pgsuc8nl', {
         method: 'POST',
         headers: {
@@ -35,7 +35,9 @@ export function DownloadReportForm() {
           id: 'infomineo-form',
           title: 'Trump Tarrifs',
           formType: 'download',
-          ...data
+          name: data.name,
+          email: data.email,
+          company: data.company
         }),
       });
       
