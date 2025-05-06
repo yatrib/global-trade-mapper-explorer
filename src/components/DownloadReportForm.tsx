@@ -6,12 +6,14 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { Mail, User, Building } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface DownloadFormData {
   firstName: string;
   lastName: string;
   email: string;
   company: string;
+  consent: boolean;
 }
 
 export function DownloadReportForm() {
@@ -20,7 +22,8 @@ export function DownloadReportForm() {
       firstName: '',
       lastName: '',
       email: '',
-      company: ''
+      company: '',
+      consent: false
     }
   });
 
@@ -43,6 +46,7 @@ export function DownloadReportForm() {
           lastName: data.lastName,
           email: data.email,
           company: data.company,
+          consent: data.consent,
           pageUrl: pageUrl
         }),
       });
@@ -136,6 +140,27 @@ export function DownloadReportForm() {
                   />
                 </div>
               </FormControl>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="consent"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md p-2">
+              <FormControl>
+                <Checkbox 
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  className="bg-white/20 border-white/30 text-infomineo-blue" 
+                  required
+                />
+              </FormControl>
+              <div className="space-y-1">
+                <FormLabel className="text-sm text-white/80">
+                  By submitting this form, I agree to receive emails containing reports, industry insights, and other relevant information from Infomineo.
+                </FormLabel>
+              </div>
             </FormItem>
           )}
         />
