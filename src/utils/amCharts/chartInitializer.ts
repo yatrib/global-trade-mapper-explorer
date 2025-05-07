@@ -42,8 +42,8 @@ export const initializeAmChart = (
     const myTheme = am5.Theme.new(root);
     myTheme.rule("InterfaceColors").setAll({
       primaryButton: am5.color(0x2C469D),  // Infomineo Royal Blue
-      primaryButtonHover: am5.color(0x2C469D).lighten(0.2),
-      primaryButtonDown: am5.color(0x2C469D).lighten(-0.2),
+      primaryButtonHover: am5.color(0x2C469D),  // Fixed: removed lighten
+      primaryButtonDown: am5.color(0x2C469D),   // Fixed: removed lighten
       primaryButtonActive: am5.color(0x41B3E6),  // Infomineo Light Blue
     });
     myTheme.rule("Label").setAll({

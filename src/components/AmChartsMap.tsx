@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { CountryData } from '@/data/types';
 import { loadAmChartsScripts, initializeAmChart, AmChartsInstance } from '@/utils/amCharts';
@@ -22,6 +23,9 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ onSelectCountry }) => {
 
     // Filter countries based on selected filter
     const filteredData = countryData.filter(country => {
+      // Debug logs to check what data we're getting
+      console.log(`Country ${country.name}, region: ${country.region}, Type: ${country.region === 'G20' ? 'G20' : 'Not G20'}`);
+      
       if (filter === 'g20' && country.region === 'G20') return true;
       if (filter === 'non-g20' && country.region !== 'G20') return true;
       return false;
@@ -29,13 +33,19 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ onSelectCountry }) => {
 
     // Log how many countries we have with data
     console.log(`Initializing map with ${filteredData.length} countries (filter: ${filter})`);
+    console.log("Filtered countries:", filteredData.map(c => `${c.name} (${c.region})`));
     
-    // Debug - check if Canada exists in countryData
+    // Debug - check if Canada exists in filtered data
     const canada = filteredData.find(c => c.id === "CA");
     if (canada) {
-      console.log("Canada found in country data:", canada);
+      console.log("Canada found in filtered data:", canada);
     } else {
-      console.warn("Canada NOT found in country data!");
+      console.warn("Canada NOT found in filtered data!");
+      // Let's check if it's in the raw data
+      const rawCanada = countryData.find(c => c.id === "CA");
+      if (rawCanada) {
+        console.log("Canada found in raw data:", rawCanada);
+      }
     }
     
     // Load AmCharts scripts and initialize the chart
@@ -113,7 +123,7 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ onSelectCountry }) => {
                 variant={filter === 'non-g20' ? "default" : "outline"} 
                 size="sm"
                 onClick={() => setFilter('non-g20')}
-                className={`h-8 ${filter === 'non-g20' ? '' : 'text-gray-700'}`}
+                className="h-8"
               >
                 Non-G20 Countries
               </Button>
