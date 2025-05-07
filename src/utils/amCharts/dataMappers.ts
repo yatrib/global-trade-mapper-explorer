@@ -19,10 +19,13 @@ export const mapCountryDataForChart = (countryData: CountryData[]): AmChartsCoun
     console.log(`Processing country for chart: ${country.name} (${country.id})`);
     
     // Use reciprocal tariff as the primary value for color gradient
+    const tariffValue = country.reciprocalTariff || 0;
+    console.log(`Country ${country.name} tariff value: ${tariffValue}`);
+    
     return {
       id: country.id,
       name: country.name,
-      value: country.reciprocalTariff || 0, // Use reciprocal tariff for color intensity
+      value: tariffValue, // Use reciprocal tariff for color intensity
       gdp2023: country.gdp?.actual2023 ? formatCurrency(country.gdp.actual2023) : null,
       gdp2024: country.gdp?.estimate2024 ? formatCurrency(country.gdp.estimate2024) : null,
       usTradeBalance: country.usTradeBalance ? formatCurrency(country.usTradeBalance) : null,

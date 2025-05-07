@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { CountryData } from '@/data/types';
 import { loadAmChartsScripts, initializeAmChart, AmChartsInstance } from '@/utils/amCharts';
@@ -10,20 +9,19 @@ interface AmChartsMapProps {
   onSelectCountry: (country: CountryData) => void;
 }
 
-type CountryFilter = 'all' | 'g20' | 'non-g20';
+type CountryFilter = 'g20' | 'non-g20';
 
 const AmChartsMap: React.FC<AmChartsMapProps> = ({ onSelectCountry }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstanceRef = useRef<AmChartsInstance | undefined>();
   const { countryData, loading: isLoading, error } = useCountryData();
-  const [filter, setFilter] = useState<CountryFilter>('all');
+  const [filter, setFilter] = useState<CountryFilter>('g20'); // Default to G20
 
   useEffect(() => {
     if (!chartRef.current || !countryData) return;
 
     // Filter countries based on selected filter
     const filteredData = countryData.filter(country => {
-      if (filter === 'all') return true;
       if (filter === 'g20' && country.region === 'G20') return true;
       if (filter === 'non-g20' && country.region !== 'G20') return true;
       return false;
@@ -52,7 +50,7 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ onSelectCountry }) => {
             chartInstanceRef.current.dispose();
           }
           
-          // Create new chart instance with all countries from the database
+          // Create new chart instance with filtered countries
           chartInstanceRef.current = initializeAmChart(
             chartRef.current,
             filteredData,
@@ -104,14 +102,6 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ onSelectCountry }) => {
             <Filter size={16} className="text-muted-foreground" />
             <div className="flex gap-2">
               <Button 
-                variant={filter === 'all' ? "default" : "outline"} 
-                size="sm"
-                onClick={() => setFilter('all')}
-                className="h-8"
-              >
-                All Countries
-              </Button>
-              <Button 
                 variant={filter === 'g20' ? "default" : "outline"} 
                 size="sm"
                 onClick={() => setFilter('g20')}
@@ -123,7 +113,7 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ onSelectCountry }) => {
                 variant={filter === 'non-g20' ? "default" : "outline"} 
                 size="sm"
                 onClick={() => setFilter('non-g20')}
-                className="h-8"
+                className={`h-8 ${filter === 'non-g20' ? '' : 'text-gray-700'}`}
               >
                 Non-G20 Countries
               </Button>
