@@ -13,7 +13,8 @@ const AmChartsMapWithFilters: React.FC<AmChartsMapWithFiltersProps> = ({ onSelec
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstanceRef = useRef<AmChartsInstance | undefined>();
   const { countryData, loading: isLoading, error } = useCountryData();
-  const [regionFilter, setRegionFilter] = useState<string | null>(null);
+  // Set G20 as the default filter
+  const [regionFilter, setRegionFilter] = useState<string | null>("G20");
 
   useEffect(() => {
     if (!chartRef.current || !countryData) return;
@@ -65,7 +66,7 @@ const AmChartsMapWithFilters: React.FC<AmChartsMapWithFiltersProps> = ({ onSelec
   }, [countryData, onSelectCountry, regionFilter]);
 
   const handleRegionFilterChange = (value: string) => {
-    setRegionFilter(value === "none" ? null : value);
+    setRegionFilter(value);
   };
 
   if (isLoading) {
@@ -94,7 +95,7 @@ const AmChartsMapWithFilters: React.FC<AmChartsMapWithFiltersProps> = ({ onSelec
     <div className="w-full bg-white rounded-lg overflow-hidden shadow-lg border">
       <div className="p-3 border-b">
         <div className="mb-4">
-          <Tabs defaultValue="none" onValueChange={handleRegionFilterChange}>
+          <Tabs defaultValue="G20" onValueChange={handleRegionFilterChange}>
             <TabsList className="bg-muted">
               <TabsTrigger 
                 value="G20" 
@@ -107,12 +108,6 @@ const AmChartsMapWithFilters: React.FC<AmChartsMapWithFiltersProps> = ({ onSelec
                 className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-700"
               >
                 Non-G20 Countries
-              </TabsTrigger>
-              <TabsTrigger 
-                value="none" 
-                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-700"
-              >
-                All Countries
               </TabsTrigger>
             </TabsList>
           </Tabs>
