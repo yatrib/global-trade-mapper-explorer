@@ -3,9 +3,17 @@ import { CountryData } from '@/data/types';
 import { AmChartsCountryData } from './types';
 import { formatCurrency, formatPercentage } from './formatters';
 
-// Map country data to the format expected by amCharts, showing all countries in the database
+// Map country data for chart, showing all countries in the database
 export const mapCountryDataForChart = (countryData: CountryData[]): AmChartsCountryData[] => {
   console.log(`Mapping ${countryData.length} countries for chart display`);
+  
+  // Find maximum tariff value for gradient color scale
+  const maxTariff = Math.max(
+    ...countryData
+      .filter(country => country.reciprocalTariff !== null)
+      .map(country => country.reciprocalTariff || 0)
+  );
+  console.log(`Max tariff value for gradient: ${maxTariff}`);
   
   // Map all valid countries to the AmCharts format
   const result = countryData.map(country => {
@@ -22,7 +30,7 @@ export const mapCountryDataForChart = (countryData: CountryData[]): AmChartsCoun
     return {
       id: country.id,
       name: country.name,
-      value: country.tariffsToUS || 0, // Use tariffs for color intensity or 0 if null
+      value: country.reciprocalTariff || 0, // Use reciprocal tariff for color intensity or 0 if null
       gdp2023: country.gdp?.actual2023 ? formatCurrency(country.gdp.actual2023) : null,
       gdp2024: country.gdp?.estimate2024 ? formatCurrency(country.gdp.estimate2024) : null,
       usTradeBalance: country.usTradeBalance ? formatCurrency(country.usTradeBalance) : null,
@@ -30,7 +38,8 @@ export const mapCountryDataForChart = (countryData: CountryData[]): AmChartsCoun
       shareOfUsExports: country.shareOfUsExports ? formatPercentage(country.shareOfUsExports) : null,
       tariffsToUS: country.tariffsToUS ? formatPercentage(country.tariffsToUS) : null,
       reciprocalTariff: country.reciprocalTariff ? formatPercentage(country.reciprocalTariff) : null,
-      countryObject: country // Store the entire country object for reference
+      countryObject: country, // Store the entire country object for reference
+      region: country.region // Include region information for filtering
     };
   }).filter(Boolean) as AmChartsCountryData[]; // Filter out any null entries
   

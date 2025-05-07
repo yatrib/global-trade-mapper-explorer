@@ -8,7 +8,8 @@ import { formatCurrency, formatPercentage } from './formatters';
 export const initializeAmChart = (
   container: HTMLElement, 
   countryData: CountryData[],
-  onSelectCountry: (country: CountryData) => void
+  onSelectCountry: (country: CountryData) => void,
+  regionFilter: string | null = null
 ): AmChartsInstance | undefined => {
   const win = window as unknown as WindowWithAmCharts;
   
@@ -23,11 +24,22 @@ export const initializeAmChart = (
   const am5themes_Animated = win.am5themes_Animated;
   const am5geodata_worldLow = win.am5geodata_worldLow;
   
-  // Map country data to the format expected by amCharts - now showing all countries from the database
-  const mapData = mapCountryDataForChart(countryData);
+  // Filter countries based on region if filter is active
+  const filteredCountryData = regionFilter 
+    ? countryData.filter(country => {
+        // Match G20 or non-G20 based on the Type field
+        const isG20 = country.region === "G20";
+        return regionFilter === "G20" ? isG20 : !isG20;
+      })
+    : countryData;
+    
+  console.log(`Filtered ${filteredCountryData.length} countries for ${regionFilter || 'all regions'}`);
+  
+  // Map filtered country data to the format expected by amCharts
+  const mapData = mapCountryDataForChart(filteredCountryData);
   
   // Create a map of country IDs for quick lookup
-  const countryIds = new Set(countryData.map(country => country.id));
+  const countryIds = new Set(filteredCountryData.map(country => country.id));
   console.log("Countries available in database:", Array.from(countryIds));
 
   // Clear previous chart if it exists
@@ -82,13 +94,6 @@ export const initializeAmChart = (
     );
 
     // Configure polygon styling and tooltips
-    polygonSeries.mapPolygons.template.events.on("pointerover", function(ev: any) {
-      if (ev.target.dataItem.get("value") !== undefined) {
-        // No heatLegend to update now
-      }
-    });
-
-    // Set consistent blue color for countries that have data (0x0EA5E9 - Ocean Blue)
     polygonSeries.mapPolygons.template.setAll({
       tooltipText: "{name}\n[bold]Tariff Data:[/]\nTariffs to US: {tariffsToUS}\nReciprocal Tariff: {reciprocalTariff}",
       stroke: am5.color(0xffffff),
@@ -99,19 +104,58 @@ export const initializeAmChart = (
       fill: am5.color(0xCCCCCC) // Light gray for countries not in our database
     });
 
-    // Use a consistent blue for countries in our database
+    // Create a color scale for reciprocal tariff values
+    const heatLegend = chart.children.push(
+      am5.HeatLegend.new(root, {
+        orientation: "vertical",
+        startColor: am5.color(0xADD8E6), // Light blue
+        endColor: am5.color(0x0A4D94),   // Dark blue
+        startText: "Low",
+        endText: "High",
+        stepCount: 5,
+        width: am5.percent(20),
+        height: am5.percent(40),
+        startValue: 0,
+        endValue: 100,
+        y: am5.percent(50),
+        x: am5.percent(95),
+      })
+    );
+
+    // Find the maximum tariff value for the scale
+    const maxValue = Math.max(...mapData.filter(item => item.value !== undefined).map(item => item.value || 0));
+    heatLegend.set("startValue", 0);
+    heatLegend.set("endValue", maxValue > 0 ? maxValue : 100);
+    
+    // Add gradient coloring based on reciprocal tariff values
     polygonSeries.mapPolygons.template.adapters.add("fill", function(fill, target) {
       const dataItem = target.dataItem;
       if (dataItem) {
         const dataContext = dataItem.dataContext as any;
         if (dataContext && dataContext.id && countryIds.has(dataContext.id)) {
-          // Country is in our database - use a consistent Ocean Blue color
-          return am5.color(0x2c469d);
+          // Country is in our database - use gradient based on reciprocal tariff value
+          const value = dataContext.value || 0;
+          const maxValue = heatLegend.get("endValue") || 100;
+          
+          if (value > 0) {
+            // Calculate position in the gradient (0-1)
+            const normalizedValue = Math.min(value / maxValue, 1);
+            
+            // Get color from the heat legend's startColor to endColor based on normalized value
+            const startColor = heatLegend.get("startColor") as any;
+            const endColor = heatLegend.get("endColor") as any;
+            
+            if (startColor && endColor) {
+              return am5.Color.interpolate(normalizedValue, startColor, endColor);
+            }
+          }
+          // Default blue for countries with zero or undefined value
+          return am5.color(0xADD8E6);
         }
       }
       return am5.color(0xCCCCCC); // Default light gray for countries not in our database
     });
-
+    
     // Add click handler to navigate to country details
     polygonSeries.mapPolygons.template.events.on("click", function(ev: any) {
       const clickedCountry = ev.target.dataItem.dataContext;
@@ -172,7 +216,16 @@ export const initializeAmChart = (
 
     labelSeries.data.setAll(labelData);
     
-    // Remove heat legend as we're using a consistent color now
+    // Add a legend title
+    const legendTitle = chart.children.push(am5.Label.new(root, {
+      text: "Reciprocal Tariff %",
+      fontSize: 14,
+      fontWeight: "500",
+      x: am5.percent(95),
+      centerX: am5.percent(50),
+      y: am5.percent(30),
+      textAlign: "center"
+    }));
     
     // Log the data that's being set to the polygons for debugging
     console.log("Final polygon data for map:", mapData);

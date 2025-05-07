@@ -85,7 +85,7 @@ const useCountryData = () => {
           return {
             id: country.id,
             name: country.name,
-            region: country.Type || '', // Add region field back using Type or empty string
+            region: country.Type || '', // Use Type field as region for G20/non-G20 filtering
             gdp: {
               actual2023: gdp?.actual_2023 || null,
               estimate2024: gdp?.estimate_2024 || null
@@ -106,6 +106,11 @@ const useCountryData = () => {
         });
         
         console.log(`Loaded ${mappedData.length} countries from database`);
+        
+        // Debug - check if Type field is being mapped correctly for G20 countries
+        const g20Countries = mappedData.filter(c => c.region === "G20");
+        console.log(`Found ${g20Countries.length} G20 countries:`, g20Countries.map(c => c.name));
+        
         setCountryData(mappedData);
         setLoading(false);
       } catch (e) {

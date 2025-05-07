@@ -1,6 +1,8 @@
+
 import React, { useState, useRef } from 'react';
 import { CountryData } from '@/data/types';
 import AmChartsMap from '@/components/AmChartsMap';
+import AmChartsMapWithFilters from '@/components/AmChartsMapWithFilters';
 import { Badge } from '@/components/ui/badge';
 import useCountryData from '@/hooks/useCountryData';
 import CountryDetail from '@/components/CountryDetail';
@@ -12,6 +14,7 @@ import Footer from '@/components/Footer';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { ExternalLink } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 const Index: React.FC = () => {
   const { countryData, loading: isLoading, error } = useCountryData();
@@ -89,7 +92,7 @@ const Index: React.FC = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section - Updated title and smaller description */}
+      {/* Hero Section */}
       <section className="bg-infomineo-gradient text-white">
         <header className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
@@ -118,13 +121,36 @@ const Index: React.FC = () => {
           </div>
         </div>
 
-        {/* Map Container - Now only showing AmCharts Map */}
+        {/* Map Container with Tabs */}
         <div className="container mx-auto px-4 pb-8">
-          <div className="w-full bg-white">
-            <AmChartsMap
-              onSelectCountry={handleCountrySelect}
-            />
-          </div>
+          <Tabs defaultValue="standard-map" className="w-full">
+            <TabsList className="mb-4">
+              <TabsTrigger 
+                value="standard-map" 
+                className="data-[state=active]:bg-white data-[state=active]:text-infomineo-blue text-white"
+              >
+                Standard Map
+              </TabsTrigger>
+              <TabsTrigger 
+                value="filtered-map" 
+                className="data-[state=active]:bg-white data-[state=active]:text-infomineo-blue text-white"
+              >
+                Map with Filters
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="standard-map" className="w-full bg-white mt-0">
+              <AmChartsMap
+                onSelectCountry={handleCountrySelect}
+              />
+            </TabsContent>
+            
+            <TabsContent value="filtered-map" className="w-full bg-white mt-0">
+              <AmChartsMapWithFilters
+                onSelectCountry={handleCountrySelect}
+              />
+            </TabsContent>
+          </Tabs>
         </div>
       </section>
 
