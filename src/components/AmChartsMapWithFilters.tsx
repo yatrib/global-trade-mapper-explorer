@@ -4,7 +4,7 @@ import { CountryData } from '@/data/types';
 import { loadAmChartsScripts, initializeAmChart, AmChartsInstance } from '@/utils/amCharts';
 import useCountryData from '@/hooks/useCountryData';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Radio, RadioGroup } from "@/components/ui/radio-group";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 
 interface AmChartsMapWithFiltersProps {
@@ -129,11 +129,11 @@ const AmChartsMapWithFilters: React.FC<AmChartsMapWithFiltersProps> = ({ onSelec
             className="flex space-x-4"
           >
             <div className="flex items-center space-x-2">
-              <RadioGroup.RadioGroupItem value="reciprocalTariff" id="reciprocalTariff" />
+              <RadioGroupItem value="reciprocalTariff" id="reciprocalTariff" />
               <Label htmlFor="reciprocalTariff">Reciprocal Tariffs (US to Countries)</Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroup.RadioGroupItem value="tariffsToUS" id="tariffsToUS" />
+              <RadioGroupItem value="tariffsToUS" id="tariffsToUS" />
               <Label htmlFor="tariffsToUS">Tariffs to US (Countries to US)</Label>
             </div>
           </RadioGroup>
