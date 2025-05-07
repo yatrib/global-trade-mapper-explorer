@@ -34,7 +34,7 @@ export const initializeAmChart = (
 
   let root; // Store root for disposal
   
-  am5.ready(function() {
+  try {
     // Create root element
     root = am5.Root.new(container);
 
@@ -151,42 +151,6 @@ export const initializeAmChart = (
       return false; // Non-interactive for countries not in our database
     });
 
-    // Add labels for country names (only for countries in our database)
-    const labelSeries = chart.series.push(
-      am5map.MapPointSeries.new(root, {})
-    );
-
-    labelSeries.bullets.push(function() {
-      return am5.Bullet.new(root, {
-        sprite: am5.Label.new(root, {
-          text: "{name}",
-          fill: am5.color(0x333333),
-          strokeOpacity: 0,
-          centerX: am5.p50,
-          centerY: am5.p50,
-          fontSize: "0.7em",
-          fontWeight: "400",
-          populateText: true,
-          oversizedBehavior: "hide"
-        })
-      });
-    });
-
-    // Add labels only for countries that exist in the database
-    const labelData = mapData
-      .filter(country => country.id && country.name)
-      .map(country => {
-        const feature = am5geodata_worldLow.features.find((f) => f.id === country.id);
-        const coordinates = feature?.geometry?.coordinates?.[0]?.[0] || [0, 0];
-        return {
-          id: country.id,
-          name: country.name,
-          geometry: { type: "Point", coordinates: coordinates }
-        };
-      });
-
-    labelSeries.data.setAll(labelData);
-    
     // Add a legend for the reciprocal tariff color gradient
     const legend = chart.children.push(
       am5.Legend.new(root, {
@@ -221,7 +185,9 @@ export const initializeAmChart = (
     
     // Log the data that's being set to the polygons for debugging
     console.log("Final polygon data for map:", mapData);
-  });
+  } catch (error) {
+    console.error("Failed to initialize AmCharts map:", error);
+  }
 
   // Return a cleanup function
   return {
