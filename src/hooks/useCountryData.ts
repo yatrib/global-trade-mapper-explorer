@@ -24,9 +24,6 @@ const useCountryData = () => {
           throw new Error('No countries found in the database');
         }
         
-        // Log Type field values to debug
-        console.log("Country Type values:", countries.map(c => `${c.name}: ${c.Type}`));
-        
         // Fetch GDP data
         const { data: gdpData, error: gdpError } = await supabase
           .from('country_gdp')
@@ -88,7 +85,7 @@ const useCountryData = () => {
           return {
             id: country.id,
             name: country.name,
-            region: country.Type || '', // Correctly map the Type field to region
+            region: country.Type || '', // Add region field back using Type or empty string
             gdp: {
               actual2023: gdp?.actual_2023 || null,
               estimate2024: gdp?.estimate_2024 || null
@@ -109,10 +106,6 @@ const useCountryData = () => {
         });
         
         console.log(`Loaded ${mappedData.length} countries from database`);
-        // Debug check for G20 countries
-        const g20Countries = mappedData.filter(c => c.region === 'G20');
-        console.log(`Found ${g20Countries.length} G20 countries:`, g20Countries.map(c => c.name));
-        
         setCountryData(mappedData);
         setLoading(false);
       } catch (e) {
