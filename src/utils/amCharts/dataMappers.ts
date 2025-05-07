@@ -4,14 +4,17 @@ import { AmChartsCountryData } from './types';
 import { formatCurrency, formatPercentage } from './formatters';
 
 // Map country data for chart, showing all countries in the database
-export const mapCountryDataForChart = (countryData: CountryData[]): AmChartsCountryData[] => {
-  console.log(`Mapping ${countryData.length} countries for chart display`);
+export const mapCountryDataForChart = (
+  countryData: CountryData[],
+  tariffVisualization: 'reciprocalTariff' | 'tariffsToUS' = 'reciprocalTariff'
+): AmChartsCountryData[] => {
+  console.log(`Mapping ${countryData.length} countries for chart display, visualization: ${tariffVisualization}`);
   
-  // Find maximum tariff value for gradient color scale
+  // Find maximum tariff value for gradient color scale based on selected visualization
   const maxTariff = Math.max(
     ...countryData
-      .filter(country => country.reciprocalTariff !== null)
-      .map(country => country.reciprocalTariff || 0)
+      .filter(country => country[tariffVisualization] !== null)
+      .map(country => country[tariffVisualization] || 0)
   );
   console.log(`Max tariff value for gradient: ${maxTariff}`);
   
@@ -26,11 +29,16 @@ export const mapCountryDataForChart = (countryData: CountryData[]): AmChartsCoun
     // Log the country being processed
     console.log(`Processing country for chart: ${country.name} (${country.id})`);
     
+    // Use the selected tariff type for coloring
+    const tariffValue = tariffVisualization === 'reciprocalTariff'
+      ? country.reciprocalTariff || 0
+      : country.tariffsToUS || 0;
+    
     // Include all countries from the database, even if they have null metrics
     return {
       id: country.id,
       name: country.name,
-      value: country.reciprocalTariff || 0, // Use reciprocal tariff for color intensity or 0 if null
+      value: tariffValue, // Use the selected tariff value for color intensity
       gdp2023: country.gdp?.actual2023 ? formatCurrency(country.gdp.actual2023) : null,
       gdp2024: country.gdp?.estimate2024 ? formatCurrency(country.gdp.estimate2024) : null,
       usTradeBalance: country.usTradeBalance ? formatCurrency(country.usTradeBalance) : null,

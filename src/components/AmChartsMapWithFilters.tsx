@@ -3,7 +3,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { CountryData } from '@/data/types';
 import { loadAmChartsScripts, initializeAmChart, AmChartsInstance } from '@/utils/amCharts';
 import useCountryData from '@/hooks/useCountryData';
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Radio, RadioGroup } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 
 interface AmChartsMapWithFiltersProps {
   onSelectCountry: (country: CountryData) => void;
@@ -15,6 +17,8 @@ const AmChartsMapWithFilters: React.FC<AmChartsMapWithFiltersProps> = ({ onSelec
   const { countryData, loading: isLoading, error } = useCountryData();
   // Set G20 as the default filter
   const [regionFilter, setRegionFilter] = useState<string | null>("G20");
+  // Add tariff visualization type with reciprocal tariff as default
+  const [tariffVisualization, setTariffVisualization] = useState<'reciprocalTariff' | 'tariffsToUS'>('reciprocalTariff');
 
   useEffect(() => {
     if (!chartRef.current || !countryData) return;
@@ -47,7 +51,8 @@ const AmChartsMapWithFilters: React.FC<AmChartsMapWithFiltersProps> = ({ onSelec
             chartRef.current,
             countryData,
             onSelectCountry,
-            regionFilter
+            regionFilter,
+            tariffVisualization
           );
         }
       } catch (error) {
@@ -63,10 +68,14 @@ const AmChartsMapWithFilters: React.FC<AmChartsMapWithFiltersProps> = ({ onSelec
         chartInstanceRef.current.dispose();
       }
     };
-  }, [countryData, onSelectCountry, regionFilter]);
+  }, [countryData, onSelectCountry, regionFilter, tariffVisualization]);
 
   const handleRegionFilterChange = (value: string) => {
     setRegionFilter(value);
+  };
+
+  const handleTariffVisualizationChange = (value: 'reciprocalTariff' | 'tariffsToUS') => {
+    setTariffVisualization(value);
   };
 
   if (isLoading) {
@@ -112,6 +121,24 @@ const AmChartsMapWithFilters: React.FC<AmChartsMapWithFiltersProps> = ({ onSelec
             </TabsList>
           </Tabs>
         </div>
+        
+        <div className="mb-4 mt-4">
+          <RadioGroup 
+            defaultValue="reciprocalTariff" 
+            onValueChange={(value) => handleTariffVisualizationChange(value as 'reciprocalTariff' | 'tariffsToUS')}
+            className="flex space-x-4"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroup.RadioGroupItem value="reciprocalTariff" id="reciprocalTariff" />
+              <Label htmlFor="reciprocalTariff">Reciprocal Tariffs (US to Countries)</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroup.RadioGroupItem value="tariffsToUS" id="tariffsToUS" />
+              <Label htmlFor="tariffsToUS">Tariffs to US (Countries to US)</Label>
+            </div>
+          </RadioGroup>
+        </div>
+        
         <p className="text-sm text-muted-foreground mt-1">
           View GDP and trade data by country. Click on a country for details.
         </p>

@@ -9,7 +9,8 @@ export const initializeAmChart = (
   container: HTMLElement, 
   countryData: CountryData[],
   onSelectCountry: (country: CountryData) => void,
-  regionFilter: string | null = null
+  regionFilter: string | null = null,
+  tariffVisualization: 'reciprocalTariff' | 'tariffsToUS' = 'reciprocalTariff'
 ): AmChartsInstance | undefined => {
   const win = window as unknown as WindowWithAmCharts;
   
@@ -36,7 +37,7 @@ export const initializeAmChart = (
   console.log(`Filtered ${filteredCountryData.length} countries for ${regionFilter || 'all regions'}`);
   
   // Map filtered country data to the format expected by amCharts
-  const mapData = mapCountryDataForChart(filteredCountryData);
+  const mapData = mapCountryDataForChart(filteredCountryData, tariffVisualization);
   
   // Create a map of country IDs for quick lookup
   const countryIds = new Set(filteredCountryData.map(country => country.id));
@@ -93,9 +94,14 @@ export const initializeAmChart = (
       })
     );
 
+    // Define tooltip text based on visualization type
+    let tooltipText = tariffVisualization === 'reciprocalTariff' 
+      ? "{name}\n[bold]Tariff Data:[/]\nUS Reciprocal Tariff: {reciprocalTariff}\nTariffs to US: {tariffsToUS}"
+      : "{name}\n[bold]Tariff Data:[/]\nTariffs to US: {tariffsToUS}\nUS Reciprocal Tariff: {reciprocalTariff}";
+
     // Configure polygon styling and tooltips
     polygonSeries.mapPolygons.template.setAll({
-      tooltipText: "{name}\n[bold]Tariff Data:[/]\nTariffs to US: {tariffsToUS}\nReciprocal Tariff: {reciprocalTariff}",
+      tooltipText: tooltipText,
       stroke: am5.color(0xffffff),
       strokeWidth: 0.5,
       interactive: true,
@@ -104,12 +110,21 @@ export const initializeAmChart = (
       fill: am5.color(0xCCCCCC) // Light gray for countries not in our database
     });
 
-    // Create a color scale for reciprocal tariff values
+    // Create a color scale for the selected tariff values
+    // Use different color schemes based on tariff visualization type
+    const startColor = tariffVisualization === 'reciprocalTariff'
+      ? am5.color(0xADD8E6) // Light blue for reciprocal tariffs
+      : am5.color(0xFEC6A1); // Soft orange for tariffs to US
+    
+    const endColor = tariffVisualization === 'reciprocalTariff'
+      ? am5.color(0x0A4D94) // Dark blue for reciprocal tariffs
+      : am5.color(0xF97316); // Bright orange for tariffs to US
+
     const heatLegend = chart.children.push(
       am5.HeatLegend.new(root, {
         orientation: "vertical",
-        startColor: am5.color(0xADD8E6), // Light blue
-        endColor: am5.color(0x0A4D94),   // Dark blue
+        startColor: startColor,
+        endColor: endColor,
         startText: "Low",
         endText: "High",
         stepCount: 5,
@@ -127,13 +142,13 @@ export const initializeAmChart = (
     heatLegend.set("startValue", 0);
     heatLegend.set("endValue", maxValue > 0 ? maxValue : 100);
     
-    // Add gradient coloring based on reciprocal tariff values
+    // Add gradient coloring based on the selected tariff values
     polygonSeries.mapPolygons.template.adapters.add("fill", function(fill, target) {
       const dataItem = target.dataItem;
       if (dataItem) {
         const dataContext = dataItem.dataContext as any;
         if (dataContext && dataContext.id && countryIds.has(dataContext.id)) {
-          // Country is in our database - use gradient based on reciprocal tariff value
+          // Country is in our database - use gradient based on selected tariff value
           const value = dataContext.value || 0;
           const maxValue = heatLegend.get("endValue") || 100;
           
@@ -149,8 +164,10 @@ export const initializeAmChart = (
               return am5.Color.interpolate(normalizedValue, startColor, endColor);
             }
           }
-          // Default blue for countries with zero or undefined value
-          return am5.color(0xADD8E6);
+          // Default color for countries with zero value
+          return tariffVisualization === 'reciprocalTariff'
+            ? am5.color(0xADD8E6) // Light blue for reciprocal tariffs
+            : am5.color(0xFEC6A1); // Soft orange for tariffs to US
         }
       }
       return am5.color(0xCCCCCC); // Default light gray for countries not in our database
@@ -216,9 +233,9 @@ export const initializeAmChart = (
 
     labelSeries.data.setAll(labelData);
     
-    // Add a legend title
+    // Add a legend title based on the visualization type
     const legendTitle = chart.children.push(am5.Label.new(root, {
-      text: "Reciprocal Tariff %",
+      text: tariffVisualization === 'reciprocalTariff' ? "Reciprocal Tariff %" : "Tariffs to US %",
       fontSize: 14,
       fontWeight: "500",
       x: am5.percent(95),
