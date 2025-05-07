@@ -81,6 +81,18 @@ export const initializeAmChart = (
       })
     );
 
+    // Find max reciprocal tariff value for creating gradient
+    const maxTariff = Math.max(...countryData
+      .map(country => country.reciprocalTariff || 0)
+      .filter(val => val > 0));
+    
+    // Create a color scale for reciprocal tariffs
+    const colorScale = am5.ColorScale.new(root, {
+      startColor: am5.color(0xD3E4FD), // Light blue
+      endColor: am5.color(0x0EA5E9),   // Ocean Blue
+      range: [0, maxTariff]
+    });
+
     // Configure polygon styling and tooltips
     polygonSeries.mapPolygons.template.events.on("pointerover", function(ev: any) {
       if (ev.target.dataItem.get("value") !== undefined) {
@@ -99,14 +111,21 @@ export const initializeAmChart = (
       fill: am5.color(0xCCCCCC) // Light gray for countries not in our database
     });
 
-    // Use a consistent blue for countries in our database
+    // Use a gradient based on reciprocal tariff values
     polygonSeries.mapPolygons.template.adapters.add("fill", function(fill, target) {
       const dataItem = target.dataItem;
       if (dataItem) {
         const dataContext = dataItem.dataContext as any;
         if (dataContext && dataContext.id && countryIds.has(dataContext.id)) {
-          // Country is in our database - use a consistent Ocean Blue color
-          return am5.color(0x2c469d);
+          // Get the country's reciprocal tariff value
+          const tariffValue = dataContext.countryObject?.reciprocalTariff || 0;
+          
+          // Use the color scale to get a color based on the tariff value
+          if (tariffValue > 0) {
+            return colorScale.getColor(tariffValue);
+          }
+          // If no tariff data but country is in our database, use a light blue
+          return am5.color(0xD3E4FD); 
         }
       }
       return am5.color(0xCCCCCC); // Default light gray for countries not in our database
@@ -172,7 +191,37 @@ export const initializeAmChart = (
 
     labelSeries.data.setAll(labelData);
     
-    // Remove heat legend as we're using a consistent color now
+    // Add a legend for the reciprocal tariff color gradient
+    const legend = chart.children.push(
+      am5.Legend.new(root, {
+        nameField: "name",
+        fillField: "color",
+        x: am5.p50,
+        centerX: am5.p50,
+        y: am5.p95,
+        layout: root.horizontalLayout,
+        background: am5.RoundedRectangle.new(root, {
+          fill: am5.color(0xffffff),
+          fillOpacity: 0.8,
+        })
+      })
+    );
+    
+    // Create legend items
+    legend.data.setAll([
+      {
+        name: "Low Tariff",
+        color: am5.color(0xD3E4FD)
+      },
+      {
+        name: "Medium Tariff",
+        color: am5.color(0x85C1F5)
+      },
+      {
+        name: "High Tariff",
+        color: am5.color(0x0EA5E9)
+      }
+    ]);
     
     // Log the data that's being set to the polygons for debugging
     console.log("Final polygon data for map:", mapData);

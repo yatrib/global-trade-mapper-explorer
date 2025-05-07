@@ -18,11 +18,11 @@ export const mapCountryDataForChart = (countryData: CountryData[]): AmChartsCoun
     // Log the country being processed
     console.log(`Processing country for chart: ${country.name} (${country.id})`);
     
-    // Include all countries from the database, even if they have null metrics
+    // Use reciprocal tariff as the primary value for color gradient
     return {
       id: country.id,
       name: country.name,
-      value: country.tariffsToUS || 0, // Use tariffs for color intensity or 0 if null
+      value: country.reciprocalTariff || 0, // Use reciprocal tariff for color intensity
       gdp2023: country.gdp?.actual2023 ? formatCurrency(country.gdp.actual2023) : null,
       gdp2024: country.gdp?.estimate2024 ? formatCurrency(country.gdp.estimate2024) : null,
       usTradeBalance: country.usTradeBalance ? formatCurrency(country.usTradeBalance) : null,

@@ -1,26 +1,39 @@
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { CountryData } from '@/data/types';
 import { loadAmChartsScripts, initializeAmChart, AmChartsInstance } from '@/utils/amCharts';
 import useCountryData from '@/hooks/useCountryData';
+import { Button } from '@/components/ui/button';
+import { Filter } from 'lucide-react';
 
 interface AmChartsMapProps {
   onSelectCountry: (country: CountryData) => void;
 }
 
+type CountryFilter = 'all' | 'g20' | 'non-g20';
+
 const AmChartsMap: React.FC<AmChartsMapProps> = ({ onSelectCountry }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstanceRef = useRef<AmChartsInstance | undefined>();
   const { countryData, loading: isLoading, error } = useCountryData();
+  const [filter, setFilter] = useState<CountryFilter>('all');
 
   useEffect(() => {
     if (!chartRef.current || !countryData) return;
 
+    // Filter countries based on selected filter
+    const filteredData = countryData.filter(country => {
+      if (filter === 'all') return true;
+      if (filter === 'g20' && country.region === 'G20') return true;
+      if (filter === 'non-g20' && country.region !== 'G20') return true;
+      return false;
+    });
+
     // Log how many countries we have with data
-    console.log(`Initializing map with ${countryData.length} countries`);
+    console.log(`Initializing map with ${filteredData.length} countries (filter: ${filter})`);
     
     // Debug - check if Canada exists in countryData
-    const canada = countryData.find(c => c.id === "CA");
+    const canada = filteredData.find(c => c.id === "CA");
     if (canada) {
       console.log("Canada found in country data:", canada);
     } else {
@@ -42,7 +55,7 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ onSelectCountry }) => {
           // Create new chart instance with all countries from the database
           chartInstanceRef.current = initializeAmChart(
             chartRef.current,
-            countryData,
+            filteredData,
             onSelectCountry
           );
         }
@@ -59,7 +72,7 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ onSelectCountry }) => {
         chartInstanceRef.current.dispose();
       }
     };
-  }, [countryData, onSelectCountry]);
+  }, [countryData, onSelectCountry, filter]);
 
   if (isLoading) {
     return (
@@ -86,9 +99,40 @@ const AmChartsMap: React.FC<AmChartsMapProps> = ({ onSelectCountry }) => {
   return (
     <div className="w-full bg-white rounded-lg overflow-hidden shadow-lg border">
       <div className="p-3 border-b">
-        <p className="text-sm text-muted-foreground mt-1">
-          View GDP and trade data by country. Click on a country for details.
-        </p>
+        <div className="flex flex-col space-y-2">
+          <div className="flex items-center gap-2 mb-1">
+            <Filter size={16} className="text-muted-foreground" />
+            <div className="flex gap-2">
+              <Button 
+                variant={filter === 'all' ? "default" : "outline"} 
+                size="sm"
+                onClick={() => setFilter('all')}
+                className="h-8"
+              >
+                All Countries
+              </Button>
+              <Button 
+                variant={filter === 'g20' ? "default" : "outline"} 
+                size="sm"
+                onClick={() => setFilter('g20')}
+                className="h-8"
+              >
+                G20 Countries
+              </Button>
+              <Button 
+                variant={filter === 'non-g20' ? "default" : "outline"} 
+                size="sm"
+                onClick={() => setFilter('non-g20')}
+                className="h-8"
+              >
+                Non-G20 Countries
+              </Button>
+            </div>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            View GDP and trade data by country. Click on a country for details.
+          </p>
+        </div>
       </div>
       <div id="chartdiv" ref={chartRef} className="w-full h-[650px]"></div>
     </div>
