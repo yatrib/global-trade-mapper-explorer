@@ -1,10 +1,9 @@
 
 import React, { useState } from 'react';
 import { TrendingDown, Globe, Network, Factory, Briefcase, ExternalLink } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
 interface EffectCardProps {
   icon: React.ReactNode;
@@ -23,10 +22,10 @@ const EffectCard: React.FC<EffectCardProps> = ({
 
   return (
     <>
-      <Card className="bg-white rounded-xl border-t-4 border-t-infomineo-blue h-full shadow-sm hover:shadow-md transition-all">
-        <CardContent className="p-8">
+      <div className="h-full">
+        <div className="p-8 bg-white rounded-xl shadow-sm hover:shadow-md transition-all">
           <div className="mb-6 flex justify-center">
-            <div className="p-3 bg-infomineo-blue/10 rounded-full">
+            <div className="inline-flex items-center justify-center p-3 bg-infomineo-blue/10 rounded-full text-infomineo-blue">
               {icon}
             </div>
           </div>
@@ -37,8 +36,8 @@ const EffectCard: React.FC<EffectCardProps> = ({
               Learn More <ExternalLink className="ml-1 h-3.5 w-3.5" />
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
       
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-2xl">
@@ -55,31 +54,31 @@ const EffectCard: React.FC<EffectCardProps> = ({
 const RippleEffects: React.FC = () => {
   const effects = [
     {
-      icon: <TrendingDown className="h-8 w-8 text-infomineo-blue" strokeWidth={1.5} />,
+      icon: <TrendingDown className="h-8 w-8" strokeWidth={1.5} />,
       title: "Global Supply Chain Disruption and Recession Risk",
       summary: "New tariffs further strain fragile supply chains recovering from the pandemic and geopolitical tensions, risking significant global growth slowdown.",
       fullContent: "The new U.S. tariffs add further strain to already fragile global supply chains, still recovering from the pandemic and geopolitical instability. With the U.S. and China representing roughly 43% of global GDP (IMF, 2025), an all-out trade war between them could slow global growth significantly or even push some economies into recession. The IMF now forecasts global growth at just 2.8% in 2025, down from 3.3%, citing supply chain fragmentation as a primary driver."
     },
     {
-      icon: <Globe className="h-8 w-8 text-infomineo-blue" strokeWidth={1.5} />,
+      icon: <Globe className="h-8 w-8" strokeWidth={1.5} />,
       title: "Trade Diversion and Market Flooding",
       summary: "Global firms may reroute exports to open economies, causing price pressure and oversupply in third-party markets with mixed economic impacts.",
       fullContent: "Global firms may reroute exports to more open economies, triggering price pressure and oversupply in third-party markets. China, the world's top manufacturing exporter, may seek alternative buyers for state-subsidized goods that can no longer enter the U.S., risking \"dumping\" that could undercut local producers elsewhere. Many countries are increasingly concerned that diverted Chinese goods could overwhelm local industries, undercut domestic producers, and destabilize key sectors. While some countries like Brazil and Australia may feel the pressure from diverted Chinese and EU goods, others like India stand to benefit in electronics and textiles as rivals face higher U.S. tariffs."
     },
     {
-      icon: <Network className="h-8 w-8 text-infomineo-blue" strokeWidth={1.5} />,
+      icon: <Network className="h-8 w-8" strokeWidth={1.5} />,
       title: "Regional Trade Realignment",
       summary: "Trade tensions have pushed historical competitors like Japan, China, and South Korea to collaborate on potential trade agreements.",
       fullContent: "Trade tensions have pushed unlikely regional partners to collaborate. Japan, China, and South Korea, which are historical competitors, held their first trilateral trade meeting in over five years, discussing the possibility of a regional free-trade agreement that could strategically isolate the U.S. from key Asian economic blocs."
     },
     {
-      icon: <Factory className="h-8 w-8 text-infomineo-blue" strokeWidth={1.5} />,
+      icon: <Factory className="h-8 w-8" strokeWidth={1.5} />,
       title: "Commodity Market Vulnerability",
       summary: "Tariff-related Chinese economic slowdown threatens global demand for resources, particularly affecting commodity-dependent exporters.",
       fullContent: "A Chinese economic slowdown, compounded by tariff escalation, could dampen global demand for iron ore, minerals, and industrial inputs. This threatens commodity-dependent exporters and may trigger price drops across key resource markets, particularly for countries tied closely to Chinese growth."
     },
     {
-      icon: <Briefcase className="h-8 w-8 text-infomineo-blue" strokeWidth={1.5} />,
+      icon: <Briefcase className="h-8 w-8" strokeWidth={1.5} />,
       title: "Corporate Retaliation Through Investment Reassessment",
       summary: "Multinational companies may retaliate by scaling back U.S. investments due to cost structure uncertainty and unpredictable tariffs.",
       fullContent: "Tariff-hit companies may retaliate not through policy, but by halting or scaling back investment plans in the United States. For multinationals, uncertainty over cost structures makes long-term capital deployment riskier."

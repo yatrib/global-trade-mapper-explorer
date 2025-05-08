@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { BarChart3, Globe, Handshake } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
 
 const ExpertiseSection: React.FC = () => {
   return (
@@ -38,15 +37,15 @@ const ExpertiseCard: React.FC<ExpertiseCardProps> = ({
   description
 }) => {
   return (
-    <Card className="bg-white rounded-xl border-t-4 border-t-infomineo-blue h-full shadow-sm hover:shadow-md transition-all">
-      <CardContent className="p-8">
+    <div className="h-full">
+      <div className="p-8 bg-white rounded-xl shadow-sm hover:shadow-md transition-all">
         <div className="mb-6 inline-flex items-center justify-center p-3 bg-infomineo-blue/5 rounded-full text-infomineo-blue">
           {icon}
         </div>
         <h3 className="text-xl font-semibold mb-3">{title}</h3>
         <p className="text-gray-600 leading-relaxed">{description}</p>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
