@@ -1,9 +1,11 @@
 
 import React from 'react';
 import { BarChart3, Globe, Handshake } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
 
 const ExpertiseSection: React.FC = () => {
-  return <section className="py-24 px-4 bg-gradient-to-b from-white to-gray-50">
+  return (
+    <section className="py-24 px-4 bg-gradient-to-b from-white to-gray-50">
       <div className="container mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">Why Trust Infomineo?</h2>
@@ -20,7 +22,8 @@ const ExpertiseSection: React.FC = () => {
           <ExpertiseCard icon={<Handshake className="h-8 w-8" strokeWidth={1.5} />} title="Tailored Solutions" description="We develop customized research solutions that align perfectly with your business objectives." />
         </div>
       </div>
-    </section>;
+    </section>
+  );
 };
 
 interface ExpertiseCardProps {
@@ -34,15 +37,17 @@ const ExpertiseCard: React.FC<ExpertiseCardProps> = ({
   title,
   description
 }) => {
-  return <div>
-      <div className="p-8 bg-white rounded-xl">
+  return (
+    <Card className="bg-white rounded-xl border-t-4 border-t-infomineo-blue h-full shadow-sm hover:shadow-md transition-all">
+      <CardContent className="p-8">
         <div className="mb-6 inline-flex items-center justify-center p-3 bg-infomineo-blue/5 rounded-full text-infomineo-blue">
           {icon}
         </div>
         <h3 className="text-xl font-semibold mb-3">{title}</h3>
         <p className="text-gray-600 leading-relaxed">{description}</p>
-      </div>
-    </div>;
+      </CardContent>
+    </Card>
+  );
 };
 
 export default ExpertiseSection;
