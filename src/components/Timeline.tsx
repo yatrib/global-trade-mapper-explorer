@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Flag, AlertTriangle, TrendingUp, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -10,7 +11,7 @@ interface TimelineEvent {
   description: string;
   icon: React.ReactNode;
   isHighlighted?: boolean;
-  country: 'us' | 'china' | 'middle-east';
+  country: 'us' | 'china' | 'global';
 }
 
 // Combined US and China timeline events data, sorted by date
@@ -45,7 +46,7 @@ const combinedUsChina: TimelineEvent[] = [{
   title: 'Steel and Aluminum Tariffs',
   description: 'Trump announces the reinstatement of increased tariffs on foreign steel and aluminum, marking a return to a policy first introduced during his previous term. The exemptions granted under the 2018 tariffs are eliminated, resulting in a minimum 25% tariff on all imported steel and an increase in aluminum tariffs from 10% to 25%.',
   icon: <Flag className="h-6 w-6 text-white" />,
-  country: 'us'
+  country: 'global'
 }, {
   date: 'Mar 4, 2025',
   title: 'Tariffs Doubled',
@@ -65,19 +66,19 @@ const combinedUsChina: TimelineEvent[] = [{
   title: 'Steel and Aluminum Tariffs Take Effect',
   description: 'The updated U.S. tariffs on all foreign steel and aluminum officially take effect.',
   icon: <Flag className="h-6 w-6 text-white" />,
-  country: 'us'
+  country: 'global'
 }, {
   date: 'Mar 24, 2025',
   title: 'Venezuela Oil Tariffs',
   description: 'The United States announces that starting April 2, a 25% tariff will apply to goods imported from countries that purchase oil from Venezuela, whether through direct trade or intermediaries.',
   icon: <Flag className="h-6 w-6 text-white" />,
-  country: 'us'
+  country: 'global'
 }, {
   date: 'Mar 26, 2025',
   title: 'Automobile Tariffs Announced',
   description: 'Trump confirms the introduction of 25% tariffs on automobile imports, describing the move as a way to encourage domestic car production. These tariffs are scheduled to begin on April 3 with fully assembled vehicles, followed by additional levies on car parts phased in by May 3.',
   icon: <Flag className="h-6 w-6 text-white" />,
-  country: 'us'
+  country: 'global'
 }, {
   date: 'Apr 2, 2025',
   title: '"Liberation Day" Agenda',
@@ -90,7 +91,7 @@ const combinedUsChina: TimelineEvent[] = [{
   title: 'Auto Tariffs Take Effect',
   description: 'The U.S. begins collecting tariffs on imported automobiles, following the policy rollout announced in late March.',
   icon: <Flag className="h-6 w-6 text-white" />,
-  country: 'us'
+  country: 'global'
 }, {
   date: 'Apr 4, 2025',
   title: 'Matching Tariffs Announced',
@@ -136,7 +137,7 @@ const combinedUsChina: TimelineEvent[] = [{
   title: 'Electronics Tariff Exemption',
   description: 'Trump\'s administration announces a temporary exemption for several categories of electronics, including smartphones, computers, and related devices. These exemptions apply to the 10% global baseline tariff and the broader import taxes imposed on Chinese goods. However, electronic items from China still face the 20% tariff linked to fentanyl enforcement.',
   icon: <Flag className="h-6 w-6 text-white" />,
-  country: 'us'
+  country: 'global'
 }, {
   date: 'Apr 11, 2025',
   title: 'Total Tariff Increase',
@@ -149,7 +150,7 @@ const combinedUsChina: TimelineEvent[] = [{
   title: 'Tech Tariff Consideration',
   description: 'Trump signals that the recent exemptions for electronics may be temporary. He states that new tariffs are being considered on computer chips, indicating an escalation in tech-related trade restrictions.',
   icon: <Flag className="h-6 w-6 text-white" />,
-  country: 'us'
+  country: 'global'
 }, {
   date: 'Apr 22, 2025',
   title: 'Diplomatic Stance',
@@ -180,42 +181,13 @@ const combinedUsChina: TimelineEvent[] = [{
   title: 'Automotive Sector Relief',
   description: 'Two executive orders are signed by Trump, modifying how tariffs are applied to the automotive sector. The 25% auto tariffs will no longer be compounded with other tariffs, such as those on imported steel and aluminum, offering partial relief to affected automakers.',
   icon: <Flag className="h-6 w-6 text-white" />,
-  country: 'us'
+  country: 'global'
 }, {
   date: 'Apr 30, 2025',
   title: 'Quiet Tariff Exemptions',
   description: 'China quietly notifies select firms — particularly those reliant on U.S. technologies — of exemptions from its 125% tariffs, using private outreach to ease trade tensions without a public announcement.',
   icon: <Flag className="h-6 w-6 text-white" />,
   country: 'china'
-}];
-
-// Middle East timeline events
-const middleEastEvents: TimelineEvent[] = [{
-  date: 'Feb 15, 2025',
-  title: 'Tariff Exemptions for UAE',
-  description: 'The U.S. announces partial tariff exemptions for key imports from the UAE as part of strategic partnerships in the region.',
-  icon: <Flag className="h-6 w-6 text-white" />,
-  isHighlighted: true,
-  country: 'middle-east'
-}, {
-  date: 'Mar 1, 2025',
-  title: 'Saudi Arabia Trade Agreement',
-  description: 'U.S. and Saudi Arabia sign preliminary agreement on reduced tariffs for energy technology exports.',
-  icon: <Flag className="h-6 w-6 text-white" />,
-  country: 'middle-east'
-}, {
-  date: 'Mar 22, 2025',
-  title: 'Egypt Export Restrictions',
-  description: 'Egypt responds to U.S. aluminum tariffs with new restrictions on certain agricultural exports to American markets.',
-  icon: <AlertTriangle className="h-6 w-6 text-white" />,
-  isHighlighted: true,
-  country: 'middle-east'
-}, {
-  date: 'Apr 12, 2025',
-  title: 'Qatar Energy Partnership',
-  description: 'U.S. establishes preferential trade status for Qatari energy imports, exempting them from recent global tariff increases.',
-  icon: <TrendingUp className="h-6 w-6 text-white" />,
-  country: 'middle-east'
 }];
 
 // Sort events by date string
@@ -226,12 +198,6 @@ const sortedEvents = [...combinedUsChina].sort((a, b) => {
   return dateA.getTime() - dateB.getTime();
 });
 
-// Sort Middle East events
-const sortedMiddleEastEvents = [...middleEastEvents].sort((a, b) => {
-  const dateA = new Date(a.date);
-  const dateB = new Date(b.date);
-  return dateA.getTime() - dateB.getTime();
-});
 const TimelineComponent: React.FC<{
   events: TimelineEvent[];
 }> = ({
@@ -250,26 +216,46 @@ const TimelineComponent: React.FC<{
 
       <div className="w-full">
         {visibleEvents.map((event, index) => {
-        const isUSEvent = event.country === 'us' || event.country === 'middle-east';
+        const isLeftSide = event.country === 'us' || event.country === 'global';
         return <div key={index} className="relative flex mb-12 w-full">
               {/* Timeline node in center */}
               <div className="absolute left-1/2 transform -translate-x-1/2 z-10">
-                <div className={cn("w-10 h-10 rounded-full flex items-center justify-center shadow-sm", event.isHighlighted ? "bg-infomineo-gradient" : event.country === 'us' || event.country === 'middle-east' ? "bg-infomineo-blue" : "bg-infomineo-red")}>
+                <div className={cn(
+                  "w-10 h-10 rounded-full flex items-center justify-center shadow-sm", 
+                  event.isHighlighted 
+                    ? "bg-infomineo-gradient" 
+                    : event.country === 'us' 
+                      ? "bg-infomineo-blue" 
+                      : event.country === 'global' 
+                        ? "bg-green-500" 
+                        : "bg-infomineo-red"
+                )}>
                   {event.icon}
                 </div>
               </div>
               
-              {/* US/Middle East event on left, China event on right */}
-              {isUSEvent ?
-          // US/Middle East Event (Left)
+              {/* US/Global event on left, China event on right */}
+              {isLeftSide ?
+          // US/Global Event (Left)
           <>
                   <div className="w-1/2 pr-8">
-                    <Card className="border-l-4 border-l-infomineo-blue hover:shadow-md transition-shadow duration-300">
+                    <Card className={cn(
+                      "border-l-4 hover:shadow-md transition-shadow duration-300",
+                      event.country === 'us' ? "border-l-infomineo-blue" : "border-l-green-500"
+                    )}>
                       <CardContent className="p-6">
                         <div className="flex items-start justify-between mb-2">
-                          <span className="text-sm font-semibold text-infomineo-blue">{event.date}</span>
-                          <span className="text-xs font-bold px-2 py-1 rounded-full bg-infomineo-blue/10 text-infomineo-blue">
-                            {event.country === 'middle-east' ? "Middle East" : "United States"}
+                          <span className={cn(
+                            "text-sm font-semibold",
+                            event.country === 'us' ? "text-infomineo-blue" : "text-green-600"
+                          )}>{event.date}</span>
+                          <span className={cn(
+                            "text-xs font-bold px-2 py-1 rounded-full",
+                            event.country === 'us' 
+                              ? "bg-infomineo-blue/10 text-infomineo-blue" 
+                              : "bg-green-500/10 text-green-600"
+                          )}>
+                            {event.country === 'us' ? "United States" : "Global"}
                           </span>
                         </div>
                         <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
@@ -315,9 +301,8 @@ const Timeline: React.FC = () => {
       </div>
 
       <Tabs defaultValue="us-china" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 mb-10">
+        <TabsList className="grid w-full grid-cols-2 mb-10">
           <TabsTrigger value="us-china">U.S. - China</TabsTrigger>
-          <TabsTrigger value="us-canada-mexico">U.S. - Canada & Mexico</TabsTrigger>
           <TabsTrigger value="us-eu">U.S. - European Union</TabsTrigger>
         </TabsList>
         
@@ -329,18 +314,15 @@ const Timeline: React.FC = () => {
               <span className="font-medium">United States</span>
             </div>
             <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-green-500 rounded-full"></div>
+              <span className="font-medium">Global</span>
+            </div>
+            <div className="flex items-center gap-2">
               <div className="w-4 h-4 bg-infomineo-red rounded-full"></div>
               <span className="font-medium">China</span>
             </div>
           </div>
           <TimelineComponent events={sortedEvents} />
-        </TabsContent>
-        
-        {/* U.S. - Canada & Mexico Tab Content - Empty for now */}
-        <TabsContent value="us-canada-mexico">
-          <div className="flex items-center justify-center py-16">
-            <p className="text-lg text-gray-500 italic">Content coming soon for U.S. - Canada & Mexico trade relations.</p>
-          </div>
         </TabsContent>
         
         {/* U.S. - European Union Tab Content - Empty for now */}
