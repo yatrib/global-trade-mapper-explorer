@@ -27,17 +27,11 @@ const TooltipContent = React.forwardRef<
 ))
 TooltipContent.displayName = TooltipPrimitive.Content.displayName
 
-// Helper component to render text with highlighted parts in tooltips
+// Helper component to render text with no special highlighting in tooltips
 const HighlightedText: React.FC<{ text: string }> = ({ text }) => {
+  // Simply return the text without any color formatting
   return (
-    <span 
-      dangerouslySetInnerHTML={{ 
-        __html: text.replace(
-          /#00B9FF\[(.*?)\]/g, 
-          '<span style="color: #00B9FF; font-weight: 600">$1</span>'
-        ) 
-      }} 
-    />
+    <span dangerouslySetInnerHTML={{ __html: text }} />
   );
 };
 

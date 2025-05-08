@@ -226,7 +226,7 @@ const usCanadaMexico: TimelineEvent[] = [
     tooltip: {
       highlightText: 'USMCA',
       content: (
-        <HighlightedText text="The United States-Mexico-Canada Agreement (#00B9FF[USMCA]), which took effect on July 1, 2020, is a trade pact that replaced the 1994 North American Free Trade Agreement (NAFTA). Initiated under the Trump administration and signed on November 30, 2018, the USMCA aims to create shared economic benefits for workers, agricultural producers, and businesses across North America." />
+        <HighlightedText text="The United States-Mexico-Canada Agreement (USMCA), which took effect on July 1, 2020, is a trade pact that replaced the 1994 North American Free Trade Agreement (NAFTA). Initiated under the Trump administration and signed on November 30, 2018, the USMCA aims to create shared economic benefits for workers, agricultural producers, and businesses across North America." />
       )
     }
   },
@@ -254,7 +254,7 @@ const usCanadaMexico: TimelineEvent[] = [
     tooltip: {
       highlightText: 'wide range of consumer products',
       content: (
-        <HighlightedText text="Products in the first wave of tariffs include #00B9FF[live poultry, dairy produce, vegetables, coffee and tea, products from the milling industry, oil seeds, sugar, beverages, spirits and vinegar, tobacco, plastics, rubber, wood, paper, apparel and accessories, articles of iron and steel, aircraft parts and accessories, and arms and ammunition]." />
+        <HighlightedText text="Products in the first wave of tariffs include live poultry, dairy produce, vegetables, coffee and tea, products from the milling industry, oil seeds, sugar, beverages, spirits and vinegar, tobacco, plastics, rubber, wood, paper, apparel and accessories, articles of iron and steel, aircraft parts and accessories, and arms and ammunition." />
       )
     }
   },
@@ -317,7 +317,7 @@ const usCanadaMexico: TimelineEvent[] = [
     tooltip: {
       highlightText: 'CA$29.8 billion in U.S. imports',
       content: (
-        <HighlightedText text="#00B9FF[CA$29.8 billion] includes:
+        <HighlightedText text="CA$29.8 billion includes:
 $12.6 billion in steel products
 $3 billion in aluminum products
 $14.2 billion in additional imported U.S. goods (including tools, computers and servers, display monitors, sport equipment, and cast-iron products), comprising steel, aluminum, and other goods." />
@@ -509,25 +509,48 @@ const usEu: TimelineEvent[] = [
   }
 ];
 
-// Sort events by date string
+// Sort events by date string, prioritizing US events on the same date
 const sortedEvents = [...combinedUsChina].sort((a, b) => {
-  // Parse date strings into comparable format (assuming format is 'MMM D, YYYY')
+  // First, parse date strings into comparable format
   const dateA = new Date(a.date);
   const dateB = new Date(b.date);
+  
+  // If dates are the same, prioritize US events
+  if (dateA.getTime() === dateB.getTime()) {
+    // US and global events should appear first
+    if (a.country === 'us' || a.country === 'global') return -1;
+    if (b.country === 'us' || b.country === 'global') return 1;
+  }
+  
+  // Otherwise, sort by date
   return dateA.getTime() - dateB.getTime();
 });
 
-// Sort Canada/Mexico events by date
+// Sort Canada/Mexico events by date, prioritizing US events
 const sortedCanadaMexico = [...usCanadaMexico].sort((a, b) => {
   const dateA = new Date(a.date);
   const dateB = new Date(b.date);
+  
+  // If dates are the same, prioritize US events
+  if (dateA.getTime() === dateB.getTime()) {
+    if (a.country === 'us' || a.country === 'global') return -1;
+    if (b.country === 'us' || b.country === 'global') return 1;
+  }
+  
   return dateA.getTime() - dateB.getTime();
 });
 
-// Sort EU events by date
+// Sort EU events by date, prioritizing US events
 const sortedEu = [...usEu].sort((a, b) => {
   const dateA = new Date(a.date);
   const dateB = new Date(b.date);
+  
+  // If dates are the same, prioritize US events
+  if (dateA.getTime() === dateB.getTime()) {
+    if (a.country === 'us' || a.country === 'global') return -1;
+    if (b.country === 'us' || b.country === 'global') return 1;
+  }
+  
   return dateA.getTime() - dateB.getTime();
 });
 
@@ -560,7 +583,7 @@ const TimelineComponent: React.FC<{
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <span className="font-medium text-blue-600">
+              <span className="font-medium">
                 {highlightText}
                 <Info className="inline-block h-4 w-4 ml-1 text-gray-500 align-text-bottom" />
               </span>
@@ -581,7 +604,7 @@ const TimelineComponent: React.FC<{
       case 'us': return 'bg-infomineo-blue';
       case 'china': return 'bg-infomineo-red';
       case 'global': return 'bg-green-500';
-      case 'canada-mexico': return 'bg-teal-500'; // Changed from purple to teal
+      case 'canada-mexico': return 'bg-red-600'; // Changed to Canadian red
       case 'eu': return 'bg-amber-500';
       default: return 'bg-gray-500';
     }
@@ -603,9 +626,7 @@ const TimelineComponent: React.FC<{
               <div className="absolute left-1/2 transform -translate-x-1/2 z-10">
                 <div className={cn(
                   "w-10 h-10 rounded-full flex items-center justify-center shadow-sm", 
-                  event.isHighlighted 
-                    ? "bg-infomineo-gradient" 
-                    : iconBgColor
+                  iconBgColor // Always use the country-specific color for the circle
                 )}>
                   {event.icon}
                 </div>
@@ -652,7 +673,7 @@ const TimelineComponent: React.FC<{
                         ? "border-l-infomineo-red" 
                         : event.country === 'eu' 
                           ? "border-l-amber-500" 
-                          : "border-l-teal-500" // Changed from purple to teal
+                          : "border-l-red-600" // Changed from teal to red
                     )}>
                       <CardContent className="p-6">
                         <div className="flex items-start justify-between mb-2">
@@ -662,7 +683,7 @@ const TimelineComponent: React.FC<{
                               ? "text-infomineo-red" 
                               : event.country === 'eu' 
                                 ? "text-amber-600" 
-                                : "text-teal-600" // Changed from purple to teal
+                                : "text-red-600" // Changed from teal to red
                           )}>{event.date}</span>
                           <span className={cn(
                             "text-xs font-bold px-2 py-1 rounded-full",
@@ -670,7 +691,7 @@ const TimelineComponent: React.FC<{
                               ? "bg-infomineo-red/10 text-infomineo-red"
                               : event.country === 'eu'
                                 ? "bg-amber-500/10 text-amber-600" 
-                                : "bg-teal-500/10 text-teal-600" // Changed from purple to teal
+                                : "bg-red-600/10 text-red-600" // Changed from teal to red
                           )}>
                             {event.country === 'china' 
                               ? "China" 
@@ -743,7 +764,7 @@ const Timeline: React.FC = () => {
               <span className="font-medium">Global</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-teal-500 rounded-full"></div> {/* Changed from purple to teal */}
+              <div className="w-4 h-4 bg-red-600 rounded-full"></div> {/* Changed from teal to red */}
               <span className="font-medium">Canada/Mexico</span>
             </div>
           </div>
@@ -763,7 +784,7 @@ const Timeline: React.FC = () => {
             </div>
             <div className="flex items-center gap-2">
               <div className="w-4 h-4 bg-amber-500 rounded-full"></div>
-              <span className="font-medium">European Union</span> {/* Fixed EU label */}
+              <span className="font-medium">European Union</span>
             </div>
           </div>
           <TimelineComponent events={sortedEu} />
