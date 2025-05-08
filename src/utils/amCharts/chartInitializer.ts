@@ -95,9 +95,12 @@ export const initializeAmChart = (
     );
 
     // Define tooltip text based on visualization type
-    let tooltipText = tariffVisualization === 'reciprocalTariff' 
-      ? "{name}\n[bold]Tariff Data:[/]\nUS Reciprocal Tariff: {reciprocalTariff}\nTariffs to US: {tariffsToUS}"
-      : "{name}\n[bold]Tariff Data:[/]\nTariffs to US: {tariffsToUS}\nUS Reciprocal Tariff: {reciprocalTariff}";
+    let tooltipText = "";
+    if (tariffVisualization === 'reciprocalTariff') {
+      tooltipText = "{name}\n[bold]US Reciprocal Tariff:[/] {reciprocalTariff}";
+    } else {
+      tooltipText = "{name}\n[bold]Tariffs to US:[/] {tariffsToUS}";
+    }
 
     // Configure polygon styling and tooltips
     polygonSeries.mapPolygons.template.setAll({

@@ -130,11 +130,11 @@ const AmChartsMapWithFilters: React.FC<AmChartsMapWithFiltersProps> = ({ onSelec
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="reciprocalTariff" id="reciprocalTariff" />
-              <Label htmlFor="reciprocalTariff">Reciprocal Tariffs (US to Countries)</Label>
+              <Label htmlFor="reciprocalTariff" className="text-gray-800">Reciprocal Tariffs (US to Countries)</Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="tariffsToUS" id="tariffsToUS" />
-              <Label htmlFor="tariffsToUS">Tariffs to US (Countries to US)</Label>
+              <Label htmlFor="tariffsToUS" className="text-gray-800">Tariffs to US (Countries to US)</Label>
             </div>
           </RadioGroup>
         </div>
