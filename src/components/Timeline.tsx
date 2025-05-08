@@ -1,10 +1,11 @@
-
 import React, { useState } from 'react';
-import { Flag, AlertTriangle, TrendingUp, ChevronDown } from 'lucide-react';
+import { Flag, AlertTriangle, TrendingUp, ChevronDown, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+
 interface TimelineEvent {
   date: string;
   title: string;
@@ -12,183 +13,198 @@ interface TimelineEvent {
   icon: React.ReactNode;
   isHighlighted?: boolean;
   country: 'us' | 'china' | 'global';
+  tooltip?: {
+    highlightText: string;
+    content: React.ReactNode;
+  };
 }
 
 // Combined US and China timeline events data, sorted by date
-const combinedUsChina: TimelineEvent[] = [{
-  date: 'Feb 1, 2025',
-  title: 'Initial Tariffs Ordered',
-  description: 'Days after returning to office, Trump ordered a 10% tariff on all Chinese imports, adding to existing duties from both his previous administration and the Biden era, effective February 4.',
-  icon: <Flag className="h-6 w-6 text-white" />,
-  isHighlighted: true,
-  country: 'us'
-}, {
-  date: 'Feb 4, 2025',
-  title: 'Tariffs Take Effect',
-  description: '10% tariffs on Chinese imports take effect.',
-  icon: <Flag className="h-6 w-6 text-white" />,
-  country: 'us'
-}, {
-  date: 'Feb 4, 2025',
-  title: 'Retaliatory Tariffs Announced',
-  description: 'China announces retaliatory 15% tariffs on U.S. coal and liquefied natural gas, a 10% tariff on cruder oil, agricultural machinery, and large cars, and an anti-monopoly investigation into Google.',
-  icon: <Flag className="h-6 w-6 text-white" />,
-  isHighlighted: true,
-  country: 'china'
-}, {
-  date: 'Feb 10, 2025',
-  title: 'Tariffs Implementation',
-  description: 'China imposes 15% tariffs on coal and liquefied natural gas products, and 10% tariffs on crude oil, agricultural machinery, and large-engine cars imported from the U.S.',
-  icon: <Flag className="h-6 w-6 text-white" />,
-  country: 'china'
-}, {
-  date: 'Feb 10, 2025',
-  title: 'Steel and Aluminum Tariffs',
-  description: 'Trump announces the reinstatement of increased tariffs on foreign steel and aluminum, marking a return to a policy first introduced during his previous term. The exemptions granted under the 2018 tariffs are eliminated, resulting in a minimum 25% tariff on all imported steel and an increase in aluminum tariffs from 10% to 25%.',
-  icon: <Flag className="h-6 w-6 text-white" />,
-  country: 'global'
-}, {
-  date: 'Mar 4, 2025',
-  title: 'Tariffs Doubled',
-  description: 'Trump doubles tariffs on all Chinese imports to 20%.',
-  icon: <TrendingUp className="h-6 w-6 text-white" />,
-  isHighlighted: true,
-  country: 'us'
-}, {
-  date: 'Mar 10, 2025',
-  title: 'Agricultural Tariffs',
-  description: 'China enacts new tariffs of 10% and 15% on U.S. agricultural exports, targeting products where it is the largest overseas market. In parallel, Beijing restricts 15 American companies from purchasing Chinese goods without prior authorization and blocks 10 others from conducting business in China, including a drone manufacturer that supplies the U.S. military.',
-  icon: <AlertTriangle className="h-6 w-6 text-white" />,
-  isHighlighted: true,
-  country: 'china'
-}, {
-  date: 'Mar 12, 2025',
-  title: 'Steel and Aluminum Tariffs Take Effect',
-  description: 'The updated U.S. tariffs on all foreign steel and aluminum officially take effect.',
-  icon: <Flag className="h-6 w-6 text-white" />,
-  country: 'global'
-}, {
-  date: 'Mar 24, 2025',
-  title: 'Venezuela Oil Tariffs',
-  description: 'The United States announces that starting April 2, a 25% tariff will apply to goods imported from countries that purchase oil from Venezuela, whether through direct trade or intermediaries.',
-  icon: <Flag className="h-6 w-6 text-white" />,
-  country: 'global'
-}, {
-  date: 'Mar 26, 2025',
-  title: 'Automobile Tariffs Announced',
-  description: 'Trump confirms the introduction of 25% tariffs on automobile imports, describing the move as a way to encourage domestic car production. These tariffs are scheduled to begin on April 3 with fully assembled vehicles, followed by additional levies on car parts phased in by May 3.',
-  icon: <Flag className="h-6 w-6 text-white" />,
-  country: 'global'
-}, {
-  date: 'Apr 2, 2025',
-  title: '"Liberation Day" Agenda',
-  description: 'As part of the administration\'s "Liberation Day" agenda, Trump unveils a new 34% tariff targeting Chinese imports. These duties are layered atop earlier levies, pushing the cumulative rate to 54%.',
-  icon: <Flag className="h-6 w-6 text-white" />,
-  isHighlighted: true,
-  country: 'us'
-}, {
-  date: 'Apr 3, 2025',
-  title: 'Auto Tariffs Take Effect',
-  description: 'The U.S. begins collecting tariffs on imported automobiles, following the policy rollout announced in late March.',
-  icon: <Flag className="h-6 w-6 text-white" />,
-  country: 'global'
-}, {
-  date: 'Apr 4, 2025',
-  title: 'Matching Tariffs Announced',
-  description: 'China announces a matching 34% tariff on all U.S. imports (effective Apr 10), expands rare earth export controls, and sanctions 27 more U.S. companies.',
-  icon: <AlertTriangle className="h-6 w-6 text-white" />,
-  isHighlighted: true,
-  country: 'china'
-}, {
-  date: 'Apr 7, 2025',
-  title: 'Additional Tariff Threat',
-  description: 'Trump threatens an additional 50% tariff on China, which could raise total tariffs to 104%.',
-  icon: <AlertTriangle className="h-6 w-6 text-white" />,
-  isHighlighted: true,
-  country: 'us'
-}, {
-  date: 'Apr 9, 2025',
-  title: '104% Tariff Applied',
-  description: 'The full rate of 104% is applied to Chinese goods under the updated U.S. tariff structure.',
-  icon: <Flag className="h-6 w-6 text-white" />,
-  country: 'us'
-}, {
-  date: 'Apr 9, 2025',
-  title: 'Selective Tariff Pause',
-  description: 'Trump temporarily reverses course, announcing a 90-day suspension of his reciprocal tariff increases. During this pause, a flat 10% rate would apply to most imports. However, he explicitly excludes China from this suspension and instead raises tariffs on Chinese goods to 125%, following Beijing\'s retaliatory move.',
-  icon: <Flag className="h-6 w-6 text-white" />,
-  isHighlighted: true,
-  country: 'us'
-}, {
-  date: 'Apr 9, 2025',
-  title: 'Additional Tariffs Response',
-  description: 'In a direct countermeasure, China imposes an additional 50% tariff on all U.S. exports effective April 10, raising its overall tariff rate to 84%. China\'s response comes within 12 hours of the U.S. implementation.',
-  icon: <AlertTriangle className="h-6 w-6 text-white" />,
-  isHighlighted: true,
-  country: 'china'
-}, {
-  date: 'Apr 10, 2025',
-  title: 'Total Tariff Clarification',
-  description: 'The White House provides clarification, noting that the newly announced 125% tariff on Chinese imports is being added to a previously implemented 20% levy. This adjustment brings the total tariff burden on Chinese goods to 145%.',
-  icon: <Flag className="h-6 w-6 text-white" />,
-  country: 'us'
-}, {
-  date: 'Apr 11, 2025',
-  title: 'Electronics Tariff Exemption',
-  description: 'Trump\'s administration announces a temporary exemption for several categories of electronics, including smartphones, computers, and related devices. These exemptions apply to the 10% global baseline tariff and the broader import taxes imposed on Chinese goods. However, electronic items from China still face the 20% tariff linked to fentanyl enforcement.',
-  icon: <Flag className="h-6 w-6 text-white" />,
-  country: 'global'
-}, {
-  date: 'Apr 11, 2025',
-  title: 'Total Tariff Increase',
-  description: 'China raises its total duties on all U.S. goods to 125%.',
-  icon: <AlertTriangle className="h-6 w-6 text-white" />,
-  isHighlighted: true,
-  country: 'china'
-}, {
-  date: 'Apr 13, 2025',
-  title: 'Tech Tariff Consideration',
-  description: 'Trump signals that the recent exemptions for electronics may be temporary. He states that new tariffs are being considered on computer chips, indicating an escalation in tech-related trade restrictions.',
-  icon: <Flag className="h-6 w-6 text-white" />,
-  country: 'global'
-}, {
-  date: 'Apr 22, 2025',
-  title: 'Diplomatic Stance',
-  description: 'Trump says he\'s waiting for Xi to initiate talks and claims a "very good relationship."',
-  icon: <Flag className="h-6 w-6 text-white" />,
-  country: 'us'
-}, {
-  date: 'Apr 22, 2025',
-  title: 'Diplomatic Strategy',
-  description: 'Xi avoids direct talks, instead launches diplomatic outreach to other trade partners.',
-  icon: <Flag className="h-6 w-6 text-white" />,
-  country: 'china'
-}, {
-  date: 'Apr 23, 2025',
-  title: 'Potential Tariff Reduction',
-  description: 'Trump signals potential tariff reduction: base rate may drop from 145% to 50–65%, with strategic items still facing up to 100%.',
-  icon: <TrendingUp className="h-6 w-6 text-white" />,
-  isHighlighted: true,
-  country: 'us'
-}, {
-  date: 'Apr 24, 2025',
-  title: 'Negotiation Claims Denied',
-  description: 'China\'s Ministry of Commerce denies Trump\'s claims of ongoing trade talks, stating that no negotiations are currently taking place between the two countries.',
-  icon: <Flag className="h-6 w-6 text-white" />,
-  country: 'china'
-}, {
-  date: 'Apr 29, 2025',
-  title: 'Automotive Sector Relief',
-  description: 'Two executive orders are signed by Trump, modifying how tariffs are applied to the automotive sector. The 25% auto tariffs will no longer be compounded with other tariffs, such as those on imported steel and aluminum, offering partial relief to affected automakers.',
-  icon: <Flag className="h-6 w-6 text-white" />,
-  country: 'global'
-}, {
-  date: 'Apr 30, 2025',
-  title: 'Quiet Tariff Exemptions',
-  description: 'China quietly notifies select firms — particularly those reliant on U.S. technologies — of exemptions from its 125% tariffs, using private outreach to ease trade tensions without a public announcement.',
-  icon: <Flag className="h-6 w-6 text-white" />,
-  country: 'china'
-}];
+const combinedUsChina: TimelineEvent[] = [
+  {
+    date: 'Feb 1, 2025',
+    title: 'Initial Tariffs Ordered',
+    description: 'Days after returning to office, Trump ordered a 10% tariff on all Chinese imports, adding to existing duties from both his previous administration and the Biden era, effective February 4.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    isHighlighted: true,
+    country: 'us'
+  }, {
+    date: 'Feb 4, 2025',
+    title: 'Tariffs Take Effect',
+    description: '10% tariffs on Chinese imports take effect.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'us'
+  }, {
+    date: 'Feb 4, 2025',
+    title: 'Retaliatory Tariffs Announced',
+    description: 'China announces retaliatory 15% tariffs on U.S. coal and liquefied natural gas, a 10% tariff on cruder oil, agricultural machinery, and large cars, and an anti-monopoly investigation into Google.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    isHighlighted: true,
+    country: 'china'
+  }, {
+    date: 'Feb 10, 2025',
+    title: 'Tariffs Implementation',
+    description: 'China imposes 15% tariffs on coal and liquefied natural gas products, and 10% tariffs on crude oil, agricultural machinery, and large-engine cars imported from the U.S.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'china'
+  }, {
+    date: 'Feb 10, 2025',
+    title: 'Steel and Aluminum Tariffs',
+    description: 'Trump announces the reinstatement of increased tariffs on foreign steel and aluminum, marking a return to a policy first introduced during his previous term. The exemptions granted under the 2018 tariffs are eliminated, resulting in a minimum 25% tariff on all imported steel and an increase in aluminum tariffs from 10% to 25%.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'global'
+  }, {
+    date: 'Mar 4, 2025',
+    title: 'Tariffs Doubled',
+    description: 'Trump doubles tariffs on all Chinese imports to 20%.',
+    icon: <TrendingUp className="h-6 w-6 text-white" />,
+    isHighlighted: true,
+    country: 'us'
+  }, {
+    date: 'Mar 10, 2025',
+    title: 'Agricultural Tariffs',
+    description: 'China enacts new tariffs of 10% and 15% on U.S. agricultural exports, targeting products where it is the largest overseas market. In parallel, Beijing restricts 15 American companies from purchasing Chinese goods without prior authorization and blocks 10 others from conducting business in China, including a drone manufacturer that supplies the U.S. military.',
+    icon: <AlertTriangle className="h-6 w-6 text-white" />,
+    isHighlighted: true,
+    country: 'china',
+    tooltip: {
+      highlightText: '10% and 15% on U.S. agricultural exports',
+      content: (
+        <ul className="list-disc pl-4">
+          <li>15% on chicken, wheat, and corn</li>
+          <li>10% tariff on soybeans, pork, beef, and fruits</li>
+        </ul>
+      )
+    }
+  }, {
+    date: 'Mar 12, 2025',
+    title: 'Steel and Aluminum Tariffs Take Effect',
+    description: 'The updated U.S. tariffs on all foreign steel and aluminum officially take effect.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'global'
+  }, {
+    date: 'Mar 24, 2025',
+    title: 'Venezuela Oil Tariffs',
+    description: 'The United States announces that starting April 2, a 25% tariff will apply to goods imported from countries that purchase oil from Venezuela, whether through direct trade or intermediaries.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'global'
+  }, {
+    date: 'Mar 26, 2025',
+    title: 'Automobile Tariffs Announced',
+    description: 'Trump confirms the introduction of 25% tariffs on automobile imports, describing the move as a way to encourage domestic car production. These tariffs are scheduled to begin on April 3 with fully assembled vehicles, followed by additional levies on car parts phased in by May 3.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'global'
+  }, {
+    date: 'Apr 2, 2025',
+    title: '"Liberation Day" Agenda',
+    description: 'As part of the administration\'s "Liberation Day" agenda, Trump unveils a new 34% tariff targeting Chinese imports. These duties are layered atop earlier levies, pushing the cumulative rate to 54%.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    isHighlighted: true,
+    country: 'us'
+  }, {
+    date: 'Apr 3, 2025',
+    title: 'Auto Tariffs Take Effect',
+    description: 'The U.S. begins collecting tariffs on imported automobiles, following the policy rollout announced in late March.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'global'
+  }, {
+    date: 'Apr 4, 2025',
+    title: 'Matching Tariffs Announced',
+    description: 'China announces a matching 34% tariff on all U.S. imports (effective Apr 10), expands rare earth export controls, and sanctions 27 more U.S. companies.',
+    icon: <AlertTriangle className="h-6 w-6 text-white" />,
+    isHighlighted: true,
+    country: 'china'
+  }, {
+    date: 'Apr 7, 2025',
+    title: 'Additional Tariff Threat',
+    description: 'Trump threatens an additional 50% tariff on China, which could raise total tariffs to 104%.',
+    icon: <AlertTriangle className="h-6 w-6 text-white" />,
+    isHighlighted: true,
+    country: 'us'
+  }, {
+    date: 'Apr 9, 2025',
+    title: '104% Tariff Applied',
+    description: 'The full rate of 104% is applied to Chinese goods under the updated U.S. tariff structure.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'us'
+  }, {
+    date: 'Apr 9, 2025',
+    title: 'Selective Tariff Pause',
+    description: 'Trump temporarily reverses course, announcing a 90-day suspension of his reciprocal tariff increases. During this pause, a flat 10% rate would apply to most imports. However, he explicitly excludes China from this suspension and instead raises tariffs on Chinese goods to 125%, following Beijing\'s retaliatory move.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    isHighlighted: true,
+    country: 'us'
+  }, {
+    date: 'Apr 9, 2025',
+    title: 'Additional Tariffs Response',
+    description: 'In a direct countermeasure, China imposes an additional 50% tariff on all U.S. exports effective April 10, raising its overall tariff rate to 84%. China\'s response comes within 12 hours of the U.S. implementation.',
+    icon: <AlertTriangle className="h-6 w-6 text-white" />,
+    isHighlighted: true,
+    country: 'china'
+  }, {
+    date: 'Apr 10, 2025',
+    title: 'Total Tariff Clarification',
+    description: 'The White House provides clarification, noting that the newly announced 125% tariff on Chinese imports is being added to a previously implemented 20% levy. This adjustment brings the total tariff burden on Chinese goods to 145%.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'us'
+  }, {
+    date: 'Apr 11, 2025',
+    title: 'Electronics Tariff Exemption',
+    description: 'Trump\'s administration announces a temporary exemption for several categories of electronics, including smartphones, computers, and related devices. These exemptions apply to the 10% global baseline tariff and the broader import taxes imposed on Chinese goods. However, electronic items from China still face the 20% tariff linked to fentanyl enforcement.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'global'
+  }, {
+    date: 'Apr 11, 2025',
+    title: 'Total Tariff Increase',
+    description: 'China raises its total duties on all U.S. goods to 125%.',
+    icon: <AlertTriangle className="h-6 w-6 text-white" />,
+    isHighlighted: true,
+    country: 'china'
+  }, {
+    date: 'Apr 13, 2025',
+    title: 'Tech Tariff Consideration',
+    description: 'Trump signals that the recent exemptions for electronics may be temporary. He states that new tariffs are being considered on computer chips, indicating an escalation in tech-related trade restrictions.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'global'
+  }, {
+    date: 'Apr 22, 2025',
+    title: 'Diplomatic Stance',
+    description: 'Trump says he\'s waiting for Xi to initiate talks and claims a "very good relationship."',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'us'
+  }, {
+    date: 'Apr 22, 2025',
+    title: 'Diplomatic Strategy',
+    description: 'Xi avoids direct talks, instead launches diplomatic outreach to other trade partners.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'china'
+  }, {
+    date: 'Apr 23, 2025',
+    title: 'Potential Tariff Reduction',
+    description: 'Trump signals potential tariff reduction: base rate may drop from 145% to 50–65%, with strategic items still facing up to 100%.',
+    icon: <TrendingUp className="h-6 w-6 text-white" />,
+    isHighlighted: true,
+    country: 'us'
+  }, {
+    date: 'Apr 24, 2025',
+    title: 'Negotiation Claims Denied',
+    description: 'China\'s Ministry of Commerce denies Trump\'s claims of ongoing trade talks, stating that no negotiations are currently taking place between the two countries.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'china'
+  }, {
+    date: 'Apr 29, 2025',
+    title: 'Automotive Sector Relief',
+    description: 'Two executive orders are signed by Trump, modifying how tariffs are applied to the automotive sector. The 25% auto tariffs will no longer be compounded with other tariffs, such as those on imported steel and aluminum, offering partial relief to affected automakers.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'global'
+  }, {
+    date: 'Apr 30, 2025',
+    title: 'Quiet Tariff Exemptions',
+    description: 'China quietly notifies select firms — particularly those reliant on U.S. technologies — of exemptions from its 125% tariffs, using private outreach to ease trade tensions without a public announcement.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'china'
+  }
+];
 
 // Sort events by date string
 const sortedEvents = [...combinedUsChina].sort((a, b) => {
@@ -208,6 +224,40 @@ const TimelineComponent: React.FC<{
   const loadMore = () => {
     setVisibleCount(prev => Math.min(prev + 3, events.length));
   };
+
+  // Helper function to highlight text with tooltip if specified
+  const renderDescription = (event: TimelineEvent) => {
+    if (!event.tooltip) return <p className="text-gray-600">{event.description}</p>;
+    
+    const { description } = event;
+    const { highlightText, content } = event.tooltip;
+    
+    // Find the text to highlight
+    const parts = description.split(highlightText);
+    
+    if (parts.length === 1) return <p className="text-gray-600">{description}</p>;
+    
+    return (
+      <p className="text-gray-600">
+        {parts[0]}
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="font-medium">
+                {highlightText}
+                <Info className="inline-block h-4 w-4 ml-1 text-gray-500 align-text-bottom" />
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>
+              {content}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+        {parts[1]}
+      </p>
+    );
+  };
+  
   return <div className="relative w-full">
       {/* Timeline center connector line */}
       <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-gray-300 to-gray-200" style={{
@@ -259,7 +309,7 @@ const TimelineComponent: React.FC<{
                           </span>
                         </div>
                         <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
-                        <p className="text-gray-600">{event.description}</p>
+                        {renderDescription(event)}
                       </CardContent>
                     </Card>
                   </div>
@@ -276,7 +326,7 @@ const TimelineComponent: React.FC<{
                           <span className="text-xs font-bold px-2 py-1 rounded-full bg-infomineo-red/10 text-infomineo-red">China</span>
                         </div>
                         <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
-                        <p className="text-gray-600">{event.description}</p>
+                        {renderDescription(event)}
                       </CardContent>
                     </Card>
                   </div>
@@ -293,6 +343,7 @@ const TimelineComponent: React.FC<{
         </div>}
     </div>;
 };
+
 const Timeline: React.FC = () => {
   return <div className="max-w-4xl mx-auto">
       <div className="text-center mb-16">
