@@ -14,9 +14,12 @@ import { Button } from '@/components/ui/button';
 import { ExternalLink } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import TariffFaq from '@/components/TariffFaq';
-
 const Index: React.FC = () => {
-  const { countryData, loading: isLoading, error } = useCountryData();
+  const {
+    countryData,
+    loading: isLoading,
+    error
+  } = useCountryData();
   const [selectedCountry, setSelectedCountry] = useState<CountryData | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
@@ -24,32 +27,28 @@ const Index: React.FC = () => {
 
   // Simplified animation with no opacity-0 class
   const fadeInElements = () => {
-    document.querySelectorAll('.animate-on-scroll').forEach((item) => {
+    document.querySelectorAll('.animate-on-scroll').forEach(item => {
       item.classList.add('animate-subtle-fade');
     });
   };
-
   React.useEffect(() => {
     fadeInElements();
-    
-    // Use a simple intersection observer for subtle fade-in
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('animate-subtle-fade');
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
 
-    document.querySelectorAll('.animate-on-scroll').forEach((item) => {
+    // Use a simple intersection observer for subtle fade-in
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-subtle-fade');
+        }
+      });
+    }, {
+      threshold: 0.1
+    });
+    document.querySelectorAll('.animate-on-scroll').forEach(item => {
       observer.observe(item);
     });
-
     return () => {
-      document.querySelectorAll('.animate-on-scroll').forEach((item) => {
+      document.querySelectorAll('.animate-on-scroll').forEach(item => {
         observer.unobserve(item);
       });
     };
@@ -57,40 +56,31 @@ const Index: React.FC = () => {
 
   // Remove the restriction on countries - all valid countries are now shown
   const visibleCountries = countryData || [];
-
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-infomineo-gradient flex items-center justify-center">
+    return <div className="min-h-screen bg-infomineo-gradient flex items-center justify-center">
         <p className="text-lg text-white">Loading data...</p>
-      </div>
-    );
+      </div>;
   }
-
   if (error) {
-    return (
-      <div className="min-h-screen bg-infomineo-gradient flex items-center justify-center">
+    return <div className="min-h-screen bg-infomineo-gradient flex items-center justify-center">
         <p className="text-lg text-infomineo-red">Error loading data: {typeof error === 'object' && error !== null ? (error as Error).message : String(error)}</p>
-      </div>
-    );
+      </div>;
   }
-
   const handleCountrySelect = (country: CountryData) => {
     setSelectedCountry(country);
     setIsDetailOpen(true);
   };
-
   const scrollToDownload = () => {
     if (downloadSectionRef.current) {
-      downloadSectionRef.current.scrollIntoView({ behavior: 'smooth' });
+      downloadSectionRef.current.scrollIntoView({
+        behavior: 'smooth'
+      });
     }
   };
-  
   const handleGetFullAccess = () => {
     setIsLeadFormOpen(true);
   };
-
-  return (
-    <div className="min-h-screen">
+  return <div className="min-h-screen">
       {/* Hero Section */}
       <section className="bg-infomineo-gradient text-white">
         <header className="container mx-auto px-4 py-6">
@@ -98,12 +88,7 @@ const Index: React.FC = () => {
             <div className="flex items-center gap-3">
               <img src="https://infomineo.com/wp-content/uploads/2024/02/InfomineoLogo01.webp" alt="Infomineo Logo" className="h-10 w-auto" />
             </div>
-            <Button 
-              variant="outline" 
-              size="sm"
-              className="bg-white hover:bg-white/90 text-infomineo-blue"
-              asChild
-            >
+            <Button variant="outline" size="sm" className="bg-white hover:bg-white/90 text-infomineo-blue" asChild>
               <a href="https://infomineo.com/contact-us/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
                 Contact Us <ExternalLink size={14} />
               </a>
@@ -111,7 +96,7 @@ const Index: React.FC = () => {
           </div>
         </header>
 
-        <div className="container mx-auto px-4 py-16">
+        <div className="container mx-auto px-4 pt-16 pb-0">
           <div className="max-w-3xl mx-auto text-center animate-subtle-fade">
             <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">U.S. Tariffs 2025 Tracker</h1>
             <p className="text-lg md:text-xl opacity-90 mb-8 max-w-3xl mx-auto line-clamp-2">
@@ -125,9 +110,7 @@ const Index: React.FC = () => {
 
         {/* Map Container - Only showing the filtered map */}
         <div className="container mx-auto px-4 pb-8">
-          <AmChartsMapWithFilters
-            onSelectCountry={handleCountrySelect}
-          />
+          <AmChartsMapWithFilters onSelectCountry={handleCountrySelect} />
         </div>
       </section>
 
@@ -169,13 +152,10 @@ const Index: React.FC = () => {
       <Footer />
 
       {/* Dialog that preserves map state and doesn't reset selectedCountry when closing */}
-      <Dialog 
-        open={isDetailOpen} 
-        onOpenChange={(open) => {
-          setIsDetailOpen(open);
-          // Don't reset selectedCountry when closing to preserve state
-        }}
-      >
+      <Dialog open={isDetailOpen} onOpenChange={open => {
+      setIsDetailOpen(open);
+      // Don't reset selectedCountry when closing to preserve state
+    }}>
         <DialogContent className="sm:max-w-[700px] max-h-[85vh] overflow-y-auto">
           <DialogTitle>{selectedCountry?.name || "Country Details"}</DialogTitle>
           <CountryDetail country={selectedCountry} />
@@ -194,8 +174,6 @@ const Index: React.FC = () => {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
