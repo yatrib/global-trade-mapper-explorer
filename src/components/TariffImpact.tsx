@@ -1,0 +1,116 @@
+
+import React, { useState } from 'react';
+import { Globe, Network, Factory, Users, ExternalLink } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogTitle 
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+
+interface ImpactCardProps {
+  icon: React.ReactNode;
+  title: string;
+  summary: string;
+  fullContent: string;
+}
+
+const ImpactCard: React.FC<ImpactCardProps> = ({ icon, title, summary, fullContent }) => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  
+  return (
+    <>
+      <div className="relative overflow-hidden group">
+        <Card className="h-full bg-white hover:shadow-lg transition-all duration-300 border-b-4 border-b-infomineo-red">
+          <CardContent className="p-6">
+            <div className="flex justify-center mb-4">
+              {icon}
+            </div>
+            <h3 className="font-semibold mb-2">{title}</h3>
+            <p className="text-xs text-gray-600">
+              {summary}
+            </p>
+            <div className="mt-4 flex justify-center">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="text-infomineo-red hover:text-infomineo-red/80 p-0"
+                onClick={() => setIsDialogOpen(true)}
+              >
+                Learn More <ExternalLink className="ml-1 h-3.5 w-3.5" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+      
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogTitle>{title}</DialogTitle>
+          <div className="mt-4">
+            <p className="text-gray-700 whitespace-pre-line">{fullContent}</p>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+};
+
+const TariffImpact: React.FC = () => {
+  const impacts = [
+    {
+      icon: <Globe className="h-10 w-10 text-infomineo-red" strokeWidth={1.5} />,
+      title: "Trade-Dependent Economies",
+      summary: "Countries reliant on U.S. or China trade face heightened vulnerability to economic uncertainty and export sector downturns.",
+      fullContent: "Countries that are heavily reliant on either the U.S. or China as a primary trading partner are particularly vulnerable to the tariffs. Whether through direct tariffs or spillover effects from slowed global trade and weakened demand, these nations must navigate growing economic uncertainty. Export-heavy economies are particularly at risk of downturns in manufacturing, agriculture, and resource extraction."
+    },
+    {
+      icon: <Network className="h-10 w-10 text-infomineo-red" strokeWidth={1.5} />,
+      title: "Interconnected Industries",
+      summary: "Global supply chain sectors like automotive manufacturing face significant cost pressures with deep integration complications.",
+      fullContent: "Sectors that rely on globally dispersed supply chains, like manufacturing, logistics, and retail, are especially vulnerable to tariff-related disruptions. Industries with deeply integrated operations, such as automotive manufacturing, are seeing significant cost pressures under the new U.S. tariffs. The integration runs so deep that the U.S. National Highway Traffic Safety Administration can not distinguish between Canadian-made and American-made parts when calculating domestic content."
+    },
+    {
+      icon: <Factory className="h-10 w-10 text-infomineo-red" strokeWidth={1.5} />,
+      title: "Energy and Resource-Intensive Industries",
+      summary: "Raw material importers face rising costs, with downstream impacts to construction, manufacturing, and declining export competitiveness.",
+      fullContent: "Industries that rely heavily on raw material imports, such as steel and aluminum, are facing rising input costs due to the tariffs. This has led to higher expenses in key downstream sectors like construction and manufacturing. Exporters to the U.S. may also face declining demand, as buyers seek alternative sources to avoid the added costs."
+    },
+    {
+      icon: <Users className="h-10 w-10 text-infomineo-red" strokeWidth={1.5} />,
+      title: "Small and Medium Enterprises (SMEs)",
+      summary: "Small businesses face existential threats from unpredictable costs and tight margins without the resources to adapt quickly.",
+      fullContent: "Small businesses are among the hardest hit by the tariffs, facing unpredictable costs, canceled orders, and rising prices they can not absorb. These conditions threaten their survival due to limited sourcing options and tight margins."
+    }
+  ];
+
+  return (
+    <section className="py-16 bg-white">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
+            Tariff Impact: Which Players Are Most Exposed?
+          </h2>
+          <p className="text-lg text-gray-600 mb-12 max-w-3xl mx-auto">
+            The ripple effects of the U.S. tariff escalation are not evenly distributed. While some actors are positioned to absorb the shock or adapt strategically, others are grappling with mounting costs, disrupted operations, and heightened uncertainty.
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+            {impacts.map((impact, index) => (
+              <ImpactCard 
+                key={index}
+                icon={impact.icon} 
+                title={impact.title} 
+                summary={impact.summary}
+                fullContent={impact.fullContent}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default TariffImpact;

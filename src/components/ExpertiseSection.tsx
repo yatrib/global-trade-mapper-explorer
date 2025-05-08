@@ -1,6 +1,7 @@
+
 import React from 'react';
-import { BarChart3, Globe, Handshake, ExternalLink } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { BarChart3, Globe, Handshake } from 'lucide-react';
+
 const ExpertiseSection: React.FC = () => {
   return <section className="py-24 px-4 bg-gradient-to-b from-white to-gray-50">
       <div className="container mx-auto">
@@ -18,21 +19,16 @@ const ExpertiseSection: React.FC = () => {
           
           <ExpertiseCard icon={<Handshake className="h-8 w-8" strokeWidth={1.5} />} title="Tailored Solutions" description="We develop customized research solutions that align perfectly with your business objectives." />
         </div>
-        
-        {/* New CTA Button */}
-        <div className="text-center mt-16">
-          <Button variant="default" size="lg" className="bg-infomineo-blue hover:bg-infomineo-blue/90" asChild>
-            
-          </Button>
-        </div>
       </div>
     </section>;
 };
+
 interface ExpertiseCardProps {
   icon: React.ReactNode;
   title: string;
   description: string;
 }
+
 const ExpertiseCard: React.FC<ExpertiseCardProps> = ({
   icon,
   title,
@@ -48,4 +44,5 @@ const ExpertiseCard: React.FC<ExpertiseCardProps> = ({
       </div>
     </div>;
 };
+
 export default ExpertiseSection;
