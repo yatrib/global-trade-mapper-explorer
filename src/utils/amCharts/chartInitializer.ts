@@ -113,15 +113,11 @@ export const initializeAmChart = (
       fill: am5.color(0xCCCCCC) // Light gray for countries not in our database
     });
 
-    // Create a color scale for the selected tariff values
-    // Use different color schemes based on tariff visualization type
-    const startColor = tariffVisualization === 'reciprocalTariff'
-      ? am5.color(0xADD8E6) // Light blue for reciprocal tariffs
-      : am5.color(0xFEC6A1); // Soft orange for tariffs to US
-    
-    const endColor = tariffVisualization === 'reciprocalTariff'
-      ? am5.color(0x0A4D94) // Dark blue for reciprocal tariffs
-      : am5.color(0xF97316); // Bright orange for tariffs to US
+    // Create a color scale for the selected tariff values using the new color shades
+    // Use the same new color shades for both tariff visualization types
+    const startColor = am5.color(0x9EB5FA); // Lightest blue (#9eb5fa)
+    const midColor = am5.color(0x6D90F8);   // Medium blue (#6d90f8)
+    const endColor = am5.color(0x0F47F2);   // Darkest blue (#0f47f2)
 
     const heatLegend = chart.children.push(
       am5.HeatLegend.new(root, {
@@ -159,18 +155,17 @@ export const initializeAmChart = (
             // Calculate position in the gradient (0-1)
             const normalizedValue = Math.min(value / maxValue, 1);
             
-            // Get color from the heat legend's startColor to endColor based on normalized value
-            const startColor = heatLegend.get("startColor") as any;
-            const endColor = heatLegend.get("endColor") as any;
-            
-            if (startColor && endColor) {
-              return am5.Color.interpolate(normalizedValue, startColor, endColor);
+            // Use three-point gradient for better differentiation
+            if (normalizedValue < 0.5) {
+              // Blend between startColor and midColor for lower half of values
+              return am5.Color.interpolate(normalizedValue * 2, startColor, midColor);
+            } else {
+              // Blend between midColor and endColor for upper half of values
+              return am5.Color.interpolate((normalizedValue - 0.5) * 2, midColor, endColor);
             }
           }
           // Default color for countries with zero value
-          return tariffVisualization === 'reciprocalTariff'
-            ? am5.color(0xADD8E6) // Light blue for reciprocal tariffs
-            : am5.color(0xFEC6A1); // Soft orange for tariffs to US
+          return startColor; // Lightest blue for zero values
         }
       }
       return am5.color(0xCCCCCC); // Default light gray for countries not in our database
