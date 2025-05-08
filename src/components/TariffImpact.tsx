@@ -16,15 +16,15 @@ const ImpactCard: React.FC<ImpactCardProps> = ({ icon, title, summary, fullConte
   
   return (
     <>
-      <div className="h-full">
-        <div className="p-8 bg-white rounded-xl shadow-sm hover:shadow-md transition-all">
+      <div className="h-full flex">
+        <div className="p-8 bg-white rounded-xl shadow-md w-full flex flex-col">
           <div className="mb-6 flex justify-center">
             <div className="inline-flex items-center justify-center p-3 bg-infomineo-red/10 rounded-full text-infomineo-red">
               {icon}
             </div>
           </div>
           <h3 className="text-xl font-semibold mb-3 text-center">{title}</h3>
-          <p className="text-gray-600 text-sm">{summary}</p>
+          <p className="text-gray-600 text-sm flex-grow">{summary}</p>
           <div className="mt-4 flex justify-center">
             <Button 
               variant="ghost" 

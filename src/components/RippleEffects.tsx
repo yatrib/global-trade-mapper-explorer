@@ -22,15 +22,15 @@ const EffectCard: React.FC<EffectCardProps> = ({
 
   return (
     <>
-      <div className="h-full">
-        <div className="p-8 bg-white rounded-xl shadow-sm hover:shadow-md transition-all">
+      <div className="h-full flex">
+        <div className="p-8 bg-white rounded-xl shadow-md w-full flex flex-col">
           <div className="mb-6 flex justify-center">
             <div className="inline-flex items-center justify-center p-3 bg-infomineo-blue/10 rounded-full text-infomineo-blue">
               {icon}
             </div>
           </div>
           <h3 className="text-xl font-semibold mb-3 text-center">{title}</h3>
-          <p className="text-gray-600 text-sm">{summary}</p>
+          <p className="text-gray-600 text-sm flex-grow">{summary}</p>
           <div className="mt-4 flex justify-center">
             <Button variant="ghost" size="sm" className="text-infomineo-blue hover:text-infomineo-blue/80 p-0" onClick={() => setIsDialogOpen(true)}>
               Learn More <ExternalLink className="ml-1 h-3.5 w-3.5" />
