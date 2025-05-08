@@ -575,6 +575,18 @@ const TimelineComponent: React.FC<{
     );
   };
   
+  // Get icon color based on country type
+  const getIconBgColor = (country: string) => {
+    switch(country) {
+      case 'us': return 'bg-infomineo-blue';
+      case 'china': return 'bg-infomineo-red';
+      case 'global': return 'bg-green-500';
+      case 'canada-mexico': return 'bg-teal-500'; // Changed from purple to teal
+      case 'eu': return 'bg-amber-500';
+      default: return 'bg-gray-500';
+    }
+  };
+  
   return <div className="relative w-full">
       {/* Timeline center connector line */}
       <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-gray-300 to-gray-200" style={{
@@ -584,6 +596,8 @@ const TimelineComponent: React.FC<{
       <div className="w-full">
         {visibleEvents.map((event, index) => {
         const isLeftSide = event.country === 'us' || event.country === 'global';
+        const iconBgColor = getIconBgColor(event.country);
+        
         return <div key={index} className="relative flex mb-12 w-full">
               {/* Timeline node in center */}
               <div className="absolute left-1/2 transform -translate-x-1/2 z-10">
@@ -591,21 +605,13 @@ const TimelineComponent: React.FC<{
                   "w-10 h-10 rounded-full flex items-center justify-center shadow-sm", 
                   event.isHighlighted 
                     ? "bg-infomineo-gradient" 
-                    : event.country === 'us' 
-                      ? "bg-infomineo-blue" 
-                      : event.country === 'global' 
-                        ? "bg-green-500" 
-                        : event.country === 'canada-mexico'
-                          ? "bg-purple-500"
-                          : event.country === 'eu'
-                            ? "bg-amber-500"
-                            : "bg-infomineo-red"
+                    : iconBgColor
                 )}>
                   {event.icon}
                 </div>
               </div>
               
-              {/* US/Global event on left, China/Canada-Mexico event on right */}
+              {/* US/Global event on left, China/Canada-Mexico/EU event on right */}
               {isLeftSide ?
           // US/Global Event (Left)
           <>
@@ -636,27 +642,41 @@ const TimelineComponent: React.FC<{
                   </div>
                   <div className="w-1/2"></div> {/* Empty right side */}
                 </> :
-          // China/Canada-Mexico Event (Right)
+          // China/Canada-Mexico/EU Event (Right)
           <>
                   <div className="w-1/2"></div> {/* Empty left side */}
                   <div className="w-1/2 pl-8">
                     <Card className={cn(
                       "border-l-4 hover:shadow-md transition-shadow duration-300",
-                      event.country === 'china' ? "border-l-infomineo-red" : "border-l-purple-500"
+                      event.country === 'china' 
+                        ? "border-l-infomineo-red" 
+                        : event.country === 'eu' 
+                          ? "border-l-amber-500" 
+                          : "border-l-teal-500" // Changed from purple to teal
                     )}>
                       <CardContent className="p-6">
                         <div className="flex items-start justify-between mb-2">
                           <span className={cn(
                             "text-sm font-semibold",
-                            event.country === 'china' ? "text-infomineo-red" : "text-purple-600"
+                            event.country === 'china' 
+                              ? "text-infomineo-red" 
+                              : event.country === 'eu' 
+                                ? "text-amber-600" 
+                                : "text-teal-600" // Changed from purple to teal
                           )}>{event.date}</span>
                           <span className={cn(
                             "text-xs font-bold px-2 py-1 rounded-full",
                             event.country === 'china'
                               ? "bg-infomineo-red/10 text-infomineo-red"
-                              : "bg-purple-500/10 text-purple-600"
+                              : event.country === 'eu'
+                                ? "bg-amber-500/10 text-amber-600" 
+                                : "bg-teal-500/10 text-teal-600" // Changed from purple to teal
                           )}>
-                            {event.country === 'china' ? "China" : "Canada/Mexico"}
+                            {event.country === 'china' 
+                              ? "China" 
+                              : event.country === 'eu' 
+                                ? "European Union" 
+                                : "Canada/Mexico"}
                           </span>
                         </div>
                         <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
@@ -669,9 +689,9 @@ const TimelineComponent: React.FC<{
       })}
       </div>
       
-      {/* Load More Button */}
-      {visibleCount < events.length && <div className="flex justify-center mt-6">
-          <Button onClick={loadMore} variant="outline" className="flex items-center gap-2">
+      {/* Load More Button with background */}
+      {visibleCount < events.length && <div className="flex justify-center mt-6 relative z-10">
+          <Button onClick={loadMore} variant="outline" className="flex items-center gap-2 bg-white shadow-sm">
             Load More <ChevronDown className="h-4 w-4" />
           </Button>
         </div>}
@@ -723,7 +743,7 @@ const Timeline: React.FC = () => {
               <span className="font-medium">Global</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-purple-500 rounded-full"></div>
+              <div className="w-4 h-4 bg-teal-500 rounded-full"></div> {/* Changed from purple to teal */}
               <span className="font-medium">Canada/Mexico</span>
             </div>
           </div>
@@ -743,7 +763,7 @@ const Timeline: React.FC = () => {
             </div>
             <div className="flex items-center gap-2">
               <div className="w-4 h-4 bg-amber-500 rounded-full"></div>
-              <span className="font-medium">European Union</span>
+              <span className="font-medium">European Union</span> {/* Fixed EU label */}
             </div>
           </div>
           <TimelineComponent events={sortedEu} />
