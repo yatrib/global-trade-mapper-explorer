@@ -39,7 +39,7 @@ const EnhancedCta: React.FC = () => {
               
               <Button variant="default" size="lg" className="bg-white hover:bg-white/90 text-infomineo-blue" asChild>
                 <a href="https://infomineo.com/contact-us/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
-                  Connect with us to explore our tailored research solutions <ExternalLink size={16} />
+                  Connect with us <ExternalLink size={16} />
                 </a>
               </Button>
             </div>

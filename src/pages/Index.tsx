@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import { CountryData } from '@/data/types';
 import AmChartsMapWithFilters from '@/components/AmChartsMapWithFilters';
@@ -142,10 +143,7 @@ const Index: React.FC = () => {
       {/* Ripple Effects Section - New carousel-based implementation */}
       <RippleEffects />
       
-      {/* Tariff Impact Section - New implementation with different background */}
-      <TariffImpact />
-
-      {/* Lead Capture Section */}
+      {/* Lead Capture Section - Moved to be after Ripple Effects */}
       <section ref={downloadSectionRef} className="py-24 bg-infomineo-gradient text-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
@@ -168,6 +166,9 @@ const Index: React.FC = () => {
           </div>
         </div>
       </section>
+      
+      {/* Tariff Impact Section - New implementation with different background */}
+      <TariffImpact />
 
       {/* Expertise Section */}
       <ExpertiseSection />
