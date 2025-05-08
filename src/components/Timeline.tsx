@@ -300,9 +300,8 @@ const Timeline: React.FC = () => {
       </div>
 
       <Tabs defaultValue="us-china" className="w-full">
-        <TabsList className="grid w-full grid-cols-4 mb-10">
+        <TabsList className="grid w-full grid-cols-3 mb-10">
           <TabsTrigger value="us-china">U.S. - China</TabsTrigger>
-          <TabsTrigger value="us-middle-east">U.S. - Middle East</TabsTrigger>
           <TabsTrigger value="us-canada-mexico">U.S. - Canada & Mexico</TabsTrigger>
           <TabsTrigger value="us-eu">U.S. - European Union</TabsTrigger>
         </TabsList>
@@ -320,13 +319,6 @@ const Timeline: React.FC = () => {
             </div>
           </div>
           <TimelineComponent events={sortedEvents} />
-        </TabsContent>
-        
-        {/* U.S. - Middle East Tab Content - Now empty with "coming soon" message */}
-        <TabsContent value="us-middle-east">
-          <div className="flex items-center justify-center py-16">
-            <p className="text-lg text-gray-500 italic">Content coming soon for U.S. - Middle East trade relations.</p>
-          </div>
         </TabsContent>
         
         {/* U.S. - Canada & Mexico Tab Content - Empty for now */}

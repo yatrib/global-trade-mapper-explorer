@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import { CountryData } from '@/data/types';
 import AmChartsMapWithFilters from '@/components/AmChartsMapWithFilters';
@@ -111,6 +112,13 @@ const Index: React.FC = () => {
         {/* Map Container - Only showing the filtered map */}
         <div className="container mx-auto px-4 pb-8">
           <AmChartsMapWithFilters onSelectCountry={handleCountrySelect} />
+          
+          {/* Map Notes - Added after the map */}
+          <div className="text-xs text-white/80 mt-4 space-y-1.5 max-w-4xl mx-auto">
+            <p>* The tariffs charged to the U.S. are defined by Trump and factor in currency manipulation and trade barriers. These were not individually calculated for Canada and Mexico, as the new U.S. tariffs were attributed to their insufficient efforts in curbing fentanyl trafficking into the U.S. For the EU, the U.S. did not calculate separate tariff rates for each member country's tariffs on U.S. goods.</p>
+            <p>** For G20 countries, additional sectors may be affected beyond those shown. This data highlights the primary sectors most impacted by the tariffs.</p>
+            <p>*** Sources include international databases, official government releases, national statistics offices, and reputable news organizations.</p>
+          </div>
         </div>
       </section>
 
