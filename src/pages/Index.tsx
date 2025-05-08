@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { CountryData } from '@/data/types';
 import AmChartsMapWithFilters from '@/components/AmChartsMapWithFilters';
@@ -14,6 +13,7 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { ExternalLink } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import TariffFaq from '@/components/TariffFaq';
 
 const Index: React.FC = () => {
   const { countryData, loading: isLoading, error } = useCountryData();
@@ -119,6 +119,9 @@ const Index: React.FC = () => {
             </p>
           </div>
         </div>
+
+        {/* FAQ Section - Added before the Map */}
+        <TariffFaq />
 
         {/* Map Container - Only showing the filtered map */}
         <div className="container mx-auto px-4 pb-8">
