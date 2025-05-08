@@ -14,7 +14,6 @@ import { Button } from '@/components/ui/button';
 import { ExternalLink, Globe, Factory, Network, Briefcase, Users, TrendingDown } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import TariffFaq from '@/components/TariffFaq';
-
 const Index: React.FC = () => {
   const {
     countryData,
@@ -332,19 +331,13 @@ const Index: React.FC = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
-                Ready to Go Deeper? Get Ahead of Shifting Global Trade Dynamics
-              </h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">Ready to Go Deeper?
+Get Ahead of Shifting Global Trade Dynamics</h2>
               <p className="text-lg text-gray-600 mb-10 max-w-3xl mx-auto">
                 Infomineo's research team can help you assess the full implications of U.S. tariff policy on your business, industry, or region. Whether it is analyzing how specific sectors will be reshaped, examining the economic and political ripple effects in a particular country, or modeling trade shifts across regional blocs like the EU, USMCA, or ASEAN, we provide tailored insights grounded in data. From employment and supply chain disruptions to investor sentiment and policy alignment, our team is equipped to deliver strategic intelligence that supports proactive decision-making in a rapidly evolving trade landscape.
               </p>
               
-              <Button 
-                variant="default"
-                size="lg" 
-                className="bg-infomineo-blue hover:bg-infomineo-blue/90"
-                asChild
-              >
+              <Button variant="default" size="lg" className="bg-infomineo-blue hover:bg-infomineo-blue/90" asChild>
                 <a href="https://infomineo.com/contact-us/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
                   Connect with us to explore our tailored research solutions <ExternalLink size={16} />
                 </a>
