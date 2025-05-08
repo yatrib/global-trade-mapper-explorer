@@ -1,3 +1,4 @@
+
 import * as React from "react"
 import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 
@@ -25,4 +26,18 @@ const TooltipContent = React.forwardRef<
 ))
 TooltipContent.displayName = TooltipPrimitive.Content.displayName
 
-export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }
+// Helper component to render text with highlighted parts in tooltips
+const HighlightedText: React.FC<{ text: string }> = ({ text }) => {
+  return (
+    <span 
+      dangerouslySetInnerHTML={{ 
+        __html: text.replace(
+          /#00B9FF\[(.*?)\]/g, 
+          '<span style="color: #00B9FF; font-weight: 600">$1</span>'
+        ) 
+      }} 
+    />
+  );
+};
+
+export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider, HighlightedText }

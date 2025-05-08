@@ -1,10 +1,11 @@
+
 import React, { useState } from 'react';
 import { Flag, AlertTriangle, TrendingUp, ChevronDown, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, HighlightedText } from '@/components/ui/tooltip';
 
 interface TimelineEvent {
   date: string;
@@ -12,7 +13,7 @@ interface TimelineEvent {
   description: string;
   icon: React.ReactNode;
   isHighlighted?: boolean;
-  country: 'us' | 'china' | 'global';
+  country: 'us' | 'china' | 'global' | 'canada-mexico';
   tooltip?: {
     highlightText: string;
     content: React.ReactNode;
@@ -206,9 +207,192 @@ const combinedUsChina: TimelineEvent[] = [
   }
 ];
 
+// US, Canada, and Mexico timeline events
+const usCanadaMexico: TimelineEvent[] = [
+  {
+    date: 'Jan 20, 2025',
+    title: 'Initial Tariff Intent',
+    description: 'Just hours after taking the oath of office, Trump announces his intent to impose additional 25% tariffs on imports from Canada and Mexico beginning February 1. He justifies the move by accusing both neighboring countries of failing to sufficiently curb the flow of narcotics and migrants into the United States.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    isHighlighted: true,
+    country: 'us'
+  },
+  {
+    date: 'Feb 1, 2025',
+    title: 'Tariff Executive Order',
+    description: 'Trump signs executive order imposing 25% tariffs on imports from Canada and Mexico not covered under USMCA, effective Feb 4.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    isHighlighted: true,
+    country: 'us',
+    tooltip: {
+      highlightText: 'USMCA',
+      content: (
+        <HighlightedText text="The United States-Mexico-Canada Agreement (#00B9FF[USMCA]), which took effect on July 1, 2020, is a trade pact that replaced the 1994 North American Free Trade Agreement (NAFTA). Initiated under the Trump administration and signed on November 30, 2018, the USMCA aims to create shared economic benefits for workers, agricultural producers, and businesses across North America." />
+      )
+    }
+  },
+  {
+    date: 'Feb 3, 2025',
+    title: 'Temporary Tariff Pause',
+    description: 'Trump agrees to a 30-day pause on tariffs against Canada and Mexico after both pledge action on border security and drug trafficking.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'us'
+  },
+  {
+    date: 'Feb 10, 2025',
+    title: 'Steel and Aluminum Tariffs',
+    description: 'Trump announces the reinstatement of increased tariffs on foreign steel and aluminum, marking a return to a policy first introduced during his previous term. The exemptions granted under the 2018 tariffs are eliminated, resulting in a minimum 25% tariff on all imported steel and an increase in aluminum tariffs from 10% to 25%.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'global'
+  },
+  {
+    date: 'Mar 4, 2025',
+    title: 'Canadian Retaliatory Tariffs',
+    description: 'Canada imposes 25% tariffs on CA30 billion in U.S. goods, including a wide range of consumer products. Canada plans to broaden its retaliatory tariffs over the following 21 days, eventually covering an additional US$125 billion in American imports. Mexican President Sheinbaum pledges retaliatory tariffs on U.S. imports.',
+    icon: <AlertTriangle className="h-6 w-6 text-white" />,
+    isHighlighted: true,
+    country: 'canada-mexico',
+    tooltip: {
+      highlightText: 'wide range of consumer products',
+      content: (
+        <HighlightedText text="Products in the first wave of tariffs include #00B9FF[live poultry, dairy produce, vegetables, coffee and tea, products from the milling industry, oil seeds, sugar, beverages, spirits and vinegar, tobacco, plastics, rubber, wood, paper, apparel and accessories, articles of iron and steel, aircraft parts and accessories, and arms and ammunition]." />
+      )
+    }
+  },
+  {
+    date: 'Mar 4, 2025',
+    title: 'Tariffs Take Effect',
+    description: '25% tariffs take effect on Canadian and Mexican goods; Canadian energy imports are limited to a 10% rate.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'us'
+  },
+  {
+    date: 'Mar 5, 2025',
+    title: 'Automaker Exemption',
+    description: 'Trump grants one-month tariff exemption for U.S. automakers importing from Canada and Mexico, after speaking with the leaders of the "Big 3" automakers — Ford, General Motors and Stellantis.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'us'
+  },
+  {
+    date: 'Mar 6, 2025',
+    title: 'Extended Tariff Pause',
+    description: 'Trump extends the tariff pause by one month on many Canadian and Mexican imports, citing security progress. He affirms that USMCA-compliant imports remain exempt until April 2 and lowers tariffs on non-USMCA potash to 10%.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'us'
+  },
+  {
+    date: 'Mar 10, 2025',
+    title: 'Ontario Electricity Surcharge',
+    description: 'Ontario, Canada\'s most populous province, responded to Trump\'s economic pressure by introducing a 25% surcharge on electricity exports to the U.S. states of Michigan, Minnesota, and New York.',
+    icon: <AlertTriangle className="h-6 w-6 text-white" />,
+    country: 'canada-mexico'
+  },
+  {
+    date: 'Mar 11, 2025',
+    title: 'Canadian Steel Tariff Threat',
+    description: 'Trump threatens to double tariffs on Canadian steel and aluminum to 50% in response to the electricity surcharge, but walks back the decision later that day.',
+    icon: <AlertTriangle className="h-6 w-6 text-white" />,
+    country: 'us'
+  },
+  {
+    date: 'Mar 11, 2025',
+    title: 'Ontario Pauses Surcharge',
+    description: 'Premier Doug Ford agreed to pause Ontario\'s 25% electricity surcharge to the U.S. following an invitation from Commerce Secretary Howard Lutnick for a reconciliation meeting in Washington.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'canada-mexico'
+  },
+  {
+    date: 'Mar 12, 2025',
+    title: 'Steel and Aluminum Tariffs Take Effect',
+    description: 'The updated U.S. tariffs on all foreign steel and aluminum officially take effect.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'global'
+  },
+  {
+    date: 'Mar 13, 2025',
+    title: 'Canada\'s Second Wave of Tariffs',
+    description: 'Canada\'s second wave of 25% retaliatory tariffs takes effect, targeting CA$29.8 billion in U.S. imports.',
+    icon: <AlertTriangle className="h-6 w-6 text-white" />,
+    isHighlighted: true,
+    country: 'canada-mexico',
+    tooltip: {
+      highlightText: 'CA$29.8 billion in U.S. imports',
+      content: (
+        <HighlightedText text="#00B9FF[CA$29.8 billion] includes:
+$12.6 billion in steel products
+$3 billion in aluminum products
+$14.2 billion in additional imported U.S. goods (including tools, computers and servers, display monitors, sport equipment, and cast-iron products), comprising steel, aluminum, and other goods." />
+      )
+    }
+  },
+  {
+    date: 'Mar 24, 2025',
+    title: 'Venezuela Oil Tariffs',
+    description: 'The United States announces that starting April 2, a 25% tariff will apply to goods imported from countries that purchase oil from Venezuela, whether through direct trade or intermediaries.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'global'
+  },
+  {
+    date: 'Mar 26, 2025',
+    title: 'Automobile Tariffs Announced',
+    description: 'Trump confirms the introduction of 25% tariffs on automobile imports, describing the move as a way to encourage domestic car production. These tariffs are scheduled to begin on April 3 with fully assembled vehicles, followed by additional levies on car parts phased in by May 3.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'global'
+  },
+  {
+    date: 'Apr 2, 2025',
+    title: 'USMCA-Compliant Goods Update',
+    description: 'White House confirms USMCA-compliant goods from Canada and Mexico will remain duty-free indefinitely. Other tariffs may drop from 25% to 12% once demands on immigration and trafficking are met.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'us'
+  },
+  {
+    date: 'Apr 3, 2025',
+    title: 'Auto Tariffs Take Effect',
+    description: 'The U.S. begins collecting tariffs on imported automobiles, following the policy rollout announced in late March.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'global'
+  },
+  {
+    date: 'Apr 9, 2025',
+    title: 'Canadian Vehicle Tariffs',
+    description: 'Canada\'s 25% tariffs takes effect on U.S. vehicle imports that do not comply with USMCA, including non-Canadian/Mexican content in USMCA-compliant vehicles. Auto parts remain exempt.',
+    icon: <AlertTriangle className="h-6 w-6 text-white" />,
+    country: 'canada-mexico'
+  },
+  {
+    date: 'Apr 11, 2025',
+    title: 'Electronics Tariff Exemption',
+    description: 'Trump\'s administration announces a temporary exemption for several categories of electronics, including smartphones, computers, and related devices. These exemptions apply to the 10% global baseline tariff.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'global'
+  },
+  {
+    date: 'Apr 13, 2025',
+    title: 'Tech Tariff Consideration',
+    description: 'Trump signals that the recent exemptions for electronics may be temporary. He states that new tariffs are being considered on computer chips, indicating an escalation in tech-related trade restrictions.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'global'
+  },
+  {
+    date: 'Apr 29, 2025',
+    title: 'Automotive Sector Relief',
+    description: 'Two executive orders are signed by Trump, modifying how tariffs are applied to the automotive sector. The 25% auto tariffs will no longer be compounded with other tariffs, such as those on imported steel and aluminum, offering partial relief to affected automakers.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'global'
+  }
+];
+
 // Sort events by date string
 const sortedEvents = [...combinedUsChina].sort((a, b) => {
   // Parse date strings into comparable format (assuming format is 'MMM D, YYYY')
+  const dateA = new Date(a.date);
+  const dateB = new Date(b.date);
+  return dateA.getTime() - dateB.getTime();
+});
+
+// Sort Canada/Mexico events by date
+const sortedCanadaMexico = [...usCanadaMexico].sort((a, b) => {
   const dateA = new Date(a.date);
   const dateB = new Date(b.date);
   return dateA.getTime() - dateB.getTime();
@@ -243,7 +427,7 @@ const TimelineComponent: React.FC<{
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <span className="font-medium">
+              <span className="font-medium text-blue-600">
                 {highlightText}
                 <Info className="inline-block h-4 w-4 ml-1 text-gray-500 align-text-bottom" />
               </span>
@@ -278,13 +462,15 @@ const TimelineComponent: React.FC<{
                       ? "bg-infomineo-blue" 
                       : event.country === 'global' 
                         ? "bg-green-500" 
-                        : "bg-infomineo-red"
+                        : event.country === 'canada-mexico'
+                          ? "bg-purple-500"
+                          : "bg-infomineo-red"
                 )}>
                   {event.icon}
                 </div>
               </div>
               
-              {/* US/Global event on left, China event on right */}
+              {/* US/Global event on left, China/Canada-Mexico event on right */}
               {isLeftSide ?
           // US/Global Event (Left)
           <>
@@ -315,15 +501,28 @@ const TimelineComponent: React.FC<{
                   </div>
                   <div className="w-1/2"></div> {/* Empty right side */}
                 </> :
-          // China Event (Right)
+          // China/Canada-Mexico Event (Right)
           <>
                   <div className="w-1/2"></div> {/* Empty left side */}
                   <div className="w-1/2 pl-8">
-                    <Card className="border-l-4 border-l-infomineo-red hover:shadow-md transition-shadow duration-300">
+                    <Card className={cn(
+                      "border-l-4 hover:shadow-md transition-shadow duration-300",
+                      event.country === 'china' ? "border-l-infomineo-red" : "border-l-purple-500"
+                    )}>
                       <CardContent className="p-6">
                         <div className="flex items-start justify-between mb-2">
-                          <span className="text-sm font-semibold text-infomineo-red">{event.date}</span>
-                          <span className="text-xs font-bold px-2 py-1 rounded-full bg-infomineo-red/10 text-infomineo-red">China</span>
+                          <span className={cn(
+                            "text-sm font-semibold",
+                            event.country === 'china' ? "text-infomineo-red" : "text-purple-600"
+                          )}>{event.date}</span>
+                          <span className={cn(
+                            "text-xs font-bold px-2 py-1 rounded-full",
+                            event.country === 'china'
+                              ? "bg-infomineo-red/10 text-infomineo-red"
+                              : "bg-purple-500/10 text-purple-600"
+                          )}>
+                            {event.country === 'china' ? "China" : "Canada/Mexico"}
+                          </span>
                         </div>
                         <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
                         {renderDescription(event)}
@@ -354,7 +553,7 @@ const Timeline: React.FC = () => {
       <Tabs defaultValue="us-china" className="w-full">
         <TabsList className="grid w-full grid-cols-2 mb-10">
           <TabsTrigger value="us-china">U.S. - China</TabsTrigger>
-          <TabsTrigger value="us-eu">U.S. - European Union</TabsTrigger>
+          <TabsTrigger value="us-canada-mexico">U.S. - Canada/Mexico</TabsTrigger>
         </TabsList>
         
         {/* U.S. - China Tab Content */}
@@ -376,11 +575,23 @@ const Timeline: React.FC = () => {
           <TimelineComponent events={sortedEvents} />
         </TabsContent>
         
-        {/* U.S. - European Union Tab Content - Empty for now */}
-        <TabsContent value="us-eu">
-          <div className="flex items-center justify-center py-16">
-            <p className="text-lg text-gray-500 italic">Content coming soon for U.S. - European Union trade relations.</p>
+        {/* U.S. - Canada/Mexico Tab Content */}
+        <TabsContent value="us-canada-mexico">
+          <div className="mb-6 flex justify-center gap-8">
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-infomineo-blue rounded-full"></div>
+              <span className="font-medium">United States</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-green-500 rounded-full"></div>
+              <span className="font-medium">Global</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-purple-500 rounded-full"></div>
+              <span className="font-medium">Canada/Mexico</span>
+            </div>
           </div>
+          <TimelineComponent events={sortedCanadaMexico} />
         </TabsContent>
       </Tabs>
     </div>;
