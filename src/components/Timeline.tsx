@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Flag, AlertTriangle, TrendingUp, ChevronDown, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -13,7 +12,7 @@ interface TimelineEvent {
   description: string;
   icon: React.ReactNode;
   isHighlighted?: boolean;
-  country: 'us' | 'china' | 'global' | 'canada-mexico';
+  country: 'us' | 'china' | 'global' | 'canada-mexico' | 'eu';
   tooltip?: {
     highlightText: string;
     content: React.ReactNode;
@@ -383,6 +382,133 @@ $14.2 billion in additional imported U.S. goods (including tools, computers and 
   }
 ];
 
+// US-EU timeline events
+const usEu: TimelineEvent[] = [
+  {
+    date: 'Feb 3, 2025',
+    title: 'Warning to EU',
+    description: 'Trump issues a sharp warning to the European Union, threatening new tariffs and asserting that the bloc has "abused the United States for years," a practice he says must end.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    isHighlighted: true,
+    country: 'us'
+  },
+  {
+    date: 'Feb 10, 2025',
+    title: 'Steel and Aluminum Tariffs',
+    description: 'Trump announces the reinstatement of increased tariffs on foreign steel and aluminum, marking a return to a policy first introduced during his previous term. The exemptions granted under the 2018 tariffs are eliminated, resulting in a minimum 25% tariff on all imported steel and an increase in aluminum tariffs from 10% to 25%.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'global'
+  },
+  {
+    date: 'Mar 12, 2025',
+    title: 'Steel and Aluminum Tariffs Take Effect',
+    description: 'The updated U.S. tariffs on all foreign steel and aluminum officially take effect.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'global'
+  },
+  {
+    date: 'Mar 12, 2025',
+    title: 'EU Response to Steel Tariffs',
+    description: 'In response to Trump\'s steel and aluminum tariffs, the European Commission will let its 2018 and 2020 countermeasures against U.S. tariffs expire next month, affecting U.S. goods. A new set of measures will also be ready by mid-April, impacting up to €26 billion ($28.33 billion) in U.S. exports, matching the scope of the U.S. tariffs.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'eu'
+  },
+  {
+    date: 'Mar 13, 2025',
+    title: 'Wine Tariff Threat',
+    description: 'Trump escalates his rhetoric, threatening to impose a 200% tariff on European wine, Champagne, and spirits unless the EU stops its 50% tariff on whiskey.',
+    icon: <AlertTriangle className="h-6 w-6 text-white" />,
+    isHighlighted: true,
+    country: 'us'
+  },
+  {
+    date: 'Mar 20, 2025',
+    title: 'Retaliatory Tariffs Suspended',
+    description: 'The European Commission has extended the ongoing suspension of retaliatory tariffs until 14 April 2025.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'eu'
+  },
+  {
+    date: 'Mar 24, 2025',
+    title: 'Venezuela Oil Tariffs',
+    description: 'The United States announces that starting April 2, a 25% tariff will apply to goods imported from countries that purchase oil from Venezuela, whether through direct trade or intermediaries.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'global'
+  },
+  {
+    date: 'Mar 26, 2025',
+    title: 'Automobile Tariffs Announced',
+    description: 'Trump confirms the introduction of 25% tariffs on automobile imports, describing the move as a way to encourage domestic car production. These tariffs are scheduled to begin on April 3 with fully assembled vehicles, followed by additional levies on car parts phased in by May 3.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'global'
+  },
+  {
+    date: 'Apr 2, 2025',
+    title: 'Baseline Tariff Implementation',
+    description: 'The United States implements a new 10% baseline tariff on imports from all nations effective April 5, with exceptions for products or sectors already facing specific tariffs. Countries running trade surpluses with the U.S. face additional increases, including a newly announced 20% tariff on EU imports.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    isHighlighted: true,
+    country: 'global'
+  },
+  {
+    date: 'Apr 3, 2025',
+    title: 'Auto Tariffs Take Effect',
+    description: 'The U.S. begins collecting tariffs on imported automobiles, following the policy rollout announced in late March.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'global'
+  },
+  {
+    date: 'Apr 9, 2025',
+    title: 'Reciprocal Tariffs Enforcement',
+    description: 'Trump\'s new "reciprocal" tariff rates officially take effect, raising duties on imports from dozens of countries just after midnight.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'global'
+  },
+  {
+    date: 'Apr 9, 2025',
+    title: 'EU Retaliatory Measures',
+    description: 'In response, EU member states vote to approve retaliatory tariffs on €20.9 billion ($23 billion) worth of U.S. goods. The European Commission announces that the countermeasures will be introduced in stages: reinstating 2018-2020 counter-tariffs on €8 billion worth of goods starting April 15; followed by a second round of 25% tariffs on an additional €18 billion by May 15 if negotiations fail; and concluding with a final wave of 25% targeting luxury goods, alcohol, and pharmaceuticals from December 1.',
+    icon: <AlertTriangle className="h-6 w-6 text-white" />,
+    isHighlighted: true,
+    country: 'eu'
+  },
+  {
+    date: 'Apr 9, 2025',
+    title: 'Tariff Suspension',
+    description: 'In a sudden policy shift, Trump announces a 90-day suspension of the newly imposed reciprocal tariff hikes, temporarily unifying tariff levels at 10%.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'global'
+  },
+  {
+    date: 'Apr 10, 2025',
+    title: 'EU Tariff Pause',
+    description: 'Mirroring the U.S. pause, the European Union places its own planned steel and aluminum tariff retaliation on hold for 90 days, giving diplomatic negotiations another window to progress.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'eu'
+  },
+  {
+    date: 'Apr 11, 2025',
+    title: 'Electronics Tariff Exemption',
+    description: 'Trump\'s administration announces a temporary exemption for several categories of electronics, including smartphones, computers, and related devices. These exemptions apply to the 10% global baseline tariff.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'global'
+  },
+  {
+    date: 'Apr 13, 2025',
+    title: 'Tech Tariff Consideration',
+    description: 'Trump signals that the recent exemptions for electronics may be temporary. He states that new tariffs are being considered on computer chips, indicating an escalation in tech-related trade restrictions.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'global'
+  },
+  {
+    date: 'Apr 29, 2025',
+    title: 'Automotive Sector Relief',
+    description: 'Two executive orders are signed by Trump, modifying how tariffs are applied to the automotive sector. The 25% auto tariffs will no longer be compounded with other tariffs, such as those on imported steel and aluminum, offering partial relief to affected automakers.',
+    icon: <Flag className="h-6 w-6 text-white" />,
+    country: 'global'
+  }
+];
+
 // Sort events by date string
 const sortedEvents = [...combinedUsChina].sort((a, b) => {
   // Parse date strings into comparable format (assuming format is 'MMM D, YYYY')
@@ -393,6 +519,13 @@ const sortedEvents = [...combinedUsChina].sort((a, b) => {
 
 // Sort Canada/Mexico events by date
 const sortedCanadaMexico = [...usCanadaMexico].sort((a, b) => {
+  const dateA = new Date(a.date);
+  const dateB = new Date(b.date);
+  return dateA.getTime() - dateB.getTime();
+});
+
+// Sort EU events by date
+const sortedEu = [...usEu].sort((a, b) => {
   const dateA = new Date(a.date);
   const dateB = new Date(b.date);
   return dateA.getTime() - dateB.getTime();
@@ -464,7 +597,9 @@ const TimelineComponent: React.FC<{
                         ? "bg-green-500" 
                         : event.country === 'canada-mexico'
                           ? "bg-purple-500"
-                          : "bg-infomineo-red"
+                          : event.country === 'eu'
+                            ? "bg-amber-500"
+                            : "bg-infomineo-red"
                 )}>
                   {event.icon}
                 </div>
@@ -551,9 +686,10 @@ const Timeline: React.FC = () => {
       </div>
 
       <Tabs defaultValue="us-china" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 mb-10">
+        <TabsList className="grid w-full grid-cols-3 mb-10">
           <TabsTrigger value="us-china">U.S. - China</TabsTrigger>
           <TabsTrigger value="us-canada-mexico">U.S. - Canada/Mexico</TabsTrigger>
+          <TabsTrigger value="us-eu">U.S. - European Union</TabsTrigger>
         </TabsList>
         
         {/* U.S. - China Tab Content */}
@@ -592,6 +728,25 @@ const Timeline: React.FC = () => {
             </div>
           </div>
           <TimelineComponent events={sortedCanadaMexico} />
+        </TabsContent>
+
+        {/* U.S. - EU Tab Content */}
+        <TabsContent value="us-eu">
+          <div className="mb-6 flex justify-center gap-8">
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-infomineo-blue rounded-full"></div>
+              <span className="font-medium">United States</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-green-500 rounded-full"></div>
+              <span className="font-medium">Global</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-amber-500 rounded-full"></div>
+              <span className="font-medium">European Union</span>
+            </div>
+          </div>
+          <TimelineComponent events={sortedEu} />
         </TabsContent>
       </Tabs>
     </div>;
