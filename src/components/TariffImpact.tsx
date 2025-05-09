@@ -17,7 +17,7 @@ const ImpactCard: React.FC<ImpactCardProps> = ({ icon, title, summary, fullConte
   return (
     <>
       <div className="h-full flex">
-        <div className="p-8 bg-white rounded-xl shadow-md w-full flex flex-col">
+        <div className="p-8 bg-white rounded-xl shadow-lg w-full flex flex-col">
           <div className="mb-6 flex justify-center">
             <div className="inline-flex items-center justify-center p-3 bg-infomineo-red/10 rounded-full text-infomineo-red">
               {icon}
