@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ExternalLink, Globe } from 'lucide-react';
+import { ExternalLink, BarChart3, FileBarChart, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const EnhancedCta: React.FC = () => {
@@ -21,7 +21,14 @@ const EnhancedCta: React.FC = () => {
                 <div className="absolute inset-0 bg-white/10 backdrop-blur-sm rounded-full animate-pulse-soft"></div>
                 <div className="absolute inset-4 bg-white/20 backdrop-blur-sm rounded-full"></div>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <Globe className="w-24 h-24 text-white" strokeWidth={1} />
+                  <div className="grid grid-cols-2 gap-3">
+                    <FileBarChart className="w-14 h-14 text-white" strokeWidth={1} />
+                    <BarChart3 className="w-14 h-14 text-white" strokeWidth={1} />
+                    <FileText className="w-14 h-14 text-white" strokeWidth={1} />
+                    <div className="w-14 h-14 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                      <span className="text-white text-2xl font-bold">+</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
