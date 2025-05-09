@@ -45,6 +45,11 @@ const CountryPopup: React.FC<CountryPopupProps> = ({
     );
   }
 
+  // Check if there's any data to display
+  const hasTariffsToUS = country.tariffsToUS !== null && country.tariffsToUS !== undefined;
+  const hasReciprocalTariff = country.reciprocalTariff !== null && country.reciprocalTariff !== undefined;
+  const hasAnyData = hasTariffsToUS || hasReciprocalTariff;
+
   return (
     <Card className="w-64 relative z-10">
       <button 
@@ -58,21 +63,23 @@ const CountryPopup: React.FC<CountryPopupProps> = ({
       <CardContent className="p-4 pt-6 space-y-3">
         <h3 className="font-semibold text-lg">{country.name}</h3>
         
-        <div className="space-y-2">
-          {country.tariffsToUS !== null && (
-            <div>
-              <div className="text-sm text-muted-foreground">Tariffs to US</div>
-              <div className="font-medium">{country.tariffsToUS.toFixed(1)}%</div>
-            </div>
-          )}
-          
-          {country.reciprocalTariff !== null && (
-            <div>
-              <div className="text-sm text-muted-foreground">Reciprocal Tariff</div>
-              <div className="font-medium">{country.reciprocalTariff.toFixed(1)}%</div>
-            </div>
-          )}
-        </div>
+        {hasAnyData && (
+          <div className="space-y-2">
+            {hasTariffsToUS && (
+              <div>
+                <div className="text-sm text-muted-foreground">Tariffs to US</div>
+                <div className="font-medium">{country.tariffsToUS.toFixed(1)}%</div>
+              </div>
+            )}
+            
+            {hasReciprocalTariff && (
+              <div>
+                <div className="text-sm text-muted-foreground">Reciprocal Tariff</div>
+                <div className="font-medium">{country.reciprocalTariff.toFixed(1)}%</div>
+              </div>
+            )}
+          </div>
+        )}
 
         <Button onClick={onShowAllData} variant="outline" className="w-full mt-2">
           Show All Data <ArrowRight className="ml-1 h-3 w-3" />

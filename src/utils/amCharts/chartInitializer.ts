@@ -98,6 +98,7 @@ export const initializeAmChart = (
     const createTooltipText = (dataContext: any) => {
       let tooltipText = `{name}`;
       
+      // Only add the metric if it exists and has a value
       if (tariffVisualization === 'reciprocalTariff' && dataContext.reciprocalTariff) {
         tooltipText += `\n[bold]US Reciprocal Tariff:[/] ${dataContext.reciprocalTariff}`;
       } else if (tariffVisualization === 'tariffsToUS' && dataContext.tariffsToUS) {
