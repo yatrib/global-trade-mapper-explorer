@@ -104,12 +104,16 @@ const SimpleSvgMap: React.FC<SimpleSvgMapProps> = ({ countryData, onSelectCountr
           if (country) {
             d3.select(this).attr("fill-opacity", 0.8);
             
+            // Only show metrics that have actual data
+            let tooltipContent = `<div class="font-medium">${country.name}</div>`;
+            
+            if (country.tariffsToUS !== null) {
+              tooltipContent += `<div>Tariff rate: ${country.tariffsToUS.toFixed(1)}%</div>`;
+            }
+            
             tooltip
               .style("visibility", "visible")
-              .html(`
-                <div class="font-medium">${country.name}</div>
-                <div>Tariff rate: ${country.tariffsToUS !== null ? country.tariffsToUS + '%' : 'N/A'}</div>
-              `);
+              .html(tooltipContent);
           }
         })
         .on("mousemove", function(event: any) {

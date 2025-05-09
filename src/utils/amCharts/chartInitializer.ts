@@ -94,23 +94,37 @@ export const initializeAmChart = (
       })
     );
 
-    // Define tooltip text based on visualization type
-    let tooltipText = "";
-    if (tariffVisualization === 'reciprocalTariff') {
-      tooltipText = "{name}\n[bold]US Reciprocal Tariff:[/] {reciprocalTariff}";
-    } else {
-      tooltipText = "{name}\n[bold]Tariffs to US:[/] {tariffsToUS}";
-    }
+    // Define tooltip text based on visualization type and only show if data exists
+    const createTooltipText = (dataContext: any) => {
+      let tooltipText = `{name}`;
+      
+      if (tariffVisualization === 'reciprocalTariff' && dataContext.reciprocalTariff) {
+        tooltipText += `\n[bold]US Reciprocal Tariff:[/] ${dataContext.reciprocalTariff}`;
+      } else if (tariffVisualization === 'tariffsToUS' && dataContext.tariffsToUS) {
+        tooltipText += `\n[bold]Tariffs to US:[/] ${dataContext.tariffsToUS}`;
+      }
+      
+      return tooltipText;
+    };
 
     // Configure polygon styling and tooltips
     polygonSeries.mapPolygons.template.setAll({
-      tooltipText: tooltipText,
+      tooltipText: "{name}", // Default tooltip with just the name
       stroke: am5.color(0xffffff),
       strokeWidth: 0.5,
       interactive: true,
       cursorOverStyle: "pointer",
       // Default color for countries not in our database
       fill: am5.color(0xCCCCCC) // Light gray for countries not in our database
+    });
+    
+    // Add tooltip adapter to dynamically generate tooltip content based on available data
+    polygonSeries.mapPolygons.template.adapters.add("tooltipText", function(text, target) {
+      const dataItem = target.dataItem;
+      if (dataItem && dataItem.dataContext) {
+        return createTooltipText(dataItem.dataContext);
+      }
+      return text;
     });
 
     // Create a color scale for the selected tariff values using the new color shades
