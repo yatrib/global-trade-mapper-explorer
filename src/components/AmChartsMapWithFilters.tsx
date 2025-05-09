@@ -112,12 +112,7 @@ const AmChartsMapWithFilters: React.FC<AmChartsMapWithFiltersProps> = ({ onSelec
               >
                 G20 Countries
               </TabsTrigger>
-              <TabsTrigger 
-                value="Non-G20" 
-                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-700"
-              >
-                Non-G20 Countries
-              </TabsTrigger>
+              {/* Non-G20 tab removed as requested */}
             </TabsList>
           </Tabs>
         </div>
