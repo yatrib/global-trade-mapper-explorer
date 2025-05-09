@@ -38,9 +38,11 @@ const ExpertiseCard: React.FC<ExpertiseCardProps> = ({
 }) => {
   return (
     <div className="h-full flex">
-      <div className="p-8 bg-white rounded-lg shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] w-full flex flex-col">
-        <div className="mb-6 inline-flex items-center justify-center p-3 bg-infomineo-blue/5 rounded-full text-infomineo-blue">
-          {icon}
+      <div className="p-8 bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] w-full flex flex-col">
+        <div className="mb-6 inline-block">
+          <div className="inline-flex items-center justify-center p-3 bg-infomineo-blue/5 rounded-full text-infomineo-blue">
+            {icon}
+          </div>
         </div>
         <h3 className="text-xl font-semibold mb-3">{title}</h3>
         <p className="text-gray-600 leading-relaxed flex-grow">{description}</p>

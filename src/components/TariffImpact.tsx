@@ -17,7 +17,7 @@ const ImpactCard: React.FC<ImpactCardProps> = ({ icon, title, summary, fullConte
   return (
     <>
       <div className="h-full flex">
-        <div className="p-8 bg-white rounded-lg shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] w-full flex flex-col">
+        <div className="p-8 bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] w-full flex flex-col">
           <div className="mb-6 flex justify-center">
             <div className="inline-flex items-center justify-center p-3 bg-infomineo-red/10 rounded-full text-infomineo-red">
               {icon}
@@ -79,7 +79,7 @@ const TariffImpact: React.FC = () => {
   ];
 
   return (
-    <section className="py-24 bg-white">
+    <section className="py-24 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
