@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Flag, AlertTriangle, TrendingUp, ChevronDown, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -637,29 +638,31 @@ const TimelineComponent: React.FC<{
           // US/Global Event (Left)
           <>
                   <div className="w-1/2 pr-8">
-                    <Card className={cn(
-                      "border-l-4 hover:shadow-md transition-shadow duration-300",
-                      event.country === 'us' ? "border-l-infomineo-blue" : "border-l-green-500"
-                    )}>
-                      <CardContent className="p-6">
-                        <div className="flex items-start justify-between mb-2">
-                          <span className={cn(
-                            "text-sm font-semibold",
-                            event.country === 'us' ? "text-infomineo-blue" : "text-green-600"
-                          )}>{event.date}</span>
-                          <span className={cn(
-                            "text-xs font-bold px-2 py-1 rounded-full",
-                            event.country === 'us' 
-                              ? "bg-infomineo-blue/10 text-infomineo-blue" 
-                              : "bg-green-500/10 text-green-600"
-                          )}>
-                            {event.country === 'us' ? "United States" : "Global"}
-                          </span>
+                    <div className="p-0 bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] h-full">
+                      <div className={cn(
+                        "border-l-4 h-full",
+                        event.country === 'us' ? "border-l-infomineo-blue" : "border-l-green-500"
+                      )}>
+                        <div className="p-6">
+                          <div className="flex items-start justify-between mb-2">
+                            <span className={cn(
+                              "text-sm font-semibold",
+                              event.country === 'us' ? "text-infomineo-blue" : "text-green-600"
+                            )}>{event.date}</span>
+                            <span className={cn(
+                              "text-xs font-bold px-2 py-1 rounded-full",
+                              event.country === 'us' 
+                                ? "bg-infomineo-blue/10 text-infomineo-blue" 
+                                : "bg-green-500/10 text-green-600"
+                            )}>
+                              {event.country === 'us' ? "United States" : "Global"}
+                            </span>
+                          </div>
+                          <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
+                          {renderDescription(event)}
                         </div>
-                        <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
-                        {renderDescription(event)}
-                      </CardContent>
-                    </Card>
+                      </div>
+                    </div>
                   </div>
                   <div className="w-1/2"></div> {/* Empty right side */}
                 </> :
@@ -667,43 +670,45 @@ const TimelineComponent: React.FC<{
           <>
                   <div className="w-1/2"></div> {/* Empty left side */}
                   <div className="w-1/2 pl-8">
-                    <Card className={cn(
-                      "border-l-4 hover:shadow-md transition-shadow duration-300",
-                      event.country === 'china' 
-                        ? "border-l-infomineo-red" 
-                        : event.country === 'eu' 
-                          ? "border-l-amber-500" 
-                          : "border-l-red-600" // Changed from teal to red
-                    )}>
-                      <CardContent className="p-6">
-                        <div className="flex items-start justify-between mb-2">
-                          <span className={cn(
-                            "text-sm font-semibold",
-                            event.country === 'china' 
-                              ? "text-infomineo-red" 
-                              : event.country === 'eu' 
-                                ? "text-amber-600" 
-                                : "text-red-600" // Changed from teal to red
-                          )}>{event.date}</span>
-                          <span className={cn(
-                            "text-xs font-bold px-2 py-1 rounded-full",
-                            event.country === 'china'
-                              ? "bg-infomineo-red/10 text-infomineo-red"
-                              : event.country === 'eu'
-                                ? "bg-amber-500/10 text-amber-600" 
-                                : "bg-red-600/10 text-red-600" // Changed from teal to red
-                          )}>
-                            {event.country === 'china' 
-                              ? "China" 
-                              : event.country === 'eu' 
-                                ? "European Union" 
-                                : "Canada/Mexico"}
-                          </span>
+                    <div className="p-0 bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] h-full">
+                      <div className={cn(
+                        "border-l-4 h-full",
+                        event.country === 'china' 
+                          ? "border-l-infomineo-red" 
+                          : event.country === 'eu' 
+                            ? "border-l-amber-500" 
+                            : "border-l-red-600" // Changed from teal to red
+                      )}>
+                        <div className="p-6">
+                          <div className="flex items-start justify-between mb-2">
+                            <span className={cn(
+                              "text-sm font-semibold",
+                              event.country === 'china' 
+                                ? "text-infomineo-red" 
+                                : event.country === 'eu' 
+                                  ? "text-amber-600" 
+                                  : "text-red-600" // Changed from teal to red
+                            )}>{event.date}</span>
+                            <span className={cn(
+                              "text-xs font-bold px-2 py-1 rounded-full",
+                              event.country === 'china'
+                                ? "bg-infomineo-red/10 text-infomineo-red"
+                                : event.country === 'eu'
+                                  ? "bg-amber-500/10 text-amber-600" 
+                                  : "bg-red-600/10 text-red-600" // Changed from teal to red
+                            )}>
+                              {event.country === 'china' 
+                                ? "China" 
+                                : event.country === 'eu' 
+                                  ? "European Union" 
+                                  : "Canada/Mexico"}
+                            </span>
+                          </div>
+                          <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
+                          {renderDescription(event)}
                         </div>
-                        <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
-                        {renderDescription(event)}
-                      </CardContent>
-                    </Card>
+                      </div>
+                    </div>
                   </div>
                 </>}
             </div>;
