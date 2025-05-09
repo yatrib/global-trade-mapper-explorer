@@ -38,7 +38,7 @@ const ExpertiseCard: React.FC<ExpertiseCardProps> = ({
 }) => {
   return (
     <div className="h-full flex">
-      <div className="p-8 bg-white rounded-xl shadow-lg w-full flex flex-col">
+      <div className="p-8 bg-white rounded-lg shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] w-full flex flex-col">
         <div className="mb-6 inline-flex items-center justify-center p-3 bg-infomineo-blue/5 rounded-full text-infomineo-blue">
           {icon}
         </div>
